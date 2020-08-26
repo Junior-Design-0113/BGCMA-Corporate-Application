@@ -14,6 +14,17 @@ class Register extends Component {
     );
   }
   
+
+// const styles = StyleSheet.create({
+//   button: {
+//     marginTop: 10,
+//     padding: 20,
+//     width: '100%',
+//     backgroundColor: '#00eeef',
+//     borderRadius: 10,
+//     alignItems: 'center'
+//   }
+// });
 }
 
 
