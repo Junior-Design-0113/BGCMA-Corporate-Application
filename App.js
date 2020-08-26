@@ -1,36 +1,14 @@
 import 'react-native-gesture-handler';
-import { StatusBar } from 'expo-status-bar';
 import React, {Component} from 'react';
 import * as firebase from "firebase";
-//import firebase from "firebase/app";
-import "firebase/firestore";
-import "firebase/auth"
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StyleSheet, Text, View } from 'react-native';
 import Login from './Components/Authentication/Login'
 
 
-
-// function Login() {
-//   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//       <Text>Log In</Text>
-//     </View>
-//   );
-// }
-
 const Stack = createStackNavigator();
 
-// function App() {
-//   return (
-//     <NavigationContainer>
-//       <Stack.Navigator>
-//         <Stack.Screen name="Login" component={Login} />
-//       </Stack.Navigator>
-//     </NavigationContainer>
-//   );
-// }
 
 class App extends Component {
 
@@ -51,7 +29,7 @@ class App extends Component {
     }
     
     //Test to see if it pops up under authentication
-    //firebase.auth().createUserWithEmailAndPassword("marktrout@bgcma.org", "marktrout123");
+    // firebase.auth().createUserWithEmailAndPassword("tchoi52@gmail.c", "marktrout123");
   }
 
   render() {
