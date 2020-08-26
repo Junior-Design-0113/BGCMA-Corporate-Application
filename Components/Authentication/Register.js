@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-
+import {Button} from 'native-base'
 
 
 
@@ -10,7 +10,10 @@ class Register extends Component {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Text>Register Me!</Text>
-      </View>
+        <Button> Register </Button> 
+        /*////onPress={() => this.onPressRegister()}><Text style={styles.text}>Register</Text></Button>*/
+      
+    	</View>
     );
   }
   
