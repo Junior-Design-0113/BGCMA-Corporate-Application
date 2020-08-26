@@ -77,6 +77,7 @@ class Register extends Component {
 
 
 	        <Button color="blue" title="Register" onPress={() => this.onPressRegister()}> </Button> 
+	        <Button color="red" title="Cancel"> </Button> 
     	</View>
     );
   }
