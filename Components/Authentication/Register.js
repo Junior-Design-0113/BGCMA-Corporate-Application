@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { StyleSheet, Text, View, Alert } from 'react-native';
-import {Button} from 'react-native';
+import {Button, Picker} from 'react-native';
 import {TextInput} from 'react-native';
 import * as firebase from 'firebase';
 
@@ -12,8 +12,12 @@ class Register extends Component {
 	    lastName: '',
 	    email: '',
 	    password: '',
-	    /*committe: ?? not sure*/
+	    group: '',
 	  }
+
+	updateGroup = (group) => {
+        this.setState({ group:group })
+    }
 
 
 	onPressRegister() {
@@ -74,13 +78,21 @@ class Register extends Component {
                 placeholder={'Enter your password'}
                 value={this.state.password}
             />
+            <Picker
+		        selectedValue={this.state.group}
+		        style={{ height: 50, width: 150 }}
+		        onValueChange={this.updateGroup}
+		      >
+		        <Picker.Item label="Board" value="board" />
+		        <Picker.Item label="Committee" value="committee" />
+		      </Picker>
 
 
 	        <Button color="blue" title="Register" onPress={() => this.onPressRegister()}> </Button> 
 	        <Button color="red" title="Cancel"> </Button> 
     	</View>
     );
-  }
+    }
 }
 
 export default Register
