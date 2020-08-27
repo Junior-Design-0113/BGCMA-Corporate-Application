@@ -12,13 +12,12 @@ class Register extends Component {
 	    lastName: '',
 	    email: '',
 	    password: '',
-	    group: '',
+	    group: 'board',
 	  }
 
 	updateGroup = (group) => {
         this.setState({ group:group })
     }
-
 
 	onPressRegister() {
 		{/*//Need to set up firebase here, don't want to copy too much code*/}
@@ -47,13 +46,18 @@ class Register extends Component {
 	    navigation.navigate('Login')
     }  
 
+    onPressCancel() {
+        Alert.alert("Your info wasn't saved");
+	    var navigation = this.props.navigation;
+	    navigation.navigate('Login')
+    }  
+
 
  	render() {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 	        <Text>Enter your info to register.</Text>
 
-	        {/*<Text>Enter your First Name</Text>*/}
             <TextInput
                 autoCorrect={false}
                 onChangeText={firstName => this.setState({firstName})}
@@ -85,11 +89,15 @@ class Register extends Component {
 		      >
 		        <Picker.Item label="Board" value="board" />
 		        <Picker.Item label="Committee" value="committee" />
-		      </Picker>
+		    </Picker>
+
+			{/* Debug  
+		    <Text>Testing state works: {this.state.firstName + " " + this.state.group}</Text>
+		    */}
 
 
 	        <Button color="blue" title="Register" onPress={() => this.onPressRegister()}> </Button> 
-	        <Button color="red" title="Cancel"> </Button> 
+	        <Button color="red" title="Cancel" onPress={() => this.onPressCancel()}> </Button> 
     	</View>
     );
     }
