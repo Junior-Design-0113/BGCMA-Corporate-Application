@@ -17,6 +17,23 @@ class Login extends Component {
 	    var navigation = this.props.navigation;
 	    navigation.navigate('Register')
     }
+    onPressLogin() {
+        var correctUser = "User";
+        var correctPass = "Pass";
+        if (this.state.user == correctUser && this.state.password == correctPass) {
+            var navigation = this.props.navigation;
+            Alert.alert("Logging in!");
+            //navigation.navigate('Home Page')
+        } else {
+            Alert.alert("Incorrect Password")
+        }
+        /*firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+         // ...
+        });*/
+    }
 
   render() {
     return (
@@ -32,6 +49,8 @@ class Login extends Component {
         onChangeText={(text) => this.setState({password:text})}
         value = {this.state.text} />
         <Button color="blue" title="Register for App" onPress={() => this.onPressRegister()}> </Button>
+        <Button color = "green" title="Log In" onPress={() => this.onPressLogin()}> </Button>
+
       </View>
     );
   }
