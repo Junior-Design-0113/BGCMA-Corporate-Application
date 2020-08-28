@@ -10,7 +10,7 @@ import Chat from './Components/User/Chat';
 import Pages from './Components/User/Pages';
 import Home from './Components/User/Home';
 
-const firebaseData = require("./server/router");
+const firebase = require("./server/router");
 
 
 const Stack = createStackNavigator();
@@ -20,7 +20,7 @@ class App extends Component {
 
 
   componentWillMount() {
-    firebaseData.initializeFirebase()
+    firebase.initializeFirebase()
   }
 
   render() {
@@ -28,7 +28,7 @@ class App extends Component {
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen name="Login">
-            {(props) => <Login  {...props}  />}
+            {(props) => <Login  {...props} />}
           </Stack.Screen> 
           {/* <Stack.Screen name="Register">
             {(props) => <Register  {...props}  />}

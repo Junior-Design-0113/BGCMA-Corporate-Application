@@ -1,4 +1,5 @@
 import * as firebase from "firebase";
+import { Alert } from 'react-native';
 
 
 module.exports.initializeFirebase = function() {
@@ -16,7 +17,34 @@ module.exports.initializeFirebase = function() {
         firebase.initializeApp(firebaseConfig);
       }
 }
-
-
 module.exports.firebaseConnection = firebase;
+
+
+var created = false
+module.exports.createUser = function(username, password) {
+    firebase.auth().createUserWithEmailAndPassword(username, password)
+    .then(() => {
+        created = true
+      Alert.alert("test account added")
+    }).catch((error) =>{
+        created = true
+      console.log(error)
+      Alert.alert(error.message)
+    })
+    return created
+}
+
+
+var authenticated = false
+module.exports.logIn = function(username, password) {
+    firebase.auth().signInWithEmailAndPassword(username, password)
+    .then(() => {
+        authenticated = true
+    }).catch((error) =>{
+      console.log(error)
+      Alert.alert(error.message)
+      authenticated = false
+    })
+    return authenticated
+}
 

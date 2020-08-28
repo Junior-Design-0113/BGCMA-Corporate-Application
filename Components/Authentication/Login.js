@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { StyleSheet, Text, View, Alert } from 'react-native';
 
 
-const firebaseData = require("../../server/router");
+const firebase = require("../../server/router");
 
 
 class Login extends Component {
@@ -13,13 +13,14 @@ class Login extends Component {
     };
   }
   componentDidMount() {
-    firebaseData.firebaseConnection.auth().createUserWithEmailAndPassword("tchoi52@gmail.com", "password")
-    .then(() => {
-      Alert.alert("test account added")
-    }).catch((error) =>{
-      console.log(error)
-      Alert.alert(error.message)
-    })
+    // var authenticated = firebase.logIn("loll@gmail.com", "password")
+
+    // if(authenticated) {
+    //   console.log("true")
+    // } else {
+    //   console.log("false")
+    // }
+
   }
 
   render() {
