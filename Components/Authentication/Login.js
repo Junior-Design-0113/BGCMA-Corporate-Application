@@ -13,13 +13,14 @@ class Login extends Component {
     };
   }
   componentDidMount() {
-    // var authenticated = firebase.logIn("loll@gmail.com", "password")
+    // firebase.createUser("test@gmail.com", "password")
+    var authenticated = firebase.logIn("test@gmail.com", "password")
 
-    // if(authenticated) {
-    //   console.log("true")
-    // } else {
-    //   console.log("false")
-    // }
+    if(authenticated) {
+      console.log("true")
+    } else {
+      console.log("false")
+    }
 
   }
 

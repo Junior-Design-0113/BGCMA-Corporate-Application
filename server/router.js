@@ -39,12 +39,19 @@ var authenticated = false
 module.exports.logIn = function(username, password) {
     firebase.auth().signInWithEmailAndPassword(username, password)
     .then(() => {
-        authenticated = true
+      console.log("log in works")
+      changeAuth(true)
+      // authenticated = true
     }).catch((error) =>{
       console.log(error)
       Alert.alert(error.message)
-      authenticated = false
+      changeAuth(false)
+      // authenticated = false
     })
-    return authenticated
+    return true
+}
+
+changeAuth = function(v) {
+  authenticated = v
 }
 
