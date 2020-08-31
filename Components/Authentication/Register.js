@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Alert } from 'react-native';
 import {Button, Picker} from 'react-native';
 import {TextInput} from 'react-native';
 import * as firebase from 'firebase';
+import RNPickerSelect from 'react-native-picker-select';
 
 
 class Register extends Component {
@@ -12,7 +13,7 @@ class Register extends Component {
 	    lastName: '',
 	    email: '',
 	    password: '',
-	    group: 'board',
+	    group: '',
 	  }
 
 	updateGroup = (group) => {
@@ -41,13 +42,12 @@ class Register extends Component {
 	      }, (error) => {
 	        Alert.alert(error.message)
 	      })*/}
-        Alert.alert("Registered Successfully");
+        Alert.alert("Your request has been made");
 	    var navigation = this.props.navigation;
 	    navigation.navigate('Login')
     }  
 
     onPressCancel() {
-        Alert.alert("Your info wasn't saved");
 	    var navigation = this.props.navigation;
 	    navigation.navigate('Login')
     }  
@@ -55,7 +55,7 @@ class Register extends Component {
 
  	render() {
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <View style={styles.container}>
 	        <Text>Enter your info to register.</Text>
 
             <TextInput
@@ -82,25 +82,91 @@ class Register extends Component {
                 placeholder={'Enter your password'}
                 value={this.state.password}
             />
-            <Picker
-		        selectedValue={this.state.group}
-		        style={{ height: 50, width: 150 }}
-		        onValueChange={this.updateGroup}
-		      >
-		        <Picker.Item label="Board" value="board" />
-		        <Picker.Item label="Committee" value="committee" />
-		    </Picker>
+
+		    <View>
+			    <RNPickerSelect
+		            onValueChange={(value) => this.setState({group: value})}
+		            items={[
+		                { label: 'Budget, Finance, & Audit', value: 'budget' },
+		                { label: 'Board Development', value: 'boardDevelopment' },
+		                { label: 'Executive', value: 'exec' },
+		                { label: 'Human Resources', value: 'humanResources' },
+		                { label: 'Impact & Investment', value: 'impact' },
+		                { label: 'Resource Development & Marketing', value: 'marketing' },
+		                { label: 'Safety Asset Management', value: 'safety' },
+		            ]}
+		        />
+	        </View>
 
 			{/* Debug  
 		    <Text>Testing state works: {this.state.firstName + " " + this.state.group}</Text>
 		    */}
+		    <Text> </Text>
 
-
-	        <Button color="blue" title="Register" onPress={() => this.onPressRegister()}> </Button> 
-	        <Button color="red" title="Cancel" onPress={() => this.onPressCancel()}> </Button> 
+		    <View style={styles.form1}>
+		        <Button style={styles.button} color="blue" title="Register" onPress={() => this.onPressRegister()}> </Button> 
+		        <Text>  </Text>
+		        <Button style={styles.button} color="red" title="Cancel" onPress={() => this.onPressCancel()}> </Button> 
+    		</View>
     	</View>
     );
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1, 
+      alignItems: 'center', 
+      justifyContent: 'center',
+    },
+    form1: {
+      flex: 0,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    form2: {
+      flex: 0,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginTop: '20%',
+    },
+    title: {
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'row',
+      fontWeight: '800',
+      fontSize: 30,
+    },
+    button: {
+      flexDirection: 'row', 
+      padding: 20,
+      width: '40%',
+      height: '180%',
+      backgroundColor: 'dodgerblue',
+      borderRadius: 35,
+      alignItems: 'center',
+      marginRight: 10,
+      marginLeft: 10,
+    },
+    text: {
+      color: 'white',
+      fontWeight: '700',
+      fontSize: 20,
+      marginRight: 'auto',
+      marginLeft: 'auto'
+    },
+    text2: {
+      color: 'black',
+      fontWeight: '700',
+      fontSize: 35,
+      marginRight: 'auto',
+      marginLeft: 'auto',
+      marginTop: 20,
+      marginBottom: 50,
+    },
+  });
 
 export default Register
