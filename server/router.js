@@ -1,6 +1,9 @@
 import * as firebase from "firebase";
 import { Alert } from 'react-native';
 
+this.state = {
+  authenticated: false,
+}
 
 module.exports.initializeFirebase = function() {
     firebaseConfig = {
@@ -40,7 +43,10 @@ module.exports.logIn = function(username, password) {
     firebase.auth().signInWithEmailAndPassword(username, password)
     .then(() => {
       console.log("log in works")
-      changeAuth(true)
+      this.setState({authenticated: true}, function() {
+        authenticated = true
+      })
+      // changeAuth(true)
       // authenticated = true
     }).catch((error) =>{
       console.log(error)
@@ -48,7 +54,7 @@ module.exports.logIn = function(username, password) {
       changeAuth(false)
       // authenticated = false
     })
-    return true
+    return authenticated
 }
 
 changeAuth = function(v) {
