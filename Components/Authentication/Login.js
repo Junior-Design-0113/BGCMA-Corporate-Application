@@ -8,7 +8,6 @@ import {Button} from 'react-native';
 class Login extends Component {
 
 	onPressRegister() {
-        Alert.alert("Going to registration page");
 	    var navigation = this.props.navigation;
 	    navigation.navigate('Register')
     }  

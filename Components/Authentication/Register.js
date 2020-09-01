@@ -4,7 +4,7 @@ import {Button, Picker} from 'react-native';
 import {TextInput} from 'react-native';
 import * as firebase from 'firebase';
 import RNPickerSelect from 'react-native-picker-select';
-
+{/*import {Picker} from '@react-native-community/picker';*/}
 
 class Register extends Component {
 
@@ -83,8 +83,26 @@ class Register extends Component {
                 value={this.state.password}
             />
 
-		    <View>
-			    <RNPickerSelect
+
+        {/*Originally worked for me on web but not for iphone users*/}
+        <Picker
+            selectedValue={this.state.group}
+            style={styles.dropDownContainer}
+            onValueChange={this.updateGroup}
+          >
+            <Picker.Item label="Pick a board to join" value="" />
+            <Picker.Item label='Budget, Finance, & Audit' value="budget" />
+            <Picker.Item label="Board Development" value="boardDevelopment" />
+            <Picker.Item label="Executive" value="exec" />
+            <Picker.Item label="Human Resources" value="humanResources" />
+            <Picker.Item label="Impact & Investment" value="impact" />
+            <Picker.Item label="Resource Development & Marketing" value="marketing" />
+            <Picker.Item label="Safety Asset Management" value="safety" />
+        </Picker>
+        
+
+        {/*Invariant violation. RNCAndroidDialogPicker was not found. */}
+			  {/* <RNPickerSelect
 		            onValueChange={(value) => this.setState({group: value})}
 		            items={[
 		                { label: 'Budget, Finance, & Audit', value: 'budget' },
@@ -95,12 +113,11 @@ class Register extends Component {
 		                { label: 'Resource Development & Marketing', value: 'marketing' },
 		                { label: 'Safety Asset Management', value: 'safety' },
 		            ]}
+                useNativeAndroidPickerStyle={false} //android only
 		        />
-	        </View>
+          */}
 
-			{/* Debug  
-		    <Text>Testing state works: {this.state.firstName + " " + this.state.group}</Text>
-		    */}
+			  {/* Debug <Text>Testing state works: {this.state.firstName + " " + this.state.group}</Text> */}
 		    <Text> </Text>
 
 		    <View style={styles.form1}>
@@ -166,6 +183,10 @@ const styles = StyleSheet.create({
       marginLeft: 'auto',
       marginTop: 20,
       marginBottom: 50,
+    },
+      dropDownContainer: {
+      height: 50, 
+      width: 300,
     },
   });
 
