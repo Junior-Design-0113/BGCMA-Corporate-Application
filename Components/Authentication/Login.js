@@ -3,11 +3,27 @@ import React, {Component} from 'react';
 import { StyleSheet, Text, View, Alert } from 'react-native';
 import {Button} from 'react-native';
 import {TextInput} from 'react-native';
-
+import * as firebase from "firebase";
 
 
 class Login extends Component {
 
+  componentWillMount() {
+    firebaseConfig = {
+        apiKey: "AIzaSyBxdS6aapWbOthR72uEFe_sJmn4vaQeN08",
+        authDomain: "bgcma-corporate-portal.firebaseapp.com",
+        databaseURL: "https://bgcma-corporate-portal.firebaseio.com",
+        projectId: "bgcma-corporate-portal",
+        storageBucket: "bgcma-corporate-portal.appspot.com",
+        messagingSenderId: "195535537984",
+        appId: "1:195535537984:web:5138ec640e9be03ead5ca5",
+        measurementId: "G-5J9ZZWT81S"
+    }
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+
+}
     state={
         user:"",
         password:""
@@ -18,7 +34,7 @@ class Login extends Component {
 	    navigation.navigate('Register')
     }
     onPressLogin() {
-        var correctUser = "User";
+        /*var correctUser = "User";
         var correctPass = "Pass";
         if (this.state.user == correctUser && this.state.password == correctPass) {
             var navigation = this.props.navigation;
@@ -26,13 +42,23 @@ class Login extends Component {
             //navigation.navigate('Home Page')
         } else {
             Alert.alert("Incorrect Password")
-        }
-        /*firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-         // ...
-        });*/
+        }*/
+        var authenticated = false
+        firebase.auth().signInWithEmailAndPassword(this.state.user, this.state.password)
+        .then(() => {
+          console.log("log in works")
+          this.setState({authenticated: true}, function() {
+          authenticated = true
+        })
+      // changeAuth(true)
+      // authenticated = true
+    }).catch((error) =>{
+      console.log(error)
+      Alert.alert(error.message)
+      changeAuth(false)
+      // authenticated = false
+    })
+
     }
 
   render() {
