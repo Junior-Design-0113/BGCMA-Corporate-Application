@@ -3,28 +3,11 @@ import React, {Component} from 'react';
 import { StyleSheet, Text, View, Alert } from 'react-native';
 import {Button} from 'native-base';
 import {TextInput} from 'react-native';
-//import * as firebase from "firebase";
 
 const firebase = require("../../server/router");
 
 class Login extends Component {
-
-  /*componentWillMount() {
-    firebaseConfig = {
-        apiKey: "AIzaSyBxdS6aapWbOthR72uEFe_sJmn4vaQeN08",
-        authDomain: "bgcma-corporate-portal.firebaseapp.com",
-        databaseURL: "https://bgcma-corporate-portal.firebaseio.com",
-        projectId: "bgcma-corporate-portal",
-        storageBucket: "bgcma-corporate-portal.appspot.com",
-        messagingSenderId: "195535537984",
-        appId: "1:195535537984:web:5138ec640e9be03ead5ca5",
-        measurementId: "G-5J9ZZWT81S"
-    }
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-      }
-
-}*/
+  
     state={
         user:"",
         password:""
@@ -53,19 +36,22 @@ class Login extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>Log In</Text>
+        <Text style={styles.text2}>Log In</Text>
         <TextInput
-        //placeholder =  "Username"
+        placeholder =  "Username"
+        style={styles.textInput}
         onChangeText={(text) => this.setState({user:text})}
         value = {this.state.text} />
         <TextInput
         secureTextEntry
-        //placeholder = "Password"
+        style={styles.textInput}
+        placeholder = "Password"
         onChangeText={(text) => this.setState({password:text})}
         value = {this.state.text} />
-        <Button style={styles.button} onPress={() => this.onPressRegister()}> <Text style={styles.text}>Register for App</Text></Button>
-        <Button style={styles.button} onPress={() => this.onPressLogin()}> <Text style={styles.text}>Log In</Text> </Button>
-
+        <View style={styles.form2}>
+          <Button  style={styles.button} onPress={() => this.onPressRegister()}><Text style={styles.text}>Register</Text></Button>
+          <Button  style={styles.button} onPress={() => this.onPressLogin()}><Text style={styles.text}>Log In</Text></Button>
+        </View>
       </View>
     );
   }
@@ -76,7 +62,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 0,
     padding: 20,
-    marginTop: 20,
+    marginTop: 100,
     marginLeft: 'auto',
     marginRight: 'auto',
     alignItems: 'center',
@@ -131,6 +117,12 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginTop: 20,
     marginBottom: 50,
+  },
+  textInput: {
+    height: 30,
+    width: 300, 
+    borderColor: 'gray', 
+    borderWidth: 1,
   },
   image: {
     marginTop: 0, 
