@@ -1,14 +1,15 @@
 
 import React, {Component} from 'react';
 import { StyleSheet, Text, View, Alert } from 'react-native';
-import {Button} from 'react-native';
+import {Button} from 'native-base';
 import {TextInput} from 'react-native';
-import * as firebase from "firebase";
+//import * as firebase from "firebase";
 
+const firebase = require("../../server/router");
 
 class Login extends Component {
 
-  componentWillMount() {
+  /*componentWillMount() {
     firebaseConfig = {
         apiKey: "AIzaSyBxdS6aapWbOthR72uEFe_sJmn4vaQeN08",
         authDomain: "bgcma-corporate-portal.firebaseapp.com",
@@ -23,52 +24,47 @@ class Login extends Component {
         firebase.initializeApp(firebaseConfig);
       }
 
-}
+}*/
     state={
         user:"",
         password:""
       }
 	onPressRegister() {
-        Alert.alert("Going to registration page");
 	    var navigation = this.props.navigation;
 	    navigation.navigate('Register')
     }
     onPressLogin() {
         var authenticated = false
-        firebase.auth().signInWithEmailAndPassword(this.state.user, this.state.password)
+        firebase.firebaseConnection.auth().signInWithEmailAndPassword(this.state.user, this.state.password)
         .then(() => {
-          console.log("log in works")
           this.setState({authenticated: true}, function() {
           authenticated = true
           var navigation = this.props.navigation;
 	        navigation.navigate('Home')
         })
-      // changeAuth(true)
-      // authenticated = true
     }).catch((error) =>{
       console.log(error)
       Alert.alert(error.message)
       changeAuth(false)
-      // authenticated = false
     })
 
     }
 
   render() {
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Log In</Text>
+      <View style={styles.container}>
+        <Text style={styles.text}>Log In</Text>
         <TextInput
-        placeholder =  "Username"
+        //placeholder =  "Username"
         onChangeText={(text) => this.setState({user:text})}
         value = {this.state.text} />
         <TextInput
         secureTextEntry
-        placeholder = "Password"
+        //placeholder = "Password"
         onChangeText={(text) => this.setState({password:text})}
         value = {this.state.text} />
-        <Button color="blue" title="Register for App" onPress={() => this.onPressRegister()}> </Button>
-        <Button color = "green" title="Log In" onPress={() => this.onPressLogin()}> </Button>
+        <Button style={styles.button} onPress={() => this.onPressRegister()}> <Text style={styles.text}>Register for App</Text></Button>
+        <Button style={styles.button} onPress={() => this.onPressLogin()}> <Text style={styles.text}>Log In</Text> </Button>
 
       </View>
     );
@@ -76,5 +72,71 @@ class Login extends Component {
 
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 0,
+    padding: 20,
+    marginTop: 20,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    width: '90%',
+  },
+  form1: {
+    flex: 0,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  form2: {
+    flex: 0,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: '20%',
+  },
+  title: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    fontWeight: '800',
+    fontSize: 30,
+  },
+  button: {
+    flexDirection: 'row', 
+    padding: 20,
+    width: '40%',
+    height: '180%',
+    backgroundColor: 'dodgerblue',
+    borderRadius: 35,
+    alignItems: 'center',
+    marginRight: 10,
+    marginLeft: 10,
+  },
+  text: {
+    color: 'white',
+    fontWeight: '700',
+    fontSize: 20,
+    marginRight: 'auto',
+    marginLeft: 'auto'
+  },
+  text2: {
+    color: 'black',
+    fontWeight: '700',
+    fontSize: 35,
+    marginRight: 'auto',
+    marginLeft: 'auto',
+    marginTop: 20,
+    marginBottom: 50,
+  },
+  image: {
+    marginTop: 0, 
+    width: 360,
+    height: 206,
+  }
+});
 
 export default Login
