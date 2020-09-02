@@ -34,21 +34,14 @@ class Login extends Component {
 	    navigation.navigate('Register')
     }
     onPressLogin() {
-        /*var correctUser = "User";
-        var correctPass = "Pass";
-        if (this.state.user == correctUser && this.state.password == correctPass) {
-            var navigation = this.props.navigation;
-            Alert.alert("Logging in!");
-            //navigation.navigate('Home Page')
-        } else {
-            Alert.alert("Incorrect Password")
-        }*/
         var authenticated = false
         firebase.auth().signInWithEmailAndPassword(this.state.user, this.state.password)
         .then(() => {
           console.log("log in works")
           this.setState({authenticated: true}, function() {
           authenticated = true
+          var navigation = this.props.navigation;
+	        navigation.navigate('Home')
         })
       // changeAuth(true)
       // authenticated = true
