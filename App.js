@@ -9,6 +9,7 @@ import Calendar from './Components/User/Calendar';
 import Chat from './Components/User/Chat';
 import Pages from './Components/User/Pages';
 import Home from './Components/User/Home';
+import PendingUsers from './Components/Admin/PendingUsers';
 
 const firebase = require("./server/router");
 
@@ -47,6 +48,9 @@ class App extends Component {
           </Stack.Screen> 
           <Stack.Screen name="Pages" options={{title: 'Your Pages'}}>
             {(props) => <Pages  {...props}  />}
+          </Stack.Screen> 
+          <Stack.Screen name="Pending Users">
+            {(props) => <PendingUsers  {...props}  />}
           </Stack.Screen> 
         </Stack.Navigator>
       </NavigationContainer>

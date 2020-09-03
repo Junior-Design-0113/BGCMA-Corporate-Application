@@ -23,7 +23,7 @@ class Login extends Component {
           this.setState({authenticated: true}, function() {
           authenticated = true
           var navigation = this.props.navigation;
-	        navigation.navigate('Home')
+	        navigation.navigate('Home', {user: this.state.user})
         })
     }).catch((error) =>{
       console.log(error)
