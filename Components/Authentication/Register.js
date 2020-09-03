@@ -86,12 +86,13 @@ class Register extends Component {
 	                placeholder={'Enter your password'}
 	                value={this.state.password}
 	            />
-
-	            <View style={styles.buttonHolder}>
-			        <Button style={styles.button} onPress={() => this.showActionSheet()}>
-			        	<Text style={styles.text}>Board</Text>
-		        	</Button>		        
-	        	</View>
+	            <TextInput style = {styles.input}
+	                autoCorrect={false}
+	                onFocus={group => this.showActionSheet()}
+	                onKeyPress={group => this.showActionSheet()}
+	                placeholder={'Pick a board to join'}
+	                value={this.state.group}
+	            />
 
 	            <ActionSheet
 					ref={o => (this.ActionSheet = o)}
