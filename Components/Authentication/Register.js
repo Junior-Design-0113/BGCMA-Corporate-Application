@@ -1,8 +1,20 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, Alert, TextInput, Picker } from 'react-native';
+import { StyleSheet, Text, View, Alert, TextInput } from 'react-native';
 import {Button} from 'native-base';
+import ActionSheet from 'react-native-actionsheet';
 
 const firebase = require("../../server/router");
+
+	var committeeList = [
+	  'Budget, Finance, & Audit',
+	  'Board Development',
+	  'Executive',
+	  'Human Resources',
+	  'Impact & Investment',
+	  'Resource Development & Marketing',
+	  'Safety Asset Management',
+	  ''
+	];
 
 class Register extends Component {
 
@@ -12,7 +24,7 @@ class Register extends Component {
 	    email: '',
 	    password: '',
 	    group: '',
-	  }
+    }
 
   	updateGroup = (group) => {
         this.setState({ group:group })
@@ -38,9 +50,13 @@ class Register extends Component {
 	onPressCancel() {
 	    var navigation = this.props.navigation;
 	    navigation.navigate('Login')
-	}	  
+	}	 
 
- 	render() {
+	showActionSheet = () => {
+		this.ActionSheet.show();
+	};
+
+ 	render() { 
     return (
         <View style={styles.container}>
 	        <View style={styles.form}>
@@ -71,7 +87,27 @@ class Register extends Component {
 	                value={this.state.password}
 	            />
 
-	            <Picker
+	            <View style={styles.buttonHolder}>
+			        <Button style={styles.button} onPress={() => this.showActionSheet()}>
+			        	<Text style={styles.text}>Board</Text>
+		        	</Button>		        
+	        	</View>
+
+	            <ActionSheet
+					ref={o => (this.ActionSheet = o)}
+					//Title of the Bottom Sheet
+					title={'Pick a board to join'}
+					//Options Array to show in bottom sheet
+					options={committeeList}
+					//Define cancel button index in the option array. Need this so pressing back works
+					cancelButtonIndex={8}
+					onPress={index => {
+						//Clicking on the option will give you the index of the option clicked
+						this.updateGroup(committeeList[index]);
+					}}
+				/>
+
+	            {/* <Picker
 		            selectedValue={this.state.group}
 		            style={styles.picker}
 		            onValueChange={this.updateGroup}
@@ -84,7 +120,7 @@ class Register extends Component {
 		            <Picker.Item label="Impact & Investment" value="impact" />
 		            <Picker.Item label="Resource Development & Marketing" value="marketing" />
 		            <Picker.Item label="Safety Asset Management" value="safety" />
-		        </Picker>
+		        </Picker> */}
 
 	            {/* Debug <Text>Testing state works: {this.state.firstName + " " + this.state.group}</Text> */}
 
@@ -117,6 +153,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
+      paddingBottom: 45,
     },
     button: {
       flexDirection: 'row', 
