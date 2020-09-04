@@ -1,24 +1,66 @@
 import React, {Component} from 'react';
 import { ActivityIndicator, StyleSheet, Text, View, Alert, Image } from 'react-native';
 import { Button, Row } from 'native-base'
+// import * as firebase from "firebase";
+import 'firebase/firestore';
+
+
+
+const fb = require("../../server/router")
 
 class Home extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      email: null,
+      committee: null,
+    }
+  }
+
+  componentDidMount() {
+    var email = this.props.route.params.user
+    this.setState({email})
+    const db = fb.firebaseConnection.firestore()
+    const users = db.collection('Users').doc(email);
+    users.get()
+    .then(response => {
+      var committee = response.data().Committee
+      this.setState({committee})
+    })
+    .catch(error => {
+        console.log(error);
+    });
+  }
+
+  getPendingUsers() {
+    if (this.state.committee && this.state.committee === "admin") {
+      return (
+        <View style={styles.form2}>
+          <Button  style={styles.button} onPress={() => this.pendingUsers()}><Text style={styles.pendingText}>Pending Users</Text></Button>
+        </View>
+      )
+    }
+  }
+    pendingUsers() {
+      var navigation = this.props.navigation;
+      navigation.navigate('Pending Users')
+    }
 
     profile() {
         var navigation = this.props.navigation;
-        navigation.navigate('Profile')
+        navigation.navigate('Profile', {state: this.state})
     }
     calendar() {
         var navigation = this.props.navigation;
-        navigation.navigate('Calendar')
+        navigation.navigate('Calendar', {state: this.state})
     }
     chat() {
         var navigation = this.props.navigation;
-        navigation.navigate('Chat')
+        navigation.navigate('Chat', {state: this.state})
     }
     pages() {
         var navigation = this.props.navigation;
-        navigation.navigate('Pages')
+        navigation.navigate('Pages', {state: this.state})
     }
     render() {
         return (
@@ -35,6 +77,7 @@ class Home extends Component {
                 <Button  style={styles.button} onPress={() => this.chat()}><Text style={styles.text}>Chat</Text></Button>
                 <Button  style={styles.button} onPress={() => this.pages()}><Text style={styles.text}>Pages</Text></Button>
             </View>
+            {this.getPendingUsers()}
           </View>
         )
     }
@@ -100,6 +143,13 @@ const styles = StyleSheet.create({
       marginLeft: 'auto',
       marginTop: 20,
       marginBottom: 50,
+    },
+    pendingText: {
+      color: 'white',
+      fontWeight: '700',
+      fontSize: 12,
+      marginRight: 'auto',
+      marginLeft: 'auto'
     },
     image: {
       marginTop: 0, 
