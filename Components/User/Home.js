@@ -4,8 +4,6 @@ import { Button, Row } from 'native-base'
 // import * as firebase from "firebase";
 import 'firebase/firestore';
 
-
-
 const fb = require("../../server/router")
 
 class Home extends Component {
@@ -14,6 +12,8 @@ class Home extends Component {
     this.state = {
       email: null,
       committee: null,
+      admin: false,
+      executive: false
     }
   }
 
@@ -25,7 +25,11 @@ class Home extends Component {
     users.get()
     .then(response => {
       var committee = response.data().Committee
+      var admin = response.data().Admin
+      var executive = response.data().Executive
       this.setState({committee})
+      this.setState({admin})
+      this.setState({executive})
     })
     .catch(error => {
         console.log(error);
@@ -33,80 +37,84 @@ class Home extends Component {
   }
 
   getPendingUsers() {
-    if (this.state.committee && this.state.committee === "admin") {
+    if (this.state.admin) {
       return (
-        <View style={styles.form2}>
-          <Button  style={styles.button} onPress={() => this.pendingUsers()}><Text style={styles.pendingText}>Pending Users</Text></Button>
+        <View style={styles.buttonHolder}>
+          <Button  style={styles.button2} onPress={() => this.pendingUsers()}><Text style={styles.pendingText}>Pending Users</Text></Button>
         </View>
       )
     }
   }
-    pendingUsers() {
+  pendingUsers() {
+    var navigation = this.props.navigation;
+    navigation.navigate('Pending Users')
+  }
+
+  // Depending on if we wanna check if the user is an admin once more
+  // pendingUsers() {
+  //   var navigation = this.props.navigation;
+  //   navigation.navigate('Pending Users', {user: this.state.user})
+  // }
+
+  profile() {
       var navigation = this.props.navigation;
-      navigation.navigate('Pending Users')
-    }
+      navigation.navigate('Profile', {state: this.state})
+  }
+  calendar() {
+      var navigation = this.props.navigation;
+      navigation.navigate('Calendar', {state: this.state})
+  }
+  chat() {
+      var navigation = this.props.navigation;
+      navigation.navigate('Chat', {state: this.state})
+  }
+  pages() {
+      var navigation = this.props.navigation;
+      navigation.navigate('Pages', {state: this.state})
+  }
+  render() {
+      return (
+        <View style={styles.container}>
+          <Image 
+            style={{maxHeight: '30%', marginTop: 10}} 
+            source={require('./../../assets/BGCMA.png')} 
+            resizeMode = 'contain'/>
 
-    profile() {
-        var navigation = this.props.navigation;
-        navigation.navigate('Profile', {state: this.state})
-    }
-    calendar() {
-        var navigation = this.props.navigation;
-        navigation.navigate('Calendar', {state: this.state})
-    }
-    chat() {
-        var navigation = this.props.navigation;
-        navigation.navigate('Chat', {state: this.state})
-    }
-    pages() {
-        var navigation = this.props.navigation;
-        navigation.navigate('Pages', {state: this.state})
-    }
-    render() {
-        return (
-          <View style={styles.container}>
-            <Image style={styles.image} source={require('./BGCA.png')} />
+          <View style={styles.form}>
+          <Text style={styles.title}>Welcome Home</Text>
 
-            <Text style={styles.text2}>Welcome Home</Text>
-
-            <View style={styles.form1}>
-                <Button  style={styles.button} onPress={() => this.profile()}><Text style={styles.text}>Profile</Text></Button>
-                <Button  style={styles.button} onPress={() => this.calendar()}><Text style={styles.text}>Calendar</Text></Button>
-            </View>
-            <View style={styles.form2}>
-                <Button  style={styles.button} onPress={() => this.chat()}><Text style={styles.text}>Chat</Text></Button>
-                <Button  style={styles.button} onPress={() => this.pages()}><Text style={styles.text}>Pages</Text></Button>
-            </View>
-            {this.getPendingUsers()}
+          <View style={styles.buttonHolder}>
+              <Button  style={styles.button} onPress={() => this.profile()}><Text style={styles.text}>Profile</Text></Button>
+              <Button  style={styles.button} onPress={() => this.calendar()}><Text style={styles.text}>Calendar</Text></Button>
           </View>
-        )
-    }
+          <View style={styles.buttonHolder}>
+              <Button  style={styles.button} onPress={() => this.chat()}><Text style={styles.text}>Chat</Text></Button>
+              <Button  style={styles.button} onPress={() => this.pages()}><Text style={styles.text}>Pages</Text></Button>
+          </View>
+          {this.getPendingUsers()}
+          </View>
+        </View>
+      )
+  }
 }
 
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 0,
-      padding: 20,
-      marginTop: 20,
-      marginLeft: 'auto',
-      marginRight: 'auto',
+  container: {
+      flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
-      flexDirection: 'column',
-      width: '90%',
     },
-    form1: {
+    form: {
+      flex: 3,
+      marginTop: '10%',
+    },
+    buttonHolder: {
       flex: 0,
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
-    },
-    form2: {
-      flex: 0,
-      flexDirection: 'row',
-      justifyContent: 'center',
-      marginTop: '20%',
+      paddingVertical: 30,
     },
     title: {
       marginLeft: 'auto',
@@ -114,15 +122,25 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'row',
-      fontWeight: '800',
-      fontSize: 30,
+      fontSize: 35,
     },
     button: {
       flexDirection: 'row', 
       padding: 20,
       width: '40%',
       height: '180%',
-      backgroundColor: 'dodgerblue',
+      backgroundColor: '#0081c6',
+      borderRadius: 35,
+      alignItems: 'center',
+      marginRight: 10,
+      marginLeft: 10,
+    },
+    button2: {
+      flexDirection: 'row', 
+      padding: 20,
+      width: '40%',
+      height: '180%',
+      backgroundColor: '#9B26B6',
       borderRadius: 35,
       alignItems: 'center',
       marginRight: 10,
@@ -135,15 +153,6 @@ const styles = StyleSheet.create({
       marginRight: 'auto',
       marginLeft: 'auto'
     },
-    text2: {
-      color: 'black',
-      fontWeight: '700',
-      fontSize: 35,
-      marginRight: 'auto',
-      marginLeft: 'auto',
-      marginTop: 20,
-      marginBottom: 50,
-    },
     pendingText: {
       color: 'white',
       fontWeight: '700',
@@ -151,11 +160,11 @@ const styles = StyleSheet.create({
       marginRight: 'auto',
       marginLeft: 'auto'
     },
-    image: {
-      marginTop: 0, 
-      width: 360,
-      height: 206,
-    }
+    // image: {
+    //   marginTop: 0, 
+    //   width: 360,
+    //   height: 206,
+    // }
   });
 
 

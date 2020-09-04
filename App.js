@@ -21,7 +21,7 @@ const Stack = createStackNavigator();
 class App extends Component {
 
 
-  componentWillMount() {
+  componentDidMount() {
     firebase.initializeFirebase()
   }
 

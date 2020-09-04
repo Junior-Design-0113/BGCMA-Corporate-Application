@@ -8,7 +8,6 @@ const firebase = require("../../server/router");
 	var committeeList = [
 	  'Budget, Finance, & Audit',
 	  'Board Development',
-	  'Executive',
 	  'Human Resources',
 	  'Impact & Investment',
 	  'Resource Development & Marketing',
@@ -31,20 +30,46 @@ class Register extends Component {
     }
 
 	onPressRegister() {
-		firebase.firebaseConnection.firestore().collection('PendingUsers').doc(this.state.email).set({
-	        firstName: this.state.firstName,
-	        lastName: this.state.lastName,
-	        Email: this.state.email,
-	        Committee: this.state.group
-	    }).then((data) => {
-	        console.log("added customer")
-	        Alert.alert("Your request to register has been made successfully.");
-			var navigation = this.props.navigation;
-			navigation.navigate('Login')	        
-	    }).catch((error) => {
+		//Empty field handling
+		if(!this.state.firstName || !this.state.lastName) {
+			Alert.alert("Please enter a First and Last name");
+			return;
+		}
+		if(!this.state.email){
+			Alert.alert("Please enter an email");
+			return;
+		}
+		if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.state.email)){
+			Alert.alert("Please enter a valid email address");
+			return;
+		}
+		if(!this.state.password){
+			Alert.alert("Please enter a password");
+			return;
+		}
+		if(!this.state.group){
+			Alert.alert("Please select a board");
+			return;
+		}
+
+		// firebase.firebaseConnection.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+		// .then(() => {
+			firebase.firebaseConnection.firestore().collection('PendingUsers').doc(this.state.email).set({
+				Admin: false,
+				Committee: this.state.group,
+				Executive: false,
+				firstName: this.state.firstName,
+				lastName: this.state.lastName
+			}).then((data) => {
+				console.log("added user")
+				Alert.alert("Your request to register was successfull.");
+				var navigation = this.props.navigation;
+				navigation.navigate('Login')	
+			}).catch((error) => {
 	        console.log(error)
 	        Alert.alert(error.message)
-	    })
+			})
+		// })
 	}
 
 	onPressCancel() {
@@ -60,7 +85,8 @@ class Register extends Component {
     return (
         <View style={styles.container}>
 	        <View style={styles.form}>
-		        <Text>Enter your info to register.</Text>
+		        
+				<Text style={{fontSize: 24, textAlign: 'center'}}>Enter your info to register.</Text>
 
 	            <TextInput style = {styles.input}
 	                autoCorrect={false}
@@ -75,7 +101,8 @@ class Register extends Component {
 	                value={this.state.lastName}
 	            />
 	            <TextInput style = {styles.input}
-	                autoCorrect={false}
+					autoCorrect={false}
+					keyboardType = "email-address"
 	                onChangeText={email => this.setState({email})}
 	                placeholder={'Enter your email'}
 	                value={this.state.email}
@@ -153,15 +180,16 @@ const styles = StyleSheet.create({
       flex: 0,
       flexDirection: 'row',
       justifyContent: 'center',
-      alignItems: 'center',
-      paddingBottom: 45,
+	  alignItems: 'center',
+	  paddingTop: 15,
+    //   paddingBottom: 45,
     },
     button: {
       flexDirection: 'row', 
       padding: 20,
       width: '40%',
       height: '180%',
-      backgroundColor: 'dodgerblue',
+      backgroundColor: '#0081c6',
       borderRadius: 35,
       alignItems: 'center',
       marginRight: 10,
@@ -172,7 +200,7 @@ const styles = StyleSheet.create({
       padding: 20,
       width: '40%',
       height: '180%',
-      backgroundColor: 'red',
+      backgroundColor: '#FF8200',
       borderRadius: 35,
       alignItems: 'center',
       marginRight: 10,
@@ -185,12 +213,12 @@ const styles = StyleSheet.create({
       marginRight: 'auto',
       marginLeft: 'auto'
     },
-    picker: {
-      height: 50, 
-      borderColor: '#7a42f4',
-      borderWidth: 1,
-      marginBottom: 15
-    },
+    // picker: {
+    //   height: 50, 
+    //   borderColor: '#7a42f4',
+    //   borderWidth: 1,
+    //   marginBottom: 15
+    // },
     input: {
        margin: 15,
        marginLeft: 2,
