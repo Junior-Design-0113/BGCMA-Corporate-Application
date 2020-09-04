@@ -10,6 +10,7 @@ import Chat from './Components/User/Chat';
 import Pages from './Components/User/Pages';
 import Home from './Components/User/Home';
 import PendingUsers from './Components/Admin/PendingUsers';
+import Register from './Components/Authentication/Register'
 
 const firebase = require("./server/router");
 
@@ -28,12 +29,12 @@ class App extends Component {
     return (
       <NavigationContainer>
         <Stack.Navigator>
+          <Stack.Screen name="Register">
+            {(props) => <Register  {...props}  />}
+          </Stack.Screen>
           <Stack.Screen name="Login">
             {(props) => <Login  {...props} />}
           </Stack.Screen> 
-          {/* <Stack.Screen name="Register">
-            {(props) => <Register  {...props}  />}
-          </Stack.Screen>  */}
           <Stack.Screen name="Home">
             {(props) => <Home  {...props}  />}
           </Stack.Screen> 
