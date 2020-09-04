@@ -29,11 +29,11 @@ class App extends Component {
     return (
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="Register">
-            {(props) => <Register  {...props}  />}
-          </Stack.Screen>
           <Stack.Screen name="Login">
             {(props) => <Login  {...props} />}
+          </Stack.Screen>
+          <Stack.Screen name="Register">
+            {(props) => <Register  {...props} />}
           </Stack.Screen> 
           <Stack.Screen name="Home">
             {(props) => <Home  {...props}  />}
