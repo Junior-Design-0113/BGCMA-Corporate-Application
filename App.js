@@ -9,6 +9,8 @@ import Calendar from './Components/User/Calendar';
 import Chat from './Components/User/Chat';
 import Pages from './Components/User/Pages';
 import Home from './Components/User/Home';
+import PendingUsers from './Components/Admin/PendingUsers';
+import Register from './Components/Authentication/Register'
 
 const firebase = require("./server/router");
 
@@ -19,7 +21,7 @@ const Stack = createStackNavigator();
 class App extends Component {
 
 
-  componentWillMount() {
+  componentDidMount() {
     firebase.initializeFirebase()
   }
 
@@ -29,10 +31,10 @@ class App extends Component {
         <Stack.Navigator>
           <Stack.Screen name="Login">
             {(props) => <Login  {...props} />}
+          </Stack.Screen>
+          <Stack.Screen name="Register">
+            {(props) => <Register  {...props} />}
           </Stack.Screen> 
-          {/* <Stack.Screen name="Register">
-            {(props) => <Register  {...props}  />}
-          </Stack.Screen>  */}
           <Stack.Screen name="Home">
             {(props) => <Home  {...props}  />}
           </Stack.Screen> 
@@ -48,6 +50,9 @@ class App extends Component {
           <Stack.Screen name="Pages" options={{title: 'Your Pages'}}>
             {(props) => <Pages  {...props}  />}
           </Stack.Screen> 
+          <Stack.Screen name="Pending Users">
+            {(props) => <PendingUsers  {...props}  />}
+          </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
     );
