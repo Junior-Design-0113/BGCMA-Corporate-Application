@@ -52,8 +52,8 @@ class Register extends Component {
 			return;
 		}
 
-		// firebase.firebaseConnection.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
-		// .then(() => {
+		firebase.firebaseConnection.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+		.then(() => {
 			firebase.firebaseConnection.firestore().collection('PendingUsers').doc(this.state.email).set({
 				Admin: false,
 				Committee: this.state.group,
@@ -69,7 +69,7 @@ class Register extends Component {
 	        console.log(error)
 	        Alert.alert(error.message)
 			})
-		// })
+		})
 	}
 
 	onPressCancel() {
