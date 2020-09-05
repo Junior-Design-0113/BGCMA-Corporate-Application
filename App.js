@@ -52,7 +52,7 @@ class App extends Component {
           </Stack.Screen> 
           <Stack.Screen name="Pending Users">
             {(props) => <PendingUsers  {...props}  />}
-          </Stack.Screen> 
+          </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
     );
