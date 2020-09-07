@@ -38,7 +38,8 @@ module.exports.styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
-        fontSize: 25,
+        textAlign: 'center',
+        fontSize: 35,
       },
       button: {
         flexDirection: 'row', 
