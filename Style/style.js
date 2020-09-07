@@ -32,6 +32,14 @@ module.exports.styles = StyleSheet.create({
         flexDirection: 'row',
         fontSize: 35,
       },
+      committeeTitle: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        fontSize: 25,
+      },
       button: {
         flexDirection: 'row', 
         padding: 20,

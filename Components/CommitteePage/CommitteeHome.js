@@ -29,7 +29,7 @@ class CommitteeHome extends Component {
     var title = this.props.route.params.selectedCommittee
     if(title) {
       return(
-        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.committeeTitle}>{title}</Text>
       )
     }
   }
