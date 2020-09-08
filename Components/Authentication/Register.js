@@ -2,10 +2,11 @@ import React, {Component} from 'react';
 import { StyleSheet, Text, View, Alert, TextInput } from 'react-native';
 import {Button} from 'native-base';
 import ActionSheet from 'react-native-actionsheet';
+import * as Crypto from 'expo-crypto';
 
 const firebase = require("../../server/router");
 
-	var committeeList = [
+	const committeeList = [
 	  'Budget, Finance, & Audit',
 	  'Board Development',
 	  'Human Resources',
@@ -52,24 +53,52 @@ class Register extends Component {
 			return;
 		}
 
-		firebase.firebaseConnection.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
-		.then(() => {
-			firebase.firebaseConnection.firestore().collection('PendingUsers').doc(this.state.email).set({
-				Admin: false,
-				Committee: this.state.group,
-				Executive: false,
-				firstName: this.state.firstName,
-				lastName: this.state.lastName
-			}).then((data) => {
-				console.log("added user")
-				Alert.alert("Your request to register was successfull.");
-				var navigation = this.props.navigation;
-				navigation.navigate('Login')	
-			}).catch((error) => {
+		this.state.email = this.state.email.toLowerCase()
+		
+		const db = firebase.firebaseConnection.firestore()
+		const pendingUsers = db.collection('PendingUsers').doc(this.state.email);
+		const users = db.collection('Users').doc(this.state.email);
+		const self = this
+
+		//Checks if present in Users
+		users.get().then((found) => {
+			if (found.exists) {
+				Alert.alert("This email is already associated with an account")
+			} else {
+				//Checks if present in pendingUsers
+				pendingUsers.get().then((found) => {
+					if (found.exists) {
+						Alert.alert("This email is pending approval")
+					} else {
+						//.this is dynamic so a variable has to be used 
+						// self.hashPassword(self)
+						self.addToPendingUser(self)
+					}
+				})
+			}
+		})	
+	}
+
+	async addToPendingUser(self) {
+		self.state.password = await Crypto.digestStringAsync(
+		  Crypto.CryptoDigestAlgorithm.SHA256,
+		  self.state.password)
+		
+		await firebase.firebaseConnection.firestore().collection('PendingUsers').doc(self.state.email).set({
+			Admin: false,
+			Committee: self.state.group,
+			Executive: false,
+			firstName: self.state.firstName,
+			lastName: self.state.lastName,
+			password: self.state.password
+		}).catch((error) => {
 	        console.log(error)
 	        Alert.alert(error.message)
-			})
 		})
+
+		Alert.alert("Your request to register was successful.");
+		var navigation = this.props.navigation;
+		navigation.navigate('Login')
 	}
 
 	onPressCancel() {

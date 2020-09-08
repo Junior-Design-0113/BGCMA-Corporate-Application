@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import { StyleSheet, Text, View, Alert, Image } from 'react-native';
 import {Button} from 'native-base';
 import {TextInput} from 'react-native';
+import * as Crypto from 'expo-crypto';
 
 const firebase = require("../../server/router");
 
@@ -26,33 +27,66 @@ class Login extends Component {
 			Alert.alert("Please enter a password");
       return;
     }
-
-    var authenticated = false
+    
+    this.state.user = this.state.user.toLowerCase()
     const db = firebase.firebaseConnection.firestore()
-    const pendingUsers = db.collection('PendingUsers').doc(this.state.user);
-    //Checks if user is part of PendingUsers (those that have not yet been appoved)
-    pendingUsers.get().then((found) => {
-      if (found.exists) {
-        Alert.alert("Your account has not yet been approved by an admin")
-      } else {
-        firebase.firebaseConnection.auth().signInWithEmailAndPassword(this.state.user, this.state.password)
-        .then(() => {
-          this.setState({authenticated: true}, function() {
-          authenticated = true
-          var navigation = this.props.navigation;
-          navigation.navigate('Home', {user: this.state.user})
-          })
-        }).catch((error) =>{
-          console.log(error)
-          Alert.alert(error.message)
-          changeAuth(false)
-        })
-      }
-    });
+    const pendingUser = db.collection('PendingUsers').doc(this.state.user);
+
+    firebase.firebaseConnection.auth().signInWithEmailAndPassword(this.state.user, this.state.password)
+    .then(() => {
+      var navigation = this.props.navigation;
+      navigation.navigate('Home', {user: this.state.user})
+    }).catch((error) => {
+      pendingUser.get().then(found => {
+        if (found.exists) {
+          Alert.alert('This account has not yet been approved')
+        } else {
+          this.checkUsers(error)
+        }
+      })
+    })
   }
 
+  // login() {
+  //   firebase.firebaseConnection.auth().signInWithEmailAndPassword(this.state.user, this.state.password)
+  //   .then(() => {
+  //     var navigation = this.props.navigation;
+  //     navigation.navigate('Home', {user: this.state.user})
+  //   })
+  // }
+  
+  async checkUsers(error) {
+    const db = firebase.firebaseConnection.firestore()
+    const user = db.collection('Users').doc(this.state.user);
+    const self = this
+
+    user.get().then(async function(doc) {
+      if (doc.exists) {
+        const hash = await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, self.state.password)
+        if (hash === doc.data().password) {
+          await firebase.firebaseConnection.firestore().collection('Users').doc(self.state.user).update({
+            password: null})
+          .then(() => {
+          firebase.firebaseConnection.auth().createUserWithEmailAndPassword(self.state.user, self.state.password)
+          .then(() => {
+            firebase.firebaseConnection.auth().signInWithEmailAndPassword(self.state.user, self.state.password)
+          .then(() => {
+            var navigation = self.props.navigation;
+            navigation.navigate('Home', {user: self.state.user})
+          })
+          })
+        })
+        } else {
+          Alert.alert(error.message)
+        }
+      } else {
+          Alert.alert(error.message)
+      }
+    })
+}
+
   render() {
-    return (
+    return ( 
       <View style={styles.container}>
         <Image 
           style={{maxHeight: '30%', marginTop: 10}} 
