@@ -21,9 +21,13 @@ class Pages extends Component {
 
   componentDidMount() {
     var state = this.props.route.params.state
+    if(state.committee && !state.executive) {
+      this.goToPage(state.committee)
+  }
     Object.keys(state).forEach(key => {
       this.setState({[key]: state[key]})
     });
+      
 
     
 
