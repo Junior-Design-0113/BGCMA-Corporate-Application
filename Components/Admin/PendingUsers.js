@@ -187,7 +187,9 @@ class PendingUsers extends Component {
         
         <View style={styles.buttonHolder}>
 			        <Button  style={styles.button} onPress={() => this.delete(pendingUser)}
-                disabled={(pendingUser.editable + 1 == this.state.editable)}>
+                // disabled={(pendingUser.editable + 1 == this.state.editable)}
+                // if we want to still be able to Delete/Accept users not being edited 
+                disabled={(!!this.state.editable)}>
 			        	<Text style={styles.buttonText}>Delete</Text>
 		        	</Button>
 
@@ -196,7 +198,9 @@ class PendingUsers extends Component {
 		        	</Button>
 
               <Button  style={styles.button3} onPress={() => this.approve(pendingUser)}
-                disabled={(pendingUser.editable + 1 == this.state.editable)}>
+                // disabled={(pendingUser.editable + 1 == this.state.editable)}
+                // if we want to still be able to Delete/Accept users not being edited 
+                disabled={(!!this.state.editable)}>
                 <Text style={styles.buttonText}>Approve</Text>
               </Button>
 	    		</View>
