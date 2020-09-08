@@ -23,6 +23,7 @@ module.exports.styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
+        marginBottom: 30,
       },
       title: {
         marginLeft: 'auto',
@@ -80,6 +81,14 @@ module.exports.styles = StyleSheet.create({
         fontSize: 20,
         marginRight: 'auto',
         marginLeft: 'auto'
+      },
+      pageText: {
+        color: 'white',
+        fontWeight: '700',
+        fontSize: 20,
+        marginRight: 'auto',
+        marginLeft: 'auto',
+        textAlign: 'center',
       },
       pendingText: {
         color: 'white',

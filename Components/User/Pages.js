@@ -36,7 +36,7 @@ class Pages extends Component {
     if(this.state.committee){
       return(
         <View style={styles.pageButtonHolder}>
-          <Button  style={styles.pageButton} onPress={() => this.goToPage(this.state.committee)}><Text style={styles.text}>{this.state.committee}</Text></Button>
+          <Button  style={styles.pageButton} onPress={() => this.goToPage(this.state.committee)}><Text style={styles.pageText}>{this.state.committee}</Text></Button>
         </View>
       )
     }
@@ -45,7 +45,7 @@ class Pages extends Component {
     if(this.state.executive){
       return(
         <View style={styles.pageButtonHolder}>
-          <Button  style={styles.pageButton} onPress={() => this.goToPage('Executive Committee')}><Text style={styles.text}>Executive Committee</Text></Button>
+          <Button  style={styles.pageButton} onPress={() => this.goToPage('Executive Committee')}><Text style={styles.pageText}>Executive Committee</Text></Button>
         </View>
       )
     }
