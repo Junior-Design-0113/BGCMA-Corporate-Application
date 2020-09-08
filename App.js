@@ -11,6 +11,11 @@ import Pages from './Components/User/Pages';
 import Home from './Components/User/Home';
 import PendingUsers from './Components/Admin/PendingUsers';
 import Register from './Components/Authentication/Register'
+import CommitteeHome from './Components/CommitteePage/CommitteeHome'
+import MeetingFiles from './Components/CommitteePage/MeetingFiles'
+import Announcements from './Components/CommitteePage/Announcements'
+import Members from './Components/CommitteePage/Members'
+
 
 const firebase = require("./server/router");
 
@@ -29,30 +34,18 @@ class App extends Component {
     return (
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="Login">
-            {(props) => <Login  {...props} />}
-          </Stack.Screen>
-          <Stack.Screen name="Register">
-            {(props) => <Register  {...props} />}
-          </Stack.Screen> 
-          <Stack.Screen name="Home">
-            {(props) => <Home  {...props}  />}
-          </Stack.Screen> 
-          <Stack.Screen name="Profile">
-            {(props) => <Profile  {...props}  />}
-          </Stack.Screen> 
-          <Stack.Screen name="Calendar">
-            {(props) => <Calendar  {...props}  />}
-          </Stack.Screen> 
-          <Stack.Screen name="Chat">
-            {(props) => <Chat  {...props}  />}
-          </Stack.Screen> 
-          <Stack.Screen name="Pages" options={{title: 'Your Pages'}}>
-            {(props) => <Pages  {...props}  />}
-          </Stack.Screen> 
-          <Stack.Screen name="Pending Users">
-            {(props) => <PendingUsers  {...props}  />}
-          </Stack.Screen>
+          <Stack.Screen name="Login" component={Login}/>
+          <Stack.Screen name="Register" component={Register}/>
+          <Stack.Screen name="Home" component={Home}/>
+          <Stack.Screen name="Profile" component={Profile}/>
+          <Stack.Screen name="Calendar" component={Calendar}/>
+          <Stack.Screen name="Chat" component={Chat}/>
+          <Stack.Screen name="Pages" component={Pages} options={{title: 'Your Pages'}}/>
+          <Stack.Screen name="Pending Users" component={PendingUsers}/>
+          <Stack.Screen name="Team Page" component={CommitteeHome} options={{title: ''}}/>
+          <Stack.Screen name="Meeting Files" component={MeetingFiles}/>
+          <Stack.Screen name="Announcements" component={Announcements}/>
+          <Stack.Screen name="Members" component={Members}/>
         </Stack.Navigator>
       </NavigationContainer>
     );
