@@ -108,10 +108,9 @@ class Login extends Component {
           placeholder = "Password"
           onChangeText={(text) => this.setState({password:text})}
           value = {this.state.text} />
-          <View style={styles.buttonHolder}>
-            <Button  style={styles.button} onPress={() => this.onPressRegister()}><Text style={styles.text}>Register</Text></Button>
-            <Button  style={styles.button2} onPress={() => this.onPressLogin()}><Text style={styles.text}>Log In</Text></Button>
-          </View>
+          
+          <Button  style={styles.button} onPress={() => this.onPressLogin()}><Text style={styles.text}>Log In</Text></Button>
+          <Button  style={styles.button2} onPress={() => this.onPressRegister()}><Text style={styles.text}>Register</Text></Button>
         </View>
       </View>
     );
@@ -146,21 +145,21 @@ const styles = StyleSheet.create({
     fontSize: 35,
   },
   button: {
-    flexDirection: 'row', 
     padding: 20,
-    width: '40%',
-    height: '180%',
+    width: '50%',
+    height: '12%',
     backgroundColor: '#0081c6',
     borderRadius: 35,
     alignItems: 'center',
     marginRight: 10,
     marginLeft: 10,
+    marginBottom: 20, 
+    marginTop: 20, 
   },
   button2: {
-    flexDirection: 'row', 
     padding: 20,
-    width: '40%',
-    height: '180%',
+    width: '50%',
+    height: '12%',
     backgroundColor: '#84BD00',
     borderRadius: 35,
     alignItems: 'center',
@@ -187,9 +186,11 @@ const styles = StyleSheet.create({
     margin: 15,
     marginLeft: 2,
     height: 40,
+    //width: 250,
     borderColor: 'black',
     borderWidth: 1,
-    paddingLeft: 10
+    paddingLeft: 10,
+    alignItems: 'center',
  },
 //  imageHolder: {
 //   margin: 33%,

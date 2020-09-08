@@ -192,7 +192,7 @@ class PendingUsers extends Component {
 		        	</Button>
 
               <Button  style={styles.button2} onPress={() => (this.state.editable % 2) ? this.submit(pendingUser) : this.edit(pendingUser)}>
-			        	<Text style={styles.buttonText}>{((pendingUser.editable + 1) == this.state.editable) ? "Submit" : "Edit"}</Text>
+			        	<Text style={styles.buttonText}>{((pendingUser.editable + 1) == this.state.editable) ? "Save" : "Edit"}</Text>
 		        	</Button>
 
               <Button  style={styles.button3} onPress={() => this.approve(pendingUser)}
