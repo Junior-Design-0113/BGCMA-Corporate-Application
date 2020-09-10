@@ -39,7 +39,7 @@ class MeetingFiles extends Component {
         Alert.alert("Confirm File Upload?", res.name,
         [{text: "Cancel", onPress: () => console.log("Cancel")},
         {text: "Upload", onPress: () => this.uploadFile(res)}]) 
-        console.log(res.name)
+        // console.log(res.name)
       } else {
         Alert.alert('No file was selected')
       }
@@ -56,8 +56,10 @@ class MeetingFiles extends Component {
     }
     const response = await fetch(res.uri);
     const blob = await response.blob();
-    var ref = storageRef.child(this.state.committee + "/" + res.name);
-    return ref.put(blob);
+    var ref = storageRef.child(this.state.selectedCommittee + "/" + res.name);
+    // console.log(this.state.selectedCommittee + "/" + res.name)
+    
+    ref.put(blob).then(() => {Alert.alert("File has been uploaded", res.name)});
   }
 
   render() {

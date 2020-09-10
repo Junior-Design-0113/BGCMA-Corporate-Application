@@ -70,9 +70,16 @@ class Home extends Component {
   }
   pages() {
       var navigation = this.props.navigation;
-      navigation.navigate('Pages', {state: this.state})
+
+      //Navigate user to Committee Page or to Navigation Page
+      if (!this.state.executive) {
+        navigation.navigate('Team Page', {state: this.state, selectedCommittee: this.state.committee})
+      } else {
+        navigation.navigate('Pages', {state: this.state})
+      }
   }
   render() {
+    // console.log("Home Page: " + this.state.committee)
       return (
         <View style={styles.container}>
           <Image 
