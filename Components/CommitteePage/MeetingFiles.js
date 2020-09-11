@@ -26,7 +26,7 @@ class MeetingFiles extends Component {
       this.setState({[key]: state[key]})
     });
   
-    this.getFile()
+    this.getFiles()
   }
   
   getTeam() {
@@ -37,7 +37,7 @@ class MeetingFiles extends Component {
     }
   }
 
-  getFile() {
+  pickFile() {
     DocumentPicker.getDocumentAsync().then((res) => {
       if (res.type === 'success') {
         Alert.alert("Confirm File Upload?", res.name,
@@ -66,7 +66,7 @@ class MeetingFiles extends Component {
     ref.put(blob).then(() => {Alert.alert("File has been uploaded", res.name)});
   }
 
-  getFile() {
+  getFiles() {
     var storageRef = fb.firebaseConnection.storage().ref();
     var listRef = storageRef.child("Resource Development & Marketing/");
 
@@ -80,11 +80,11 @@ class MeetingFiles extends Component {
         })
       })
       console.log(files)
-      this.setState({files : files}, (() => this.listFile()))
+      this.setState({files : files}, (() => this.listFiles()))
     })
   }
 
-  listFile() {
+  listFiles() {
     const filesView = this.state.files.map(file => (
       <View key={file.key}>
         <Text>{file.name}</Text>
@@ -104,9 +104,9 @@ class MeetingFiles extends Component {
           <View style={styles.form}>
           {this.getTeam()}
           <View style={styles.pageButtonHolder}>
-            <Button  style={styles.pageButton} onPress={() => this.getFile()}><Text style={styles.text}>+</Text></Button>
+            <Button  style={styles.pageButton} onPress={() => this.pickFile()}><Text style={styles.text}>+</Text></Button>
           </View>
-          {this.listFile()}
+          {this.listFiles()}
           </View>
         </View>
       )
