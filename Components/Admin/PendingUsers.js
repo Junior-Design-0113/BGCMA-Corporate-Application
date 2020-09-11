@@ -11,7 +11,8 @@ const fb = require("../../server/router")
     'Budget, Finance, & Audit',
     'Board Development',
     'Human Resources',
-    'Impact & Investment',
+    'Impact',
+    'Investment',
     'Resource Development & Marketing',
     'Safety Asset Management',
     ''
