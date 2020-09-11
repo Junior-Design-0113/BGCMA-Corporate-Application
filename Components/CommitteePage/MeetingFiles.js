@@ -16,6 +16,7 @@ class MeetingFiles extends Component {
         admin: false,
         executive: false,
         selectedCommittee: null,
+        files: [],
       }
     }
   
@@ -24,7 +25,10 @@ class MeetingFiles extends Component {
     Object.keys(state).forEach(key => {
       this.setState({[key]: state[key]})
     });
+  
+    this.getFile()
   }
+  
   getTeam() {
     if(this.state.selectedCommittee) {
       return(
@@ -62,6 +66,38 @@ class MeetingFiles extends Component {
     ref.put(blob).then(() => {Alert.alert("File has been uploaded", res.name)});
   }
 
+  getFile() {
+    var storageRef = fb.firebaseConnection.storage().ref();
+    var listRef = storageRef.child("Resource Development & Marketing/");
+
+    listRef.listAll().then((res) => {
+      const files = []
+      var count = 0
+      res.items.forEach((file) => {
+        files.push({
+          key: count++,
+          name: file.name
+        })
+      })
+      console.log(files)
+      this.setState({files : files}, (() => this.listFile()))
+    })
+  }
+
+  listFile() {
+    const filesView = this.state.files.map(file => (
+      <View key={file.key}>
+        <Text>{file.name}</Text>
+      </View>
+    ))
+  
+    return ( 
+    <View>
+      {filesView}
+    </View>
+    )
+  }
+
   render() {
       return (
         <View style={styles.container}>
@@ -70,6 +106,7 @@ class MeetingFiles extends Component {
           <View style={styles.pageButtonHolder}>
             <Button  style={styles.pageButton} onPress={() => this.getFile()}><Text style={styles.text}>+</Text></Button>
           </View>
+          {this.listFile()}
           </View>
         </View>
       )
