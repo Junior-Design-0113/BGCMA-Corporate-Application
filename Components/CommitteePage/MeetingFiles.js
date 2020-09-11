@@ -20,12 +20,11 @@ class MeetingFiles extends Component {
       }
     }
   
-  componentDidMount() {
+  async componentDidMount() {
     var state = this.props.route.params.state
-    Object.keys(state).forEach(key => {
+    await Object.keys(state).forEach(key => {
       this.setState({[key]: state[key]})
-    });
-  
+    })
     this.getFiles()
   }
   
@@ -68,7 +67,8 @@ class MeetingFiles extends Component {
 
   getFiles() {
     var storageRef = fb.firebaseConnection.storage().ref();
-    var listRef = storageRef.child("Resource Development & Marketing/");
+    var listRef = storageRef.child(this.state.selectedCommittee + "/");
+    console.log(this.state.selectedCommittee + "/")
 
     listRef.listAll().then((res) => {
       const files = []
@@ -99,6 +99,7 @@ class MeetingFiles extends Component {
   }
 
   render() {
+    console.log(this.state.selectedCommittee)
       return (
         <View style={styles.container}>
           <View style={styles.form}>
