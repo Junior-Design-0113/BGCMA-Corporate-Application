@@ -100,16 +100,13 @@ module.exports.styles = StyleSheet.create({
       listFiles: {
         fontSize: 18,
         marginLeft: 5,
-        paddingTop: 25,
         flexDirection: 'row',
-
-
+        paddingTop: 20,
       },
       deleteButton: {
         flexDirection: 'row',
         left: 280,
         backgroundColor: 'red',
-
-
+        top: -25,
       }
     });
