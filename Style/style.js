@@ -97,4 +97,19 @@ module.exports.styles = StyleSheet.create({
         marginRight: 'auto',
         marginLeft: 'auto'
       },
+      listFiles: {
+        fontSize: 18,
+        marginLeft: 5,
+        paddingTop: 25,
+        flexDirection: 'row',
+
+
+      },
+      deleteButton: {
+        flexDirection: 'row',
+        left: 280,
+        backgroundColor: 'red',
+
+
+      }
     });

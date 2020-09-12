@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { ActivityIndicator, StyleSheet, Text, View, Alert, Image } from 'react-native';
 import { Button, Row } from 'native-base'
 import * as DocumentPicker from 'expo-document-picker';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const fb = require("../../server/router");
 const s = require('../../Style/style')
@@ -68,7 +69,7 @@ class MeetingFiles extends Component {
   getFiles() {
     var storageRef = fb.firebaseConnection.storage().ref();
     var listRef = storageRef.child(this.state.selectedCommittee + "/");
-    console.log(this.state.selectedCommittee + "/")
+    //console.log(this.state.selectedCommittee + "/")
 
     listRef.listAll().then((res) => {
       const files = []
@@ -79,7 +80,7 @@ class MeetingFiles extends Component {
           name: file.name
         })
       })
-      console.log(files)
+      //console.log(files)
       this.setState({files : files}, (() => this.listFiles()))
     })
   }
@@ -87,28 +88,41 @@ class MeetingFiles extends Component {
   listFiles() {
     const filesView = this.state.files.map(file => (
       <View key={file.key}>
-        <Text>{file.name}</Text>
+        <Text style={styles.listFiles}>{file.name}</Text>
+        <Button style={styles.deleteButton} onPress={() => this.deleteFile(file)}>
+          <Text>Delete</Text>
+        </Button>
       </View>
     ))
   
-    return ( 
+    return (
     <View>
       {filesView}
     </View>
     )
   }
 
+  deleteFile(file) {
+    var storageRef = fb.firebaseConnection.storage().ref();
+    var deleteRef = storageRef.child(this.state.selectedCommittee + '/' + file.name);
+
+    deleteRef.delete()
+      Alert.alert(file.name + " has been deleted.");
+
+  }
+
   render() {
-    console.log(this.state.selectedCommittee)
+    //console.log(this.state.selectedCommittee)
       return (
         <View style={styles.container}>
           <View style={styles.form}>
           {this.getTeam()}
-          <View style={styles.pageButtonHolder}>
-            <Button  style={styles.pageButton} onPress={() => this.pickFile()}><Text style={styles.text}>+</Text></Button>
+            <View style={styles.pageButtonHolder}>
+              <Button  style={styles.pageButton} onPress={() => this.pickFile()}><Text style={styles.text}>+</Text></Button>
+            </View>
+            <ScrollView>{this.listFiles()}</ScrollView>
           </View>
-          {this.listFiles()}
-          </View>
+
         </View>
       )
   }
