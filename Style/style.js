@@ -105,7 +105,7 @@ module.exports.styles = StyleSheet.create({
       },
       deleteButton: {
         flexDirection: 'row',
-        left: 280,
+        left: 270,
         backgroundColor: 'red',
         top: -25,
       }
