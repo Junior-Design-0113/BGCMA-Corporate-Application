@@ -63,7 +63,9 @@ class MeetingFiles extends Component {
     var ref = storageRef.child(this.state.selectedCommittee + "/" + res.name);
     // console.log(this.state.selectedCommittee + "/" + res.name)
     
-    ref.put(blob).then(() => {Alert.alert("File has been uploaded", res.name)});
+    await ref.put(blob).then(() => {Alert.alert("File has been uploaded", res.name)});
+    
+    this.updateScreen();
   }
 
   getFiles() {
@@ -102,13 +104,19 @@ class MeetingFiles extends Component {
     )
   }
 
-  deleteFile(file) {
+  async deleteFile(file) {
     var storageRef = fb.firebaseConnection.storage().ref();
     var deleteRef = storageRef.child(this.state.selectedCommittee + '/' + file.name);
 
-    deleteRef.delete()
+    await deleteRef.delete()
       Alert.alert(file.name + " has been deleted.");
 
+    this.updateScreen();
+  }
+
+  updateScreen() {
+    this.getFiles(); 
+    // console.log('screen update');
   }
 
   render() {
