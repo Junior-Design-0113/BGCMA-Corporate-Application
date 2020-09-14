@@ -18,6 +18,7 @@ class MeetingFiles extends Component {
         executive: false,
         selectedCommittee: null,
         files: [],
+        url: null,
       }
     }
   
@@ -91,6 +92,9 @@ class MeetingFiles extends Component {
     const filesView = this.state.files.map(file => (
       <View key={file.key}>
         <Text style={styles.listFiles}>{file.name}</Text>
+        <Button style={styles.viewButton} onPress={() => this.viewFile(file)}>
+          <Text>View</Text>
+        </Button>
         <Button style={styles.deleteButton} onPress={() => this.deleteFile(file)}>
           <Text>Delete</Text>
         </Button>
@@ -114,6 +118,37 @@ class MeetingFiles extends Component {
     this.updateScreen();
   }
 
+  async viewFile(file) {
+    var storageRef = fb.firebaseConnection.storage().ref();
+    var viewRef = storageRef.child(this.state.selectedCommittee + '/' + file.name);
+    var url = viewRef.getDownloadURL()
+
+    //.writeToFile('/' : url);
+
+    .then((url) => {
+      //Need to use this url to save or display the image
+      console.log(url);
+      
+      this.state.url = url;
+
+     //    // This can be downloaded directly:
+     //    var xhr = new XMLHttpRequest();
+     //    xhr.responseType = 'blob';
+     //    xhr.onload = function(event) {
+     //      var blob = xhr.response;
+     //    };
+     //    xhr.open('GET', url);
+     //    xhr.send();
+
+    });
+    
+    
+    this.updateScreen();
+
+    //console.log(this.state.url);
+    //console.log('viewed file ' + file.name);
+  }
+
   updateScreen() {
     this.getFiles(); 
     // console.log('screen update');
@@ -131,6 +166,9 @@ class MeetingFiles extends Component {
             <ScrollView>{this.listFiles()}</ScrollView>
           </View>
 
+          <Image 
+          style={{maxHeight: '30%', marginTop: 10}} 
+          source={this.state.url} />
         </View>
       )
   }
