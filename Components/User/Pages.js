@@ -21,17 +21,11 @@ class Pages extends Component {
 
   componentDidMount() {
     var state = this.props.route.params.state
-    if(state.committee && !state.executive) {
-      this.goToPage(state.committee)
-  }
     Object.keys(state).forEach(key => {
       this.setState({[key]: state[key]})
-    });
-      
-
-    
-
+    }); 
   }
+
   getCommittees() {
     if(this.state.committee){
       return(
@@ -56,6 +50,7 @@ class Pages extends Component {
   }
 
   render() {
+    // console.log("Navigation Page: " + this.state.committee)
     return (
       <View style={{ flex: 1, alignItems: 'center', marginTop:'20%'}}>
         {this.getCommittees()}

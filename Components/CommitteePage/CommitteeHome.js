@@ -52,6 +52,7 @@ class CommitteeHome extends Component {
       navigation.navigate('Members', {state: this.state})
   }
   render() {
+      // console.log("Committe Home: " + this.state.selectedCommittee)
       return (
         <View style={styles.container}>
 

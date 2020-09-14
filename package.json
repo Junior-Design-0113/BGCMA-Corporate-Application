@@ -12,6 +12,8 @@
     "@react-navigation/native": "^5.7.3",
     "@react-navigation/stack": "^5.9.0",
     "expo": "~38.0.8",
+    "expo-crypto": "~8.2.1",
+    "expo-document-picker": "~8.2.1",
     "expo-status-bar": "^1.0.2",
     "firebase": "^7.19.0",
     "native-base": "^2.13.14",
@@ -24,7 +26,6 @@
     "react-native-safe-area-context": "~3.0.7",
     "react-native-screens": "~2.9.0",
     "react-native-web": "~0.11.7",
-    "expo-crypto": "~8.2.1",
     "react-navigation": "^2.6.2"
   },
   "devDependencies": {
