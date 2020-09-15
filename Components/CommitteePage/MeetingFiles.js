@@ -3,6 +3,9 @@ import { ActivityIndicator, StyleSheet, Text, View, Alert, Image } from 'react-n
 import { Button, Row } from 'native-base'
 import * as DocumentPicker from 'expo-document-picker';
 import { ScrollView } from 'react-native-gesture-handler';
+import * as FileSystem from 'expo-file-system';
+import * as MediaLibrary from 'expo-media-library';
+import * as Permissions from 'expo-permissions';
 
 const fb = require("../../server/router");
 const s = require('../../Style/style')
@@ -92,8 +95,8 @@ class MeetingFiles extends Component {
     const filesView = this.state.files.map(file => (
       <View key={file.key}>
         <Text style={styles.listFiles}>{file.name}</Text>
-        <Button style={styles.viewButton} onPress={() => this.viewFile(file)}>
-          <Text>View</Text>
+        <Button style={styles.downloadButton} onPress={() => this.downloadFile(file)}>
+          <Text>Download</Text>
         </Button>
         <Button style={styles.deleteButton} onPress={() => this.deleteFile(file)}>
           <Text>Delete</Text>
@@ -118,35 +121,41 @@ class MeetingFiles extends Component {
     this.updateScreen();
   }
 
-  async viewFile(file) {
+  saveFile = async (fileUri: string) => {
+    //Need to get camera permissions first
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (status === "granted") {
+      //Puts the downloaded file into the correct local storage space
+      const asset = await MediaLibrary.createAssetAsync(fileUri)
+      //Creates a BGCMA folder in the phone's internal storage home folder. Need this for android to work
+      await MediaLibrary.createAlbumAsync("BGCMA", asset, false)
+      Alert.alert("File has been downloaded");
+    }
+  }
+
+  async downloadFile(file) {
     var storageRef = fb.firebaseConnection.storage().ref();
     var viewRef = storageRef.child(this.state.selectedCommittee + '/' + file.name);
-    var url = viewRef.getDownloadURL()
+    var url = viewRef.getDownloadURL().then((url) => {
+      //Gets the url for the file in firebase storage
+      //console.log(url);
 
-    //.writeToFile('/' : url);
-
-    .then((url) => {
-      //Need to use this url to save or display the image
-      console.log(url);
-      
-      this.state.url = url;
-
-     //    // This can be downloaded directly:
-     //    var xhr = new XMLHttpRequest();
-     //    xhr.responseType = 'blob';
-     //    xhr.onload = function(event) {
-     //      var blob = xhr.response;
-     //    };
-     //    xhr.open('GET', url);
-     //    xhr.send();
+      //Download the file from that url onto phone. Can specify file path here, will be 
+      //  placed in a BGMCA folder
+      FileSystem.downloadAsync(
+        url,
+        FileSystem.documentDirectory + file.name
+      )
+      .then(({ uri }) => {
+        //Call local method to save the downloaded file to a proper folder
+        this.saveFile(uri);
+        //console.log('Finished downloading ', uri);
+      })
+      .catch(error => {
+        console.error(error);
+      });
 
     });
-    
-    
-    this.updateScreen();
-
-    //console.log(this.state.url);
-    //console.log('viewed file ' + file.name);
   }
 
   updateScreen() {

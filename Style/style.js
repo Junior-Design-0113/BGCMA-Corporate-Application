@@ -109,9 +109,9 @@ module.exports.styles = StyleSheet.create({
         backgroundColor: 'red',
         top: -70,
       },
-      viewButton: {
+      downloadButton: {
         flexDirection: 'row',
-        left: 220,
+        left: 190,
         backgroundColor: 'green',
         top: -25,
       }
