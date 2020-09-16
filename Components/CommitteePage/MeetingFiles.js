@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import { ActivityIndicator, StyleSheet, Text, View, Alert, Image } from 'react-native';
-import { Button, Row } from 'native-base'
+import { TextInput, FlatList, ActivityIndicator, StyleSheet, Text, View, Alert, Image } from 'react-native';
+import { Container, Header, Item, Input, Icon, Button } from 'native-base'
 import * as DocumentPicker from 'expo-document-picker';
 import { ScrollView } from 'react-native-gesture-handler';
+import { SearchBar } from 'react-native-elements';
 
 const fb = require("../../server/router");
 const s = require('../../Style/style')
@@ -19,6 +20,7 @@ class MeetingFiles extends Component {
         selectedCommittee: null,
         files: [],
       }
+      this.arrayholder = [];
     }
   
   async componentDidMount() {
@@ -83,6 +85,7 @@ class MeetingFiles extends Component {
         })
       })
       //console.log(files)
+      this.arrayholder = files; 
       this.setState({files : files}, (() => this.listFiles()))
     })
   }
@@ -119,18 +122,61 @@ class MeetingFiles extends Component {
     // console.log('screen update');
   }
 
+  searchFiles(text) {
+    const newData = this.arrayholder.filter(function(item) {
+      const itemData = item.name ? item.name.toUpperCase() : ''.toUpperCase();
+      const textData = text.toUpperCase();
+      return itemData.indexOf(textData) > -1;
+    });
+    this.setState({
+      dataSource: newData,
+      text: text,
+    });
+  }
+
+  
+  ListViewItemSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 0.5,
+          width: '100%',
+          backgroundColor: 'gray',
+        }}
+      />
+    );
+  };
+
   render() {
     //console.log(this.state.selectedCommittee)
       return (
         <View style={styles.container}>
           <View style={styles.form}>
+          <SearchBar
+            style={styles.searchBarText}
+            onChangeText={text => this.searchFiles(text)}
+            value={this.state.text}
+            placeholder="Search Files"
+            round
+            lightTheme
+            searchIcon={{ size:30 }}
+          />
+          <FlatList
+            data={this.state.dataSource}
+            ItemSeparatorComponent={this.ListViewItemSeparator}
+            renderItem={({ item }) => (
+              <Text style={styles.searchText}>{item.name}</Text>
+            )}
+            style={{ marginTop: 5 }}
+            enableEmptySections={true}
+            keyExtractor={item => item.name}  
+          />
           {this.getTeam()}
             <View style={styles.pageButtonHolder}>
-              <Button  style={styles.pageButton} onPress={() => this.pickFile()}><Text style={styles.text}>+</Text></Button>
+              <Button style={styles.pageButton} onPress={() => this.pickFile()}><Text style={styles.text}>+</Text></Button>
             </View>
             <ScrollView>{this.listFiles()}</ScrollView>
           </View>
-
         </View>
       )
   }
