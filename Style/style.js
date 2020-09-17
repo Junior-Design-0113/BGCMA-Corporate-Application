@@ -108,5 +108,13 @@ module.exports.styles = StyleSheet.create({
         left: 270,
         backgroundColor: 'red',
         top: -25,
+      },
+      searchBarText: {
+        fontSize: 20,
+      },
+      searchText: {
+        fontSize: 20,
+        marginTop: 5,
+        marginBottom: 5,
       }
     });
