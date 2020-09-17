@@ -57,7 +57,7 @@ module.exports.styles = StyleSheet.create({
         flexDirection: 'row', 
         padding: 20,
         width: '80%',
-        height: '180%',
+        height: '110%',
         backgroundColor: '#0081c6',
         borderRadius: 35,
         alignItems: 'center',
@@ -105,16 +105,31 @@ module.exports.styles = StyleSheet.create({
       },
       deleteButton: {
         flexDirection: 'row',
-        left: 270,
+        left: 290,
+        width: "16%",
         backgroundColor: 'red',
         top: -25,
+        padding: 7,
+        alignItems: 'center',
+        borderRadius: 18,
       },
       searchBarText: {
         fontSize: 20,
       },
-      searchText: {
-        fontSize: 20,
-        marginTop: 5,
-        marginBottom: 5,
+      upButtonText: {
+        color: 'white',
+        fontWeight: '800',
+        fontSize: 35,
+        marginRight: 'auto',
+        marginLeft: 'auto',
+        textAlign: 'center',
+      },
+      delButtonText: {
+        color: 'white',
+        fontWeight: '600',
+        fontSize: 25,
+        marginRight: 'auto',
+        marginLeft: 'auto',
+        textAlign: 'center',
       }
     });
