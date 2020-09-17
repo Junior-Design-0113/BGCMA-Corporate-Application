@@ -164,7 +164,7 @@ class MeetingFiles extends Component {
           />
           {this.getTeam()}
             <View style={styles.pageButtonHolder}>
-              <Button style={styles.pageButton} onPress={() => this.pickFile()}><Text style={styles.upButtonText}>+</Text></Button>
+              <Button style={styles.upButton} onPress={() => this.pickFile()}><Text style={styles.upButtonText}>+</Text></Button>
             </View>
             <ScrollView>{this.listFiles()}</ScrollView>
           </View>
