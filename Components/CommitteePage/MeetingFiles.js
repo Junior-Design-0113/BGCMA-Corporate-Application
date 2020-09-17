@@ -34,7 +34,7 @@ class MeetingFiles extends Component {
   getTeam() {
     if(this.state.selectedCommittee) {
       return(
-        <Text>{this.state.selectedCommittee} Meeting Files</Text>
+        <Text style={styles.committeeTitle}>{this.state.selectedCommittee} Meeting Files</Text>
       )
     }
   }
@@ -95,7 +95,7 @@ class MeetingFiles extends Component {
       <View key={file.key}>
         <Text style={styles.listFiles}>{file.name}</Text>
         <Button style={styles.deleteButton} onPress={() => this.deleteFile(file)}>
-          <Text>Delete</Text>
+          <Text style={styles.delButtonText}>X</Text>
         </Button>
       </View>
     ))
@@ -131,6 +131,7 @@ class MeetingFiles extends Component {
     this.setState({
       dataSource: newData,
       text: text,
+      files: newData,
     });
   }
 
@@ -161,19 +162,9 @@ class MeetingFiles extends Component {
             lightTheme
             searchIcon={{ size:30 }}
           />
-          <FlatList
-            data={this.state.dataSource}
-            ItemSeparatorComponent={this.ListViewItemSeparator}
-            renderItem={({ item }) => (
-              <Text style={styles.searchText}>{item.name}</Text>
-            )}
-            style={{ marginTop: 5 }}
-            enableEmptySections={true}
-            keyExtractor={item => item.name}  
-          />
           {this.getTeam()}
             <View style={styles.pageButtonHolder}>
-              <Button style={styles.pageButton} onPress={() => this.pickFile()}><Text style={styles.text}>+</Text></Button>
+              <Button style={styles.pageButton} onPress={() => this.pickFile()}><Text style={styles.upButtonText}>+</Text></Button>
             </View>
             <ScrollView>{this.listFiles()}</ScrollView>
           </View>
