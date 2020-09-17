@@ -57,7 +57,7 @@ module.exports.styles = StyleSheet.create({
         flexDirection: 'row', 
         padding: 20,
         width: '80%',
-        height: '110%',
+        height: '180%',
         backgroundColor: '#0081c6',
         borderRadius: 35,
         alignItems: 'center',
@@ -118,8 +118,8 @@ module.exports.styles = StyleSheet.create({
       },
       upButtonText: {
         color: 'white',
-        fontWeight: '800',
-        fontSize: 35,
+        fontWeight: '700',
+        fontSize: 45,
         marginRight: 'auto',
         marginLeft: 'auto',
         textAlign: 'center',
@@ -131,5 +131,16 @@ module.exports.styles = StyleSheet.create({
         marginRight: 'auto',
         marginLeft: 'auto',
         textAlign: 'center',
-      }
+      },
+      upButton: {
+        flexDirection: 'row', 
+        padding: 20,
+        width: '80%',
+        height: '100%',
+        backgroundColor: '#84BD00',
+        borderRadius: 35,
+        alignItems: 'center',
+        marginRight: 10,
+        marginLeft: 10,
+      },
     });
