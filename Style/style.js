@@ -31,7 +31,8 @@ module.exports.styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
-committeeTitle: {
+      },        
+      committeeTitle: {
         marginLeft: 'auto',
         marginRight: 'auto',
         alignItems: 'center',
@@ -107,21 +108,21 @@ committeeTitle: {
         width: "16%",
         backgroundColor: 'red',
         top: -70,
+        borderRadius: 20,
       },
       downloadButton: {
         flexDirection: 'row',
         left: 190,
-        backgroundColor: 'green',
+        backgroundColor: '#84BD00',
         top: -25,
         padding: 7,
         alignItems: 'center',
-        borderRadius: 18,
+        borderRadius: 20,
       },
       searchBarText: {
         fontSize: 20,
         marginTop:0
       },
-
       upButtonText: {
         color: 'white',
         fontWeight: '700',
@@ -144,7 +145,7 @@ committeeTitle: {
         width: '80%',
         height: '100%',
         backgroundColor: '#84BD00',
-
+      },      
       searchText: {
         fontSize: 20,
         marginTop: 5,
@@ -176,7 +177,7 @@ committeeTitle: {
         backgroundColor: "#2196F3",
         borderRadius: 20,
         padding: 10,
-        elevation: 2
+        elevation: 2, 
       },
       modalInput: {
         width: '80%',
