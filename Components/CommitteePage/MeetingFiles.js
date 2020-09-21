@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import { ActivityIndicator, StyleSheet, Text, View, Alert, Image } from 'react-native';
-import { Button, Row } from 'native-base'
+import { TextInput, FlatList, TouchableHighlight, Text, View, Alert, Image, Modal } from 'react-native';
+import { Container, Header, Item, Input, Icon, Button } from 'native-base'
 import * as DocumentPicker from 'expo-document-picker';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import * as Permissions from 'expo-permissions';
+import { SearchBar } from 'react-native-elements';
 
 const fb = require("../../server/router");
 const s = require('../../Style/style')
@@ -22,7 +23,12 @@ class MeetingFiles extends Component {
         selectedCommittee: null,
         files: [],
         url: null,
+        modalVisible: false,
+        fileName: '',
+        res: null,
+        fileSelected: false,
       }
+      this.arrayholder = [];
     }
   
   async componentDidMount() {
@@ -33,20 +39,22 @@ class MeetingFiles extends Component {
     this.getFiles()
   }
   
-  getTeam() {
-    if(this.state.selectedCommittee) {
-      return(
-        <Text>{this.state.selectedCommittee} Meeting Files</Text>
-      )
-    }
-  }
+  // getTeam() {
+  //   if(this.state.selectedCommittee) {
+  //     return(
+  //       <Text>{this.state.selectedCommittee} Meeting Files</Text>
+  //     )
+  //   }
+  // }
 
   pickFile() {
     DocumentPicker.getDocumentAsync().then((res) => {
       if (res.type === 'success') {
-        Alert.alert("Confirm File Upload?", res.name,
-        [{text: "Cancel", onPress: () => console.log("Cancel")},
-        {text: "Upload", onPress: () => this.uploadFile(res)}]) 
+        this.setState({res})
+        this.setState({fileSelected: true})
+        // Alert.alert("Confirm File Upload?", res.name,
+        // [{text: "Cancel", onPress: () => console.log("Cancel")},
+        // {text: "Upload", onPress: () => this.uploadFile(res)}]) 
         // console.log(res.name)
       } else {
         Alert.alert('No file was selected')
@@ -58,16 +66,24 @@ class MeetingFiles extends Component {
     var storageRef = fb.firebaseConnection.storage().ref()
     
     //If greater than 1MB (size is in bytes), cancel
-    if (res.size > 1000000) {
-      Alert.alert("File is too large to upload")
+    if(res == null) {
+      Alert.alert("Please Select A File")
       return
     }
+    if (res.size > 1000000) {
+      Alert.alert("File Is Too Large To Upload")
+      return
+    }
+    if (this.state.fileName == '') {
+      Alert.alert("Please Input A File Name")
+      return
+    }
+    var fileName = this.state.fileName.replace(/\s/g , "-");
     const response = await fetch(res.uri);
     const blob = await response.blob();
-    var ref = storageRef.child(this.state.selectedCommittee + "/" + res.name);
-    // console.log(this.state.selectedCommittee + "/" + res.name)
+    var ref = storageRef.child(this.state.selectedCommittee + "/" + fileName);
     
-    await ref.put(blob).then(() => {Alert.alert("File has been uploaded", res.name)});
+    await ref.put(blob).then(() => {Alert.alert("File has been uploaded", fileName)});
     
     this.updateScreen();
   }
@@ -87,6 +103,7 @@ class MeetingFiles extends Component {
         })
       })
       //console.log(files)
+      this.arrayholder = files; 
       this.setState({files : files}, (() => this.listFiles()))
     })
   }
@@ -163,14 +180,107 @@ class MeetingFiles extends Component {
     // console.log('screen update');
   }
 
+  searchFiles(text) {
+    const newData = this.arrayholder.filter(function(item) {
+      const itemData = item.name ? item.name.toUpperCase() : ''.toUpperCase();
+      const textData = text.toUpperCase();
+      return itemData.indexOf(textData) > -1;
+    });
+    this.setState({
+      dataSource: newData,
+      text: text,
+    });
+  }
+
+  
+  ListViewItemSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 0.5,
+          width: '100%',
+          backgroundColor: 'gray',
+        }}
+      />
+    );
+  };
+
+  setModalVisible(val) {
+    this.setState({modalVisible: val});
+  }
+
   render() {
-    //console.log(this.state.selectedCommittee)
+    const {modalVisible, res} = this.state
       return (
         <View style={styles.container}>
-          <View style={styles.form}>
-          {this.getTeam()}
-            <View style={styles.pageButtonHolder}>
-              <Button  style={styles.pageButton} onPress={() => this.pickFile()}><Text style={styles.text}>+</Text></Button>
+          <View style={{...styles.form, width: '100%', marginTop: 0}}>
+          <SearchBar
+            style={styles.searchBarText}
+            onChangeText={text => this.searchFiles(text)}
+            value={this.state.text}
+            placeholder="Search Files"
+            round
+            lightTheme
+            searchIcon={{ size:30 }}
+          />
+          <FlatList
+            data={this.state.dataSource}
+            ItemSeparatorComponent={this.ListViewItemSeparator}
+            renderItem={({ item }) => (
+              <Text style={styles.searchText}>{item.name}</Text>
+            )}
+            style={{ marginTop: 0 }}
+            enableEmptySections={true}
+            keyExtractor={item => item.name}  
+          />
+          {/* {this.getTeam()} */}
+            <View style={{...styles.pageButtonHolder}}>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  Alert.alert("Modal has been closed.");
+                }}
+              >
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <TextInput style = {styles.modalInput}
+                      autoCorrect={false}
+                      onChangeText={fileName => this.setState({fileName})}
+                      placeholder={'File Name'}
+                      value={this.state.fileName}
+                    />  
+                    <TouchableHighlight
+                      style={{ ...styles.openButton, backgroundColor: this.state.fileSelected ? '#2196F3': "#a1a1a1", marginBottom: 10 }}
+                      onPress={() => {
+                        this.pickFile();
+                      }}
+                    >
+                      <Text style={{...styles.text, color: this.state.fileSelected ? 'white': "#4a4a4a"}}>
+                        {this.state.fileSelected ? 'File Selected': 'Select a File'}
+                      </Text>
+                    </TouchableHighlight>
+                    <View style={styles.buttonHolder}>
+                      <Button  style={{...styles.uploadCancelButton, backgroundColor: "green"}} onPress={() => {this.uploadFile(res)}}>
+                        <Text style={styles.text}>Upload</Text>
+                      </Button>
+                      <Button  style={{...styles.uploadCancelButton, backgroundColor: "red"}} onPress={() => {this.setModalVisible(!modalVisible)}}>
+                        <Text style={styles.text}>Cancel</Text>
+                      </Button>
+                    </View>
+                  </View>
+                </View>
+              </Modal>
+              <TouchableHighlight
+                style={styles.openButton}
+                onPress={() => {
+                  this.setModalVisible(true);
+                }}
+              >
+                <Text style={styles.text}>Upload A File</Text>
+              </TouchableHighlight>
+              {/* <Button style={styles.pageButton} onPress={() => this.pickFile()}><Text style={styles.text}>Upload a File</Text></Button> */}
             </View>
             <ScrollView>{this.listFiles()}</ScrollView>
           </View>
