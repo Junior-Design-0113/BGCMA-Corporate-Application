@@ -3,6 +3,9 @@ import { TextInput, FlatList, TouchableHighlight, Text, View, Alert, Image, Moda
 import { Container, Header, Item, Input, Icon, Button } from 'native-base'
 import * as DocumentPicker from 'expo-document-picker';
 import { ScrollView } from 'react-native-gesture-handler';
+import * as FileSystem from 'expo-file-system';
+import * as MediaLibrary from 'expo-media-library';
+import * as Permissions from 'expo-permissions';
 import { SearchBar } from 'react-native-elements';
 
 const fb = require("../../server/router");
@@ -19,6 +22,7 @@ class MeetingFiles extends Component {
         executive: false,
         selectedCommittee: null,
         files: [],
+        url: null,
         modalVisible: false,
         fileName: '',
         res: null,
@@ -108,6 +112,9 @@ class MeetingFiles extends Component {
     const filesView = this.state.files.map(file => (
       <View key={file.key}>
         <Text style={styles.listFiles}>{file.name}</Text>
+        <Button style={styles.downloadButton} onPress={() => this.downloadFile(file)}>
+          <Text>Download</Text>
+        </Button>
         <Button style={styles.deleteButton} onPress={() => this.deleteFile(file)}>
           <Text>Delete</Text>
         </Button>
@@ -129,6 +136,43 @@ class MeetingFiles extends Component {
       Alert.alert(file.name + " has been deleted.");
 
     this.updateScreen();
+  }
+
+  saveFile = async (fileUri: string) => {
+    //Need to get camera permissions first
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (status === "granted") {
+      //Puts the downloaded file into the correct local storage space
+      const asset = await MediaLibrary.createAssetAsync(fileUri)
+      //Creates a BGCMA folder in the phone's internal storage home folder. Need this for android to work
+      await MediaLibrary.createAlbumAsync("BGCMA", asset, false)
+      Alert.alert("File has been downloaded");
+    }
+  }
+
+  async downloadFile(file) {
+    var storageRef = fb.firebaseConnection.storage().ref();
+    var viewRef = storageRef.child(this.state.selectedCommittee + '/' + file.name);
+    var url = viewRef.getDownloadURL().then((url) => {
+      //Gets the url for the file in firebase storage
+      //console.log(url);
+
+      //Download the file from that url onto phone. Can specify file path here, will be 
+      //  placed in a BGMCA folder
+      FileSystem.downloadAsync(
+        url,
+        FileSystem.documentDirectory + file.name
+      )
+      .then(({ uri }) => {
+        //Call local method to save the downloaded file to a proper folder
+        this.saveFile(uri);
+        //console.log('Finished downloading ', uri);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+    });
   }
 
   updateScreen() {
@@ -240,6 +284,10 @@ class MeetingFiles extends Component {
             </View>
             <ScrollView>{this.listFiles()}</ScrollView>
           </View>
+
+          <Image 
+          style={{maxHeight: '30%', marginTop: 10}} 
+          source={this.state.url} />
         </View>
       )
   }

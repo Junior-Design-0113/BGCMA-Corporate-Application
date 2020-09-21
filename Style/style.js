@@ -107,6 +107,12 @@ module.exports.styles = StyleSheet.create({
         flexDirection: 'row',
         left: 270,
         backgroundColor: 'red',
+        top: -70,
+      },
+      downloadButton: {
+        flexDirection: 'row',
+        left: 190,
+        backgroundColor: 'green',
         top: -25,
       },
       searchBarText: {
