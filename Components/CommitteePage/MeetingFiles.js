@@ -39,13 +39,13 @@ class MeetingFiles extends Component {
     this.getFiles()
   }
   
-  // getTeam() {
-  //   if(this.state.selectedCommittee) {
-  //     return(
-  //       <Text>{this.state.selectedCommittee} Meeting Files</Text>
-  //     )
-  //   }
-  // }
+  getTeam() {
+    if(this.state.selectedCommittee) {
+      return(
+        <Text style={styles.committeeTitle}>{this.state.selectedCommittee} Meeting Files</Text>
+      )
+    }
+  }
 
   pickFile() {
     DocumentPicker.getDocumentAsync().then((res) => {
@@ -116,7 +116,7 @@ class MeetingFiles extends Component {
           <Text>Download</Text>
         </Button>
         <Button style={styles.deleteButton} onPress={() => this.deleteFile(file)}>
-          <Text>Delete</Text>
+          <Text style={styles.delButtonText}>X</Text>
         </Button>
       </View>
     ))
@@ -189,6 +189,7 @@ class MeetingFiles extends Component {
     this.setState({
       dataSource: newData,
       text: text,
+      files: newData,
     });
   }
 
@@ -223,16 +224,7 @@ class MeetingFiles extends Component {
             lightTheme
             searchIcon={{ size:30 }}
           />
-          <FlatList
-            data={this.state.dataSource}
-            ItemSeparatorComponent={this.ListViewItemSeparator}
-            renderItem={({ item }) => (
-              <Text style={styles.searchText}>{item.name}</Text>
-            )}
-            style={{ marginTop: 0 }}
-            enableEmptySections={true}
-            keyExtractor={item => item.name}  
-          />
+
           {/* {this.getTeam()} */}
             <View style={{...styles.pageButtonHolder}}>
               <Modal
@@ -281,6 +273,7 @@ class MeetingFiles extends Component {
                 <Text style={styles.text}>Upload A File</Text>
               </TouchableHighlight>
               {/* <Button style={styles.pageButton} onPress={() => this.pickFile()}><Text style={styles.text}>Upload a File</Text></Button> */}
+
             </View>
             <ScrollView>{this.listFiles()}</ScrollView>
           </View>

@@ -31,9 +31,7 @@ module.exports.styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
-        fontSize: 35,
-      },
-      committeeTitle: {
+committeeTitle: {
         marginLeft: 'auto',
         marginRight: 'auto',
         alignItems: 'center',
@@ -105,7 +103,8 @@ module.exports.styles = StyleSheet.create({
       },
       deleteButton: {
         flexDirection: 'row',
-        left: 270,
+        left: 290,
+        width: "16%",
         backgroundColor: 'red',
         top: -70,
       },
@@ -114,11 +113,38 @@ module.exports.styles = StyleSheet.create({
         left: 190,
         backgroundColor: 'green',
         top: -25,
+        padding: 7,
+        alignItems: 'center',
+        borderRadius: 18,
       },
       searchBarText: {
         fontSize: 20,
         marginTop:0
       },
+
+      upButtonText: {
+        color: 'white',
+        fontWeight: '700',
+        fontSize: 45,
+        marginRight: 'auto',
+        marginLeft: 'auto',
+        textAlign: 'center',
+      },
+      delButtonText: {
+        color: 'white',
+        fontWeight: '600',
+        fontSize: 25,
+        marginRight: 'auto',
+        marginLeft: 'auto',
+        textAlign: 'center',
+      },
+      upButton: {
+        flexDirection: 'row', 
+        padding: 20,
+        width: '80%',
+        height: '100%',
+        backgroundColor: '#84BD00',
+
       searchText: {
         fontSize: 20,
         marginTop: 5,
@@ -170,6 +196,5 @@ module.exports.styles = StyleSheet.create({
         alignItems: 'center',
         marginRight: 10,
         marginLeft: 10,
-        borderRadius: 20, 
       }
     });
