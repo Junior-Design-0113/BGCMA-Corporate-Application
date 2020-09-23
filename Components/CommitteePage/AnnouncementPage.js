@@ -24,14 +24,14 @@ class AnnouncementPage extends Component {
             committee: null,
             admin: false,
             executive: false,
-            selectedCommittee: "Board Development",
+            selectedCommittee: null,
             title: null,
             message: null,
             date: new Date()
         }
     }
     componentDidMount() {
-        //var state = this.props.route.params.state
+        var state = this.props.route.params.state
         Object.keys(state).forEach(key => {
           this.setState({[key]: state[key]})
         });
@@ -54,7 +54,7 @@ class AnnouncementPage extends Component {
 		const self = this
 
         self.addAnnouncement(self)
-        Alert.alert("Announcement added to " + this.state.selectedCommittee)
+        Alert.alert("Announcement added to " + this.state.committee)
         var navigation = this.props.navigation;
         navigation.navigate('Announcements')
 		//Checks if present in Users
@@ -77,7 +77,7 @@ class AnnouncementPage extends Component {
 	}
     async addAnnouncement(self) {
         const db = firebase.firebaseConnection.firestore();
-        await db.collection("Announcements").doc(self.state.selectedCommittee).collection(self.state.selectedCommittee + " A").doc(self.state.title).set({
+        await db.collection("Announcements").doc(self.state.committee).collection(self.state.committee + " A").doc(self.state.title).set({
             //message = this.state.message,
             title: self.state.title,
             date: "" + new Date(),
@@ -101,14 +101,15 @@ class AnnouncementPage extends Component {
           <View style={styles.container}>
             <View style={styles.form}>
                 <Text style={styles.text}>Add New Announcement</Text>
-                <TextInput style = {styles.input}
+                {<Button style = {styles.button} onPress={() => this.onPressAdd()} /*onpress="{this._addItem.bind(this)}"*/><Text style={styles.text2}>Add Announcement</Text></Button> }
+                {/* <TextInput style = {styles.input}
 	                autoCorrect={false}
 	                onFocus={group => this.showActionSheet()}
 	                onKeyPress={group => this.showActionSheet()}
 	                placeholder={'Pick a committee to post to'}
 	                value={"Select a committee to post to"}
-	            />
-                <ActionSheet
+	            /> */}
+                {/* <ActionSheet
 					ref={o => (this.ActionSheet = o)}
 					//Title of the Bottom Sheet
 					title={'Pick a board to join'}
@@ -120,7 +121,7 @@ class AnnouncementPage extends Component {
 						//Clicking on the option will give you the index of the option clicked
 						this.updateGroup(committeeList[index]);
 					}}
-				/>
+				/> */}
                 <TextInput style = {styles.input1}
 	                autoCorrect={false}
 	                //onFocus={group => this.showActionSheet()}
@@ -139,7 +140,6 @@ class AnnouncementPage extends Component {
 	                placeholder={'Type your announcement here'}
 	                value={this.state.message}
 	            />
-                {<Button style = {styles.button} onPress={() => this.onPressAdd()} /*onpress="{this._addItem.bind(this)}"*/><Text style={styles.text2}>Add Announcement</Text></Button> }
             </View>
           </View>
         )

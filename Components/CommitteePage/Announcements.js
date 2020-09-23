@@ -60,16 +60,17 @@ class Announcements extends Component {
         this.setState({ selectedCommittee:group })
         this.firestoreRef = firebase.firebaseConnection.firestore().collection("Announcements").doc(this.state.selectedCommittee).collection(this.state.selectedCommittee + " A")
         this.firestoreRef.onSnapshot(this.getCollection)
-        console.log(this.state.annArr)
+        //console.log(this.state.annArr)
         //this.setState({ state: this.state });
   }
 
   componentDidMount() {
     var state = this.props.route.params.state
-    this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
     Object.keys(state).forEach(key => {
       this.setState({[key]: state[key]})
     });
+    //this.setState({selectedCommittee: this.state.committee});
+    this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
   }
 
   componentWillUnmount(){
@@ -108,7 +109,7 @@ class Announcements extends Component {
 
   addAnnouncement() {
     var navigation = this.props.navigation;
-    navigation.navigate('AnnouncementPage')
+    navigation.navigate('AnnouncementPage', {state: this.state})
   }
 
   setModalVisible = (visible, currAnn, title, mess) => {
@@ -270,8 +271,8 @@ const styles2 = StyleSheet.create({
     margin: 20,
     backgroundColor: "white",
     borderRadius: 20,
-    width: 500,
-    height: 700,
+    width: 350,
+    height: 600,
     padding: 35,
     alignItems: "center",
     shadowColor: "#000",
