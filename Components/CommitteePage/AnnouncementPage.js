@@ -13,7 +13,7 @@ const committeeList = [
     'Investment',
     'Resource Development & Marketing',
     'Safety Asset Management',
-    ''
+    //''
   ];
 
 class AnnouncementPage extends Component {
@@ -106,7 +106,7 @@ class AnnouncementPage extends Component {
 	                onFocus={group => this.showActionSheet()}
 	                onKeyPress={group => this.showActionSheet()}
 	                placeholder={'Pick a committee to post to'}
-	                value={this.state.selectedCommittee}
+	                value={"Select a committee to post to"}
 	            />
                 <ActionSheet
 					ref={o => (this.ActionSheet = o)}
