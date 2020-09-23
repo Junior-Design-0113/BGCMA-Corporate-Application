@@ -1,6 +1,6 @@
 
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, Alert, Image } from 'react-native';
+import { StyleSheet, Text, View, Alert, Image, Dimensions } from 'react-native';
 import {Button} from 'native-base';
 import {TextInput} from 'react-native';
 import * as Crypto from 'expo-crypto';
@@ -89,7 +89,7 @@ class Login extends Component {
     return ( 
       <View style={styles.container}>
         <Image 
-          style={{maxHeight: '30%', marginTop: 10}} 
+          style={{maxHeight: Dimensions.get('window').height * .28, marginTop: 10}} 
           source={require('./../../assets/BGCMA.png')} 
           resizeMode = 'contain'/>
 

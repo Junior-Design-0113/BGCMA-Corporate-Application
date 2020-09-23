@@ -97,27 +97,32 @@ module.exports.styles = StyleSheet.create({
         marginLeft: 'auto'
       },
       listFiles: {
+        flex: 1, 
         fontSize: 18,
-        marginLeft: 5,
+        marginLeft: 10,
+        // flexDirection: 'row',
+        paddingTop: 10,
+      },
+      uploadButton: {
         flexDirection: 'row',
-        paddingTop: 20,
+        marginVertical: '2%',
+        marginLeft: '2%',
+        width: "15%",
+        backgroundColor: '#0081c6',
+        alignItems: 'center',
+        borderRadius: 18,
       },
       deleteButton: {
-        flexDirection: 'row',
-        left: 290,
-        width: "16%",
-        backgroundColor: 'red',
-        top: -70,
+        flexBasis: 50,
+        backgroundColor: '#FF8200',
         borderRadius: 20,
+        marginRight: 10,
       },
       downloadButton: {
-        flexDirection: 'row',
-        left: 190,
         backgroundColor: '#84BD00',
-        top: -25,
-        padding: 7,
-        alignItems: 'center',
+        flexBasis: 100,
         borderRadius: 20,
+        marginHorizontal: 10,
       },
       searchBarText: {
         fontSize: 20,
@@ -134,9 +139,19 @@ module.exports.styles = StyleSheet.create({
       delButtonText: {
         color: 'white',
         fontWeight: '600',
-        fontSize: 25,
+        fontSize: 18,
         marginRight: 'auto',
         marginLeft: 'auto',
+        margin: 'auto',
+        textAlign: 'center',
+      },
+      downButtonText: {
+        color: 'white',
+        fontWeight: '600',
+        fontSize: 20,
+        marginRight: 'auto',
+        marginLeft: 'auto',
+        margin: 'auto',
         textAlign: 'center',
       },
       upButton: {
@@ -174,7 +189,7 @@ module.exports.styles = StyleSheet.create({
         elevation: 5
       },
       openButton: {
-        backgroundColor: "#2196F3",
+        backgroundColor: "#0081c6",
         borderRadius: 20,
         padding: 10,
         elevation: 2, 
@@ -189,13 +204,12 @@ module.exports.styles = StyleSheet.create({
       },
       uploadCancelButton: {
         flexDirection: 'row', 
-        padding: 10,
+        // padding: 10,
         width: '40%',
-        height: '180%',
+        // height: '180%',
         backgroundColor: '#0081c6',
-        borderRadius: 35,
+        borderRadius: 20,
         alignItems: 'center',
-        marginRight: 10,
-        marginLeft: 10,
+        marginHorizontal: 10,
       }
     });
