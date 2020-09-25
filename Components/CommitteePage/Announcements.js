@@ -9,18 +9,16 @@ const s = require('../../Style/style')
 const styles = s.styles
 //const db = firebase.firebaseConnection.firestore();
 
-//Todos();
-
-const committeeList = [
-  'Budget, Finance, & Audit',
-  'Board Development',
-  'Human Resources',
-  'Impact',
-  'Investment',
-  'Resource Development & Marketing',
-  'Safety Asset Management',
-  //''
-];
+// const committeeList = [
+//   'Budget, Finance, & Audit',
+//   'Board Development',
+//   'Human Resources',
+//   'Impact',
+//   'Investment',
+//   'Resource Development & Marketing',
+//   'Safety Asset Management',
+//   //''
+// ];
 
 class Announcements extends Component {
   constructor(props) {
@@ -46,11 +44,13 @@ class Announcements extends Component {
         committee: null,
         admin: false,
         executive: false,
-        selectedCommittee: "Board Development",
+        selectedCommittee: null,
         isLoading: true,
-        annArr: []
+        annArr: [],
+        firestoreRef: null
       }
-      this.firestoreRef = firebase.firebaseConnection.firestore().collection("Announcements").doc(this.state.selectedCommittee).collection(this.state.selectedCommittee + " A")
+      //this.firestoreRef = null;
+      //this.firestoreRef = firebase.firebaseConnection.firestore().collection("Announcements").doc(this.state.selectedCommittee).collection(this.state.selectedCommittee + " A")
     }
 
   updateGroup = (group) => {
@@ -58,8 +58,8 @@ class Announcements extends Component {
         this.ActionSheet.hide();
       } else {*/
         this.setState({ selectedCommittee:group })
-        this.firestoreRef = firebase.firebaseConnection.firestore().collection("Announcements").doc(this.state.selectedCommittee).collection(this.state.selectedCommittee + " A")
-        this.firestoreRef.onSnapshot(this.getCollection)
+        this.state.firestoreRef = firebase.firebaseConnection.firestore().collection("Announcements").doc(this.state.selectedCommittee).collection(this.state.selectedCommittee + " A")
+        this.state.firestoreRef.onSnapshot(this.getCollection)
         //console.log(this.state.annArr)
         //this.setState({ state: this.state });
   }
@@ -69,10 +69,20 @@ class Announcements extends Component {
     Object.keys(state).forEach(key => {
       this.setState({[key]: state[key]})
     });
+    //this.state.firestoreRef = firebase.firebaseConnection.firestore().collection("Announcements").doc(this.state.selectedCommittee).collection(this.state.selectedCommittee + " A")
     //this.setState({selectedCommittee: this.state.committee});
-    this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
+    /*if (this.state.selectedCommittee) {
+      this.unsubscribe = firebase.firebaseConnection.firestore().collection("Announcements").doc(this.state.selectedCommittee).collection(this.state.selectedCommittee + " A").onSnapshot(this.getCollection);
+    }*/
+    this.setState({check:"check"},function() {this.load()})
   }
 
+  load() {
+    console.log(this.state)
+    if (this.state.selectedCommittee) {
+      this.unsubscribe = firebase.firebaseConnection.firestore().collection("Announcements").doc(this.state.selectedCommittee).collection(this.state.selectedCommittee + " A").onSnapshot(this.getCollection);
+    }
+  }
   componentWillUnmount(){
     this.unsubscribe();
   }
@@ -91,7 +101,7 @@ class Announcements extends Component {
     });
     this.setState({
       annArr,
-      //isLoading: false,
+      isLoading: false,
    });
   }
 
@@ -153,14 +163,14 @@ class Announcements extends Component {
 
   render() {
     const { modalVisible } = this.state;
-    // if(this.state.isLoading){
-    //   return(
-    //     <View style={styles.preloader}>
-    //       <ActivityIndicator size="large" color="#9E9E9E"/>
-    //       <Button onPress = {() => this.activate()}><Text style={styles.text}>Load</Text></Button>
-    //     </View>
-    //   )
-    // } else {
+    if(this.state.isLoading){
+      return(
+        <View style={styles.preloader}>
+          <ActivityIndicator size="large" color="#9E9E9E"/>
+          {/* <Button onPress = {() => this.activate()}><Text style={styles.text}>Load</Text></Button> */}
+        </View>
+      )
+    } else {
       return (
         <View style={styles.container}>
           <View style={styles.form}>
@@ -189,7 +199,7 @@ class Announcements extends Component {
                 </View>
               </View>
             </Modal>
-            <TextInput style = {styles2.input}
+            {/* <TextInput style = {styles2.input}
 	                autoCorrect={false}
 	                onFocus={group => this.showActionSheet()}
 	                onKeyPress={group => this.showActionSheet()}
@@ -208,7 +218,7 @@ class Announcements extends Component {
 						//Clicking on the option will give you the index of the option clicked
 						this.updateGroup(committeeList[index]);
 					}}
-				/>
+				/> */}
           {<Button style = {styles2.button} onPress={() => this.addAnnouncement()} /*onpress="{this._addItem.bind(this)}"*/><Text style={styles.text}>Add Announcement</Text></Button> }
           { <ScrollView>
           {
@@ -222,7 +232,7 @@ class Announcements extends Component {
                   subtitle={item.date}
                   message = {item.message}
                   onPress={() => {
-                    this.setModalVisible(true, this.firestoreRef.doc(item.title), item.title, item.message);
+                    this.setModalVisible(true, this.state.firestoreRef.doc(item.title), item.title, item.message);
                   }
                 }/>
               );
@@ -233,7 +243,8 @@ class Announcements extends Component {
         </View>
       )
   }
-//}
+}
+
 }
 
 const styles2 = StyleSheet.create({
