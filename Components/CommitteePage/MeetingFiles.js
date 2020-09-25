@@ -78,12 +78,14 @@ class MeetingFiles extends Component {
       Alert.alert("Please Input A File Name")
       return
     }
+    const dotIndex = (res.name).lastIndexOf(".")
+    const fileType = res.name.slice(dotIndex)
     var fileName = this.state.fileName.replace(/\s/g , "-");
     const response = await fetch(res.uri);
     const blob = await response.blob();
-    var ref = storageRef.child(this.state.selectedCommittee + "/" + fileName);
+    var ref = storageRef.child(this.state.selectedCommittee + "/" + fileName+fileType);
     
-    await ref.put(blob).then(() => {Alert.alert("File has been uploaded", fileName)});
+    await ref.put(blob).then(() => {Alert.alert("File has been uploaded", fileName+fileType)});
     
     this.updateScreen();
   }
