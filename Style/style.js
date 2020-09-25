@@ -31,8 +31,7 @@ module.exports.styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
-        fontSize: 35,
-      },
+      },        
       committeeTitle: {
         marginLeft: 'auto',
         marginRight: 'auto',
@@ -98,15 +97,119 @@ module.exports.styles = StyleSheet.create({
         marginLeft: 'auto'
       },
       listFiles: {
+        flex: 1, 
         fontSize: 18,
-        marginLeft: 5,
+        marginLeft: 10,
+        // flexDirection: 'row',
+        paddingTop: 10,
+      },
+      uploadButton: {
         flexDirection: 'row',
-        paddingTop: 20,
+        marginVertical: '2%',
+        marginLeft: '2%',
+        width: "15%",
+        backgroundColor: '#0081c6',
+        alignItems: 'center',
+        borderRadius: 18,
       },
       deleteButton: {
-        flexDirection: 'row',
-        left: 270,
-        backgroundColor: 'red',
-        top: -25,
+        flexBasis: 50,
+        backgroundColor: '#FF8200',
+        borderRadius: 20,
+        marginRight: 10,
+      },
+      downloadButton: {
+        backgroundColor: '#84BD00',
+        flexBasis: 100,
+        borderRadius: 20,
+        marginHorizontal: 10,
+      },
+      searchBarText: {
+        fontSize: 20,
+        marginTop:0
+      },
+      upButtonText: {
+        color: 'white',
+        fontWeight: '700',
+        fontSize: 45,
+        marginRight: 'auto',
+        marginLeft: 'auto',
+        textAlign: 'center',
+      },
+      delButtonText: {
+        color: 'white',
+        fontWeight: '600',
+        fontSize: 18,
+        marginRight: 'auto',
+        marginLeft: 'auto',
+        margin: 'auto',
+        textAlign: 'center',
+      },
+      downButtonText: {
+        color: 'white',
+        fontWeight: '600',
+        fontSize: 20,
+        marginRight: 'auto',
+        marginLeft: 'auto',
+        margin: 'auto',
+        textAlign: 'center',
+      },
+      upButton: {
+        flexDirection: 'row', 
+        padding: 20,
+        width: '80%',
+        height: '100%',
+        backgroundColor: '#84BD00',
+      },      
+      searchText: {
+        fontSize: 20,
+        marginTop: 5,
+        marginBottom: 5,
+      },
+      centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+      },
+      modalView: {
+        // margin: 20,
+        width: '80%',
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+      },
+      openButton: {
+        backgroundColor: "#0081c6",
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2, 
+      },
+      modalInput: {
+        width: '80%',
+        margin: 15,
+        height: 40,
+        borderColor: 'black',
+        borderWidth: 1,
+        paddingLeft: 10
+      },
+      uploadCancelButton: {
+        flexDirection: 'row', 
+        // padding: 10,
+        width: '40%',
+        // height: '180%',
+        backgroundColor: '#0081c6',
+        borderRadius: 20,
+        alignItems: 'center',
+        marginHorizontal: 10,
       }
     });
