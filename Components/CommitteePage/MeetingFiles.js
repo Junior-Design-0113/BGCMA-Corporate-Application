@@ -87,6 +87,7 @@ class MeetingFiles extends Component {
     
     await ref.put(blob).then(() => {Alert.alert("File has been uploaded", fileName+fileType)});
     
+    this.setState({modalVisible : false})
     this.updateScreen();
   }
 
@@ -112,14 +113,16 @@ class MeetingFiles extends Component {
 
   listFiles() {
     const filesView = this.state.files.map(file => (
-      <View key={file.key}>
-        <Text style={styles.listFiles}>{file.name}</Text>
+      <View key={file.key} style={{flexDirection: 'row', paddingVertical: 10, borderBottomColor: 'gray', borderBottomWidth: 1,  justifyContent: 'space-between'}}>
+        <Text style={styles.listFiles} numberOfLines= {3} ellipsizeMode = 'middle'>{file.name}</Text>
+        <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
         <Button style={styles.downloadButton} onPress={() => this.downloadFile(file)}>
-          <Text>Download</Text>
+          <Text style={styles.downButtonText}>Download</Text>
         </Button>
         <Button style={styles.deleteButton} onPress={() => this.deleteFile(file)}>
           <Text style={styles.delButtonText}>X</Text>
         </Button>
+        </View>
       </View>
     ))
   
@@ -196,93 +199,99 @@ class MeetingFiles extends Component {
   }
 
   
-  ListViewItemSeparator = () => {
-    return (
-      <View
-        style={{
-          height: 0.5,
-          width: '100%',
-          backgroundColor: 'gray',
-        }}
-      />
-    );
-  };
+  // ListViewItemSeparator = () => {
+  //   return (
+  //     <View
+  //       style={{
+  //         height: 0.5,
+  //         width: '100%',
+  //         backgroundColor: 'gray',
+  //       }}
+  //     />
+  //   );
+  // };
 
   setModalVisible(val) {
     this.setState({modalVisible: val});
   }
 
-  render() {
+  showModal() {
     const {modalVisible, res} = this.state
+    return (<Modal
+      animationType="slide"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => {
+        this.setModalVisible(!modalVisible);
+      }}
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <TextInput style = {styles.modalInput}
+            autoCorrect={false}
+            onChangeText={fileName => this.setState({fileName})}
+            placeholder={'File Name'}
+            value={this.state.fileName}
+          />  
+          <TouchableHighlight
+            style={{ ...styles.openButton, backgroundColor: this.state.fileSelected ? '#0081c6': "#a1a1a1", marginTop: 10}}
+            onPress={() => {
+              this.pickFile();
+            }}
+          >
+            <Text style={{...styles.text, color: this.state.fileSelected ? 'white': "#4a4a4a"}}>
+              {this.state.fileSelected ? 'File Selected': 'Select a File'}
+            </Text>
+          </TouchableHighlight>
+          <View style={styles.buttonHolder}>
+            <Button  style={{...styles.uploadCancelButton, backgroundColor: "#84BD00"}} onPress={() => {this.uploadFile(res)}}>
+              <Text style={styles.text}>Upload</Text>
+            </Button>
+            <Button  style={{...styles.uploadCancelButton, backgroundColor: "#FF8200"}} onPress={() => {this.setModalVisible(!modalVisible)}}>
+              <Text style={styles.text}>Cancel</Text>
+            </Button>
+          </View>
+        </View>
+      </View>
+    </Modal>)
+  }
+  
+  render() {
       return (
         <View style={styles.container}>
           <View style={{...styles.form, width: '100%', marginTop: 0}}>
-          <SearchBar
-            style={styles.searchBarText}
-            onChangeText={text => this.searchFiles(text)}
-            value={this.state.text}
-            placeholder="Search Files"
-            round
-            lightTheme
-            searchIcon={{ size:30 }}
-          />
+            <View style={{flexDirection: 'row'}}>
+              <View style={{width: '80%'}}>
+                <SearchBar
+                  containerStyle={{backgroundColor: 'default'}}
+                  style={styles.searchBarText}
+                  onChangeText={text => this.searchFiles(text)}
+                  value={this.state.text}
+                  placeholder="Search Files"
+                  round
+                  lightTheme
+                  searchIcon={{ size:30 }}
+                />
+              </View>
 
-          {/* {this.getTeam()} */}
-            <View style={{...styles.pageButtonHolder}}>
-              <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                  Alert.alert("Modal has been closed.");
-                }}
-              >
-                <View style={styles.centeredView}>
-                  <View style={styles.modalView}>
-                    <TextInput style = {styles.modalInput}
-                      autoCorrect={false}
-                      onChangeText={fileName => this.setState({fileName})}
-                      placeholder={'File Name'}
-                      value={this.state.fileName}
-                    />  
-                    <TouchableHighlight
-                      style={{ ...styles.openButton, backgroundColor: this.state.fileSelected ? '#2196F3': "#a1a1a1", marginBottom: 10 }}
-                      onPress={() => {
-                        this.pickFile();
-                      }}
-                    >
-                      <Text style={{...styles.text, color: this.state.fileSelected ? 'white': "#4a4a4a"}}>
-                        {this.state.fileSelected ? 'File Selected': 'Select a File'}
-                      </Text>
-                    </TouchableHighlight>
-                    <View style={styles.buttonHolder}>
-                      <Button  style={{...styles.uploadCancelButton, backgroundColor: "green"}} onPress={() => {this.uploadFile(res)}}>
-                        <Text style={styles.text}>Upload</Text>
-                      </Button>
-                      <Button  style={{...styles.uploadCancelButton, backgroundColor: "red"}} onPress={() => {this.setModalVisible(!modalVisible)}}>
-                        <Text style={styles.text}>Cancel</Text>
-                      </Button>
-                    </View>
-                  </View>
-                </View>
-              </Modal>
+              {this.showModal()}
+              
               <TouchableHighlight
-                style={styles.openButton}
+                style={styles.uploadButton}
                 onPress={() => {
                   this.setModalVisible(true);
-                }}
-              >
-                <Text style={styles.text}>Upload A File</Text>
+                }}>
+                <Text style={styles.delButtonText}>+</Text>
               </TouchableHighlight>
-              {/* <Button style={styles.pageButton} onPress={() => this.pickFile()}><Text style={styles.text}>Upload a File</Text></Button> */}
-
             </View>
+
             <ScrollView>{this.listFiles()}</ScrollView>
+          
           </View>
 
-          <Image 
+          {/* <Image 
           style={{maxHeight: '30%', marginTop: 10}} 
-          source={this.state.url} />
+          source={this.state.url} /> */}
         </View>
       )
   }
