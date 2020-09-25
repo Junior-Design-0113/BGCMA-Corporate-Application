@@ -70,7 +70,7 @@ class MeetingFiles extends Component {
       Alert.alert("Please Select A File")
       return
     }
-    if (res.size > 1000000) {
+    if (res.size > 10000000) {
       Alert.alert("File Is Too Large To Upload")
       return
     }
