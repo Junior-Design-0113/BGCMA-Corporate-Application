@@ -89,7 +89,7 @@ class Login extends Component {
     return ( 
       <View style={styles.container}>
         <Image 
-          style={{maxHeight: Dimensions.get('window').height * .28, marginTop: 10}} 
+          style={{maxHeight: Dimensions.get('window').height * .25, marginTop: 10}} 
           source={require('./../../assets/BGCMA.png')} 
           resizeMode = 'contain'/>
 
