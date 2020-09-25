@@ -91,14 +91,18 @@ class Announcements extends Component {
     const annArr = [];
     querySnapshot.forEach((res) => {
       const {title, date, message} = res.data();
+      const newDate = new Date(date)
       annArr.push({
         key: res.id,
         res,
         title,
         date,
+        newDate,
         message,
       });
     });
+    annArr.sort((a, b) => (a.newDate < b.newDate) ? 1 : -1)
+    // console.log(annArr)
     this.setState({
       annArr,
       isLoading: false,
@@ -194,7 +198,7 @@ class Announcements extends Component {
                     this.setModalVisible(!modalVisible);
                   }}
                 >
-                  <Text>Hide Announcement</Text>
+                  <Text style={styles2.openButton}>Hide Announcement</Text>
                 </TouchableHighlight>
                 </View>
               </View>
@@ -203,13 +207,13 @@ class Announcements extends Component {
 	                autoCorrect={false}
 	                onFocus={group => this.showActionSheet()}
 	                onKeyPress={group => this.showActionSheet()}
-	                placeholder={'Pick a board to join'}
+	                placeholder={'Pick a board to post to'}
 	                value={"Select a Committee"}
 	            />
           <ActionSheet
 					ref={o => (this.ActionSheet = o)}
 					//Title of the Bottom Sheet
-					title={'Pick a board to join'}
+					title={'Pick a board to post to'}
 					//Options Array to show in bottom sheet
 					options={committeeList}
 					//Define cancel button index in the option array. Need this so pressing back works
