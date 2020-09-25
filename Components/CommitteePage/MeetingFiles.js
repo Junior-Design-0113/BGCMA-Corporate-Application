@@ -119,7 +119,11 @@ class MeetingFiles extends Component {
         <Button style={styles.downloadButton} onPress={() => this.downloadFile(file)}>
           <Text style={styles.downButtonText}>Download</Text>
         </Button>
-        <Button style={styles.deleteButton} onPress={() => this.deleteFile(file)}>
+        <Button style={styles.deleteButton} onPress={() => 
+          Alert.alert("Delete File?", file.name,
+          [{text: "Cancel", onPress: () => console.log("Cancel")},
+          {text: "Delete", onPress: () => this.deleteFile(file)}]) 
+        }>
           <Text style={styles.delButtonText}>X</Text>
         </Button>
         </View>
