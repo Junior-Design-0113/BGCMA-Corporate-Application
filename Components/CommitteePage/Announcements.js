@@ -81,14 +81,18 @@ class Announcements extends Component {
     const annArr = [];
     querySnapshot.forEach((res) => {
       const {title, date, message} = res.data();
+      const newDate = new Date(date)
       annArr.push({
         key: res.id,
         res,
         title,
         date,
+        newDate,
         message,
       });
     });
+    annArr.sort((a, b) => (a.newDate < b.newDate) ? 1 : -1)
+    // console.log(annArr)
     this.setState({
       annArr,
       //isLoading: false,
