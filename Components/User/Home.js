@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { ActivityIndicator, StyleSheet, Text, View, Alert, Image } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View, Alert, Image, Dimensions } from 'react-native';
 import { Button, Row } from 'native-base'
 // import * as firebase from "firebase";
 import 'firebase/firestore';
@@ -83,7 +83,7 @@ class Home extends Component {
       return (
         <View style={styles.container}>
           <Image 
-            style={{maxHeight: '30%', marginTop: 10}} 
+            style={{maxHeight: Dimensions.get('window').height * .25 , marginTop: 10}} 
             source={require('./../../assets/BGCMA.png')} 
             resizeMode = 'contain'/>
 
