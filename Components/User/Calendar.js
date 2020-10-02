@@ -25,6 +25,11 @@ class Calendar extends Component {
     return (
       <View style={styles.container}>  
         <RNCalendar style={styles.calendar} 
+        style={{
+          width: 400,
+          borderColor: 'gray',
+          height: 700
+        }}
           // The big list of changeable properties is here: https://github.com/wix/react-native-calendars
           // It defaults to the current date. The calendar changes in size according to how many weeks there are, 
           //    the length of the month name, and more. Not sure how to fix that. Turning off day names will make 
