@@ -25,6 +25,7 @@ class Calendar extends Component {
       meetingTitle: '',
       meetingAgenda: '',
       day: null,
+      existingDate: false,
 
     }
   }
@@ -65,15 +66,27 @@ class Calendar extends Component {
   }
   dateClick = (day) => {
     this.setState({day:day.dateString})
-    if (this.state.committee && day.dateString in this.state.markedDates) {
-      this.state.firestoreRef = firebase.firebaseConnection.firestore().collection("Meetings").doc(this.state.committee).collection("Dates").doc(day.dateString).collection("Meetings").onSnapshot(this.getMeetings)
+    var date = day.dateString
+    const db = firebase.firebaseConnection.firestore();
+    if (this.state.committee) {
+      var docu = db.collection("Meetings").doc(this.state.committee).collection("Dates").doc(date)
+      if (docu) {
+        this.setState({existingDate: true}, function() {
+          db.collection("Meetings").doc(this.state.committee).collection("Dates").doc(date).collection("Meetings").onSnapshot(this.getMeetings);
+        })
+      } else {
+        console.log("date not found")
+      }
+      this.setModalVisible(true)
     }
+    
   }
   getMeetings = (querySnapshot) => {
     const meetings = [];
     querySnapshot.forEach((res) => {
       const {Title, Agenda} = res.data()
       meetings.push({
+        key: res.id,
         id: res.id,
         title: Title,
         agenda: Agenda,
