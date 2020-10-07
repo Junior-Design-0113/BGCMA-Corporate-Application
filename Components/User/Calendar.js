@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, Modal, ScrollView, TouchableHighlight, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Modal, ScrollView, TouchableHighlight, TextInput, TouchableOpacity, Alert } from 'react-native';
 import {Calendar as RNCalendar} from 'react-native-calendars';
 import { ListItem } from 'react-native-elements'
 
@@ -26,6 +26,7 @@ class Calendar extends Component {
       meetingAgenda: '',
       day: null,
       existingDate: false,
+      currMeeting: '',
 
     }
   }
@@ -102,6 +103,9 @@ class Calendar extends Component {
   }
   setMeetingModalVisible(val) {
     this.setState({modalMeetingVisible: val});
+  }
+  setCurrMeeting(val) {
+    this.setState({currMeeting: val});
   }
 
   showModal() {
@@ -190,12 +194,34 @@ class Calendar extends Component {
     }) 
   }
 
+  async deleteMeeting() {
+    const db = firebase.firebaseConnection.firestore();
+    const meetingRef = db.collection("Meetings").doc(this.state.committee).collection("Dates").doc(this.state.day).collection("Meetings");
+    const snapshot = await meetingRef.where('Title', '==', this.state.currMeeting).get();
+    var currDoc = "";
+    snapshot.forEach(doc => {
+        //console.log(doc.id);
+        currDoc = "" + doc.id;
+    });
+    if (snapshot.empty) {
+      return;
+    }
+    meetingRef.doc(currDoc).delete()
+      Alert.alert("Meeting has been deleted.");
+  }
+
 
   populateModal() {
     if (this.state.meetings) {
       const m = this.state.meetings.map((me) =>
         <View>
           <Text>{me.title}: {me.agenda}</Text>
+          <TouchableHighlight style = {{...styles.deleteButton, marginBottom:10}} onPress={() => {
+                this.deleteMeeting();
+                this.setCurrMeeting(me.title);
+              }}>
+            <Text style = {styles.delButtonText}> Delete </Text>
+          </TouchableHighlight>
         </View>
         
       );
