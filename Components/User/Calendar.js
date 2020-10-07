@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { StyleSheet, Text, View, Modal, ScrollView, TouchableHighlight, TextInput, TouchableOpacity } from 'react-native';
 import {Calendar as RNCalendar} from 'react-native-calendars';
 import { ListItem } from 'react-native-elements'
+import {Button} from 'native-base';
 
 
 const firebase = require("../../server/router");
@@ -26,7 +27,8 @@ class Calendar extends Component {
       meetingAgenda: '',
       day: null,
       existingDate: false,
-
+      modalEditVisible: false,
+      currMeeting: '',
     }
   }
 
@@ -102,6 +104,12 @@ class Calendar extends Component {
   }
   setMeetingModalVisible(val) {
     this.setState({modalMeetingVisible: val});
+  }
+  setEditModalVisible(val) {
+    this.setState({modalEditVisible: val});
+  }
+  setCurrMeeting(val) {
+    this.setState({currMeeting: val})
   }
 
   showModal() {
@@ -181,6 +189,53 @@ class Calendar extends Component {
       </View>
     </Modal>)
   }
+
+  showEditModal() {
+    const {modalEditVisible, res} = this.state
+    return (<Modal
+      animationType="slide"
+      transparent={true}
+      visible={modalEditVisible}
+      onRequestClose={() => {
+        this.setModalVisible(!modalEditVisible);
+      }}
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <TouchableHighlight
+              style={{...styles.uploadButton, width:'50%'}}
+              onPress={() => {
+                this.setEditModalVisible(false);
+                this.editMeeting();
+              }}
+              >
+              <Text style={{...styles.delButtonText, width:'100%', fontSize:25}}>Update</Text>
+            </TouchableHighlight>
+            <TouchableHighlight
+              style={{...styles.uploadButton, width:'50%', backgroundColor:"red"}}
+              onPress={() => {
+                this.setEditModalVisible(false);
+              }}
+              >
+              <Text style={{...styles.delButtonText, width:'100%', fontSize:25}}>Cancel</Text>
+            </TouchableHighlight>
+            <TextInput style = {styles.modalInput}
+              autoCorrect={false}
+              onChangeText={meetingTitle => this.setState({meetingTitle})}
+              placeholder={'Meeting Title'}
+              value={this.state.meetingTitle}
+            />  
+            <TextInput style = {styles.modalInput}
+              autoCorrect={false}
+              onChangeText={meetingAgenda => this.setState({meetingAgenda})}
+              placeholder={'Meeting Agenda'}
+              value={this.state.meetingAgenda}
+            />  
+        </View>
+      </View>
+    </Modal>)
+  }
+
   createMeeting() {
     console.log(this.state)
     const db = firebase.firebaseConnection.firestore();
@@ -189,13 +244,40 @@ class Calendar extends Component {
       Agenda: this.state.meetingAgenda
     }) 
   }
-
+  
+  async editMeeting() {
+    //console.log(this.state)
+    const db = firebase.firebaseConnection.firestore();
+    const meetingRef = db.collection("Meetings").doc(this.state.committee).collection("Dates").doc(this.state.day).collection("Meetings");
+    const snapshot = await meetingRef.where('Title', '==', this.state.currMeeting).get();
+    var currDoc = "";
+    snapshot.forEach(doc => {
+      console.log(doc.id, '=>', doc.data());
+      currDoc = "" + doc.id;
+    });
+    console.log("Curr doc = " + currDoc)
+    if (snapshot.empty) {
+      console.log('No matching documents.');
+      return;
+    }
+    const res = meetingRef.doc(currDoc).update({
+      Title: this.state.meetingTitle,
+      Agenda: this.state.meetingAgenda
+    })
+  }
 
   populateModal() {
     if (this.state.meetings) {
       const m = this.state.meetings.map((me) =>
-        <View>
+        <View style={{flexDirection: 'row', paddingVertical: 10, borderBottomColor: 'gray', borderBottomWidth: 1,  justifyContent: 'space-between'}}>
           <Text>{me.title}: {me.agenda}</Text>
+          <Button onPress={() => {
+                this.setEditModalVisible(true);
+                this.setModalVisible(false);
+                this.setCurrMeeting(me.title);
+              }}>
+            <Text>Edit</Text>
+          </Button>
         </View>
         
       );
@@ -244,6 +326,7 @@ class Calendar extends Component {
       />
       {this.showModal()}
       {this.showMeetingModal()}
+      {this.showEditModal()}
       </View>
     );
   }
