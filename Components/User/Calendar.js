@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import {Alert, StyleSheet, Text, View, TouchableOpacity, Modal, TouchableHighlight, TextInput, YellowBox } from 'react-native';
 import {Agenda} from 'react-native-calendars';
 import { FloatingAction } from "react-native-floating-action";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+// import DateTimePicker from '@react-native-community/datetimepicker';
 
 const firebase = require("../../server/router");
 const s = require('../../Style/style')
@@ -388,27 +389,34 @@ export default class Calendar extends Component {
          
          {this.showMeetingModal()}
          {this.state.endPickerVisible && (
-        <DateTimePicker
-          value={this.state.endDate}
+        <DateTimePickerModal
+          // I LOVE PICKERS YES I DO
+          // value={this.state.endDate}
           mode={this.state.datePickerMode}
-          display="default"
-          onChange={(event, selectedDate) => {
-            const currentDate = selectedDate || this.state.endDate
-            this.setState({endDate : currentDate,
-                          endPickerVisible : false})
-          }}
+          onConfirm={(currentDate) => this.setState({endDate : currentDate,
+                            endPickerVisible : false})}
+          onCancel={() => this.setState({endPickerVisible : false})}
+          // display="default"
+          // onChange={(event, selectedDate) => {
+          //   const currentDate = selectedDate || this.state.endDate
+          //   this.setState({endDate : currentDate,
+          //                 endPickerVisible : false})
+          // }}
         />
       )}
       {this.state.startPickerVisible && (
-        <DateTimePicker
-          value={this.state.startDate}
+        <DateTimePickerModal
+          // value={this.state.startDate}
           mode={this.state.datePickerMode}
-          display="default"
-          onChange={(event, selectedDate) => {
-            const currentDate = selectedDate || this.state.startDate
-            this.setState({startDate : currentDate,
-                          startPickerVisible : false})
-          }}
+          onConfirm={(currentDate) => this.setState({startDate : currentDate,
+            startPickerVisible : false})}
+          onCancel={() => this.setState({startPickerVisible : false})}
+          // display="default"
+          // onChange={(event, selectedDate) => {
+          //   const currentDate = selectedDate || this.state.startDate
+          //   this.setState({startDate : currentDate,
+          //                 startPickerVisible : false})
+          // }}
         />
       )}
       </View>
