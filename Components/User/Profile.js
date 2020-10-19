@@ -19,7 +19,6 @@ class Profile extends Component {
 	   		lastName: '',
 	   		//userInfo: '',
 		}
-
 	}
 
 	async componentDidMount() {
@@ -28,23 +27,35 @@ class Profile extends Component {
 		    this.setState({[key]: state[key]})
 		});
 
-		//Pull the user's name from firebase and assign it to fields in the state
-	    const db = firebase.firebaseConnection.firestore()
-	    const user = db.collection('Users').doc(this.state.email);
+		//Update the right fields in state to show user's info in render()
+		this.getUserInfo(this.state.email);
+	}
 
-	    user.get().then((doc) => {
-		    if (doc.exists) {
-		    	//Access the data of this element of the collection with doc.data().x
-		    	this.setState({firstName:doc.data().firstName});
-		    	this.setState({lastName:doc.data().lastName});   	
-		    	//this.setState({userInfo:doc.data().userInfo});  
-		    } else {
-		        // doc.data() will be undefined in this case
-		        console.log("No such document!");
-		    }
-		}).catch(function(error) {
-		    console.log("Error getting document:", error);
-		});
+	//Can modify this function for the chat components to find accounts based on different emails
+	async getUserInfo(email) {
+		//Could make the check more elaborate and make sure the email is in Users although if there's no customer input then 
+		// we could probably assume the email we use will be valid.
+		if (email) {
+			//Pull the user's file from firebase
+		    const db = firebase.firebaseConnection.firestore()
+		    const user = db.collection('Users').doc(email);
+
+		    //Access the user's properties and assign it to fields in the state
+		    user.get().then((doc) => {
+			    if (doc.exists) {
+			    	//Access the data of this element of the collection with doc.data().x
+			    	this.setState({firstName:doc.data().firstName});
+			    	this.setState({lastName:doc.data().lastName});   	
+			    	//this.setState({userInfo:doc.data().userInfo});  
+			    } else {
+			        // doc.data() will be undefined in this case
+			        console.log("No such document!");
+			    }
+			}).catch(function(error) {
+			    console.log("Error getting document:", error);
+			});
+			//console.log('\nupdated info\n');	
+		}		
 	}
 
     render() {
