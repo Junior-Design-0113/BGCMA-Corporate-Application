@@ -212,6 +212,47 @@ module.exports.styles = StyleSheet.create({
         alignItems: 'center',
         marginHorizontal: 10,
       },
+      item: {
+        backgroundColor: 'white',
+        flex: 1,
+        borderRadius: 5,
+        padding: 10,
+        marginRight: 10,
+        marginTop: 17
+      },
+      emptyDate: {
+        height: 15,
+        flex:1,
+        paddingTop: 30
+      },
+      cancelRegister: {
+        flexDirection: 'row', 
+        padding: 20,
+        width: '40%',
+        backgroundColor: '#0081c6',
+        borderRadius: 35,
+        alignItems: 'center',
+        marginRight: 10,
+        marginLeft: 10,
+      },
+      register: {
+        flexDirection: 'row', 
+        padding: 20,
+        width: '40%',
+        backgroundColor: '#FF8200',
+        borderRadius: 35,
+        alignItems: 'center',
+        marginRight: 10,
+        marginLeft: 10,
+      },
+      input: {
+        margin: 15,
+        marginLeft: 2,
+        height: 40,
+        borderColor: 'black',
+        borderWidth: 1,
+        paddingLeft: 10
+     },
       profileTitle: {
         marginLeft: 'auto',
         marginRight: 'auto',
