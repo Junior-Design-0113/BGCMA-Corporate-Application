@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import {Button} from 'native-base'
 
 const firebase = require("../../server/router");
 const s = require('../../Style/style')
@@ -15,10 +17,11 @@ class Chat extends Component {
 			committee: null,
 			admin: false,
 			executive: false,
-			selectedCommittee: null,
-			namesList: null,
-			namesArr: null,
-		}
+      selectedCommittee: null,
+      users: []
+    }
+    
+    const db = firebase.firebaseConnection.firestore()
   }
 
   componentDidMount() {
@@ -26,36 +29,60 @@ class Chat extends Component {
     Object.keys(state).forEach(key => {
         this.setState({[key]: state[key]})
     });
+
+    this.getUsers()
   }
 
-  getNames() {
-    var names = [];
+  getUsers() {
     const db = firebase.firebaseConnection.firestore();
-    db.collection('Users').get()
-      .then(function(querySnapshot) {
-        querySnapshot.forEach(function(doc) {
+    db.collection('Users').onSnapshot((querySnapshot) => {
+        const users = [];
+        querySnapshot.forEach((doc) => {
+          var user = doc.data()
+          users.push( {
+            email: doc.id,
+            Committee: user.Committee,
+            Executive: user.Executive,
+            firstName: user.firstName,
+            lastName: user.lastName,
+          })
+        })
+        this.setState({users: users}, function() {
+          this.showUsers()
+        })
+    })
+  }
 
-
-            console.log(doc.data().firstName + " " + doc.data().lastName);
-            // var names = doc.data().firstName;
-            // <View>names.toString()</View>
-            names.push(<Text key={doc.id}>{doc.data().firstName + " " + doc.data().lastName}</Text>);
-			            
-            console.log(names.length);
-
-            
-        });
-    });
-
-    
-
+  showUsers() {
+      if (this.state.selectedCommittee) {
+        console.log("filter users")
+      }
+      
+      const users = this.state.users.map(user => (
+        <View key={user.email}>
+          <View style={{flexDirection: 'row'}}>
+            <Text>{`${user.firstName} ${user.lastName}`}</Text>
+            <Button  style={styles.button} onPress={() => console.log(user)}>
+              <Text style={styles.buttonText}>Message</Text>
+            </Button>
+          </View>
+        </View>
+      ))
+      
+      return(
+        <View>
+          {users}
+        </View>
+      )
   }
 
 
   render() {
     return (
       <View style={styles.container}>
-        <View> {this.getNames()} </View>
+        <ScrollView>
+            {this.showUsers()}
+        </ScrollView>
       </View>
     );
   }
