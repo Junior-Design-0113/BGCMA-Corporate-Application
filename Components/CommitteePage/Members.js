@@ -38,7 +38,8 @@ class Members extends Component {
 
 	//A separate method to add names onto a variable with the rest.
 	addThing() {
-		this.namesList = <>{this.namesList}<Text style={styles.profileText}>{"Bambple"}</Text></>;
+		this.namesList = <>{this.namesList}<Text>{"Names"}</Text></>;
+		console.log('called');
 	}
 
 	getAllUserInfo() {
@@ -52,8 +53,9 @@ class Members extends Component {
 		var names = [];
 
 		//Trying to add names to a variable in state
-		this.namesList = <Text>SampleFrample</Text>;
-		//this.namesList = <>{this.namesList}<Text style={styles.profileText}>{"Bambple"}</Text></>;
+		this.namesList = <Text>ListOf</Text>;
+		//this.addThing();
+		//this.namesList = <>{this.namesList}<Text>{"Big"}</Text></>;
 
 		//Get all names from that user's committee
 		if(this.state.selectedCommittee) {
@@ -79,9 +81,9 @@ class Members extends Component {
 
 			            //Trying to call a separate method to add more names, but isn't working. Pass the names along 
 			            // if it becomes workable. Throws an unhandled promise error in expo
-			            if(typeof(this.addThing) !== 'undefined') {
-				            this.addThing();
-			            }
+			            
+				        this.addThing();
+			            
 
 			            //Trying to add names to a variable in state; Give a yellow warning in expo
 			            //this.namesList = <>{this.namesList}<Text style={styles.profileText}>{doc.data().firstName + " " + doc.data().lastName}</Text></>;
@@ -89,7 +91,9 @@ class Members extends Component {
 			            //Made an array in state but it doesn't work either.
 			            //this.namesArr.push(<Text style={styles.profileText} key={doc.id}>{doc.data().firstName + " " + doc.data().lastName}</Text>);
 			        });
-		    });
+		    }).catch(function(error) {
+			    console.log("Couldn't get all of the names", error);
+			});
 	    }
 
 	    returnJSX = <>{returnJSX}<Text>{'array length: ' + names.length}</Text></>;
