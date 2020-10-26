@@ -20,9 +20,11 @@ class Chat extends Component {
 			executive: false,
       selectedCommittee: null,
       users: []
+
     }
-    
+    this.arrayholder = [];
     const db = firebase.firebaseConnection.firestore()
+
   }
 
   componentDidMount() {
@@ -48,17 +50,26 @@ class Chat extends Component {
             lastName: user.lastName,
           })
         })
+        this.arrayholder = users;
         this.setState({users: users}, function() {
+          this.filterUsers();
           this.showUsers()
         })
     })
   }
 
+  filterUsers() {
+    if (this.state.selectedCommittee) {
+      const filtered = this.state.users.filter(data => data.Committee == this.state.selectedCommittee);
+      //console.log(filtered);
+      this.setState({
+        users: filtered
+      })
+    }
+  }
+
   showUsers() {
-      if (this.state.selectedCommittee) {
-        console.log("filter users")
-      }
-      
+
       const users = this.state.users.map(user => (
         <View key={user.email}>
           <View style={{flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, justifyContent: 'space-between'}}>
@@ -78,7 +89,7 @@ class Chat extends Component {
   }
   searchProfiles(text) {
     const newData = this.arrayholder.filter(function(item) {
-      const itemData = item.name ? item.name.toUpperCase() : ''.toUpperCase();
+      const itemData = item.firstName ? item.firstName.toUpperCase() : ''.toUpperCase();
       const textData = text.toUpperCase();
       return itemData.indexOf(textData) > -1;
     });
