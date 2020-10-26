@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import {Button} from 'native-base'
+import { SearchBar } from 'react-native-elements';
 
 const firebase = require("../../server/router");
 const s = require('../../Style/style')
@@ -60,10 +61,10 @@ class Chat extends Component {
       
       const users = this.state.users.map(user => (
         <View key={user.email}>
-          <View style={{flexDirection: 'row'}}>
-            <Text>{`${user.firstName} ${user.lastName}`}</Text>
-            <Button  style={styles.button} onPress={() => console.log(user)}>
-              <Text style={styles.buttonText}>Message</Text>
+          <View style={{flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, justifyContent: 'space-between'}}>
+            <Text >{`${user.firstName} ${user.lastName}`}</Text>
+            <Button  style={styles.messageButton} onPress={() => console.log(user)}>
+              <Text style={styles.downButtonText}>Chat</Text>
             </Button>
           </View>
         </View>
@@ -75,12 +76,36 @@ class Chat extends Component {
         </View>
       )
   }
+  searchProfiles(text) {
+    const newData = this.arrayholder.filter(function(item) {
+      const itemData = item.name ? item.name.toUpperCase() : ''.toUpperCase();
+      const textData = text.toUpperCase();
+      return itemData.indexOf(textData) > -1;
+    });
+    this.setState({
+      dataSource: newData,
+      text: text,
+      profiles: newData,
+    });
+  }
 
 
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView>
+        <View style={{width: '80%', marginTop: 10}}>
+                <SearchBar
+                  containerStyle={{backgroundColor: 'default'}}
+                  style={styles.searchBarText}
+                  onChangeText={text => this.searchProfiles(text)}
+                  value={this.state.text}
+                  placeholder="Search Profiles"
+                  round
+                  lightTheme
+                  searchIcon={{ size:30 }}
+                />
+          </View>
+          <ScrollView>
             {this.showUsers()}
         </ScrollView>
       </View>
