@@ -49,7 +49,7 @@ class CommitteeHome extends Component {
   }
   members() {
       var navigation = this.props.navigation;
-      navigation.navigate('Chat', {state: this.state})
+      navigation.navigate('Members', {state: this.state})
       // navigation.navigate('Members', {state: this.state})
   }
   render() {

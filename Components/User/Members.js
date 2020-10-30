@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import {Button} from 'native-base'
 import { SearchBar } from 'react-native-elements';
@@ -8,8 +8,7 @@ const firebase = require("../../server/router");
 const s = require('../../Style/style')
 const styles = s.styles
 
-
-class Chat extends Component {
+class Members extends Component {
 
   constructor(props) {
 		super(props);
@@ -73,7 +72,12 @@ class Chat extends Component {
       const users = this.state.users.map(user => (
         <View key={user.email}>
           <View style={{flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, justifyContent: 'space-between'}}>
-            <Text >{`${user.firstName} ${user.lastName}`}</Text>
+            <TouchableOpacity
+              onPress={() => {
+                var navigation = this.props.navigation;
+                navigation.navigate('Profile', {state: user})}}>
+              <Text >{`${user.firstName} ${user.lastName}`}</Text>
+            </TouchableOpacity>
             <Button  style={styles.messageButton} onPress={() => console.log(user)}>
               <Text style={styles.downButtonText}>Chat</Text>
             </Button>
@@ -126,4 +130,4 @@ class Chat extends Component {
 }
 
 
-export default Chat
+export default Members
