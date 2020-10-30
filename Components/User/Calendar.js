@@ -159,43 +159,43 @@ export default class Calendar extends Component {
         />  
         
         <View style={{flexDirection: 'row'}}>
-          <View style={{paddingLeft: 10, width: '45%'}}>
+          <TouchableOpacity style={{paddingLeft: 10, width: '45%'}}
+          onPress={nul => {this.setState({startPickerVisible : true})
+          this.showDatepicker(true)}}>
           <TextInput style = {styles.input}
-                onFocus={nul => {this.setState({startPickerVisible : true})
-                this.showDatepicker(true)}}
-                caretHidden={true}
+                editable={false}
                 placeholder={this.state.startDate.toLocaleDateString('en-US')}
           />       
-          </View>
+          </TouchableOpacity>
           
-          <View style={{width: '35%'}}>
+          <TouchableOpacity style={{width: '35%'}}
+          onPress={nul => {this.setState({startPickerVisible : true})
+          this.showTimepicker(true)}}>
           <TextInput style = {styles.input}
-                onFocus={nul => {this.setState({startPickerVisible : true})
-                                this.showTimepicker(true)}}
-                caretHidden={true}
+                editable={false}
                 placeholder={this.state.startDate.getFormattedTime()}
           />
-          </View>
+          </TouchableOpacity>
         </View>
         
         <View style={{flexDirection: 'row'}}>
-          <View style={{paddingLeft: 10, width: '45%'}}>
+          <TouchableOpacity style={{paddingLeft: 10, width: '45%'}}
+          onPress={nul => {this.setState({endPickerVisible : true})
+          this.showDatepicker(true)}}>
           <TextInput style = {styles.input}
-                onFocus={nul => {this.setState({endPickerVisible : true})
-                                this.showDatepicker(true)}}
-                caretHidden={true}
+                editable={false}
                 placeholder={this.state.endDate.toLocaleDateString('en-US')}
           />
-          </View>
+          </TouchableOpacity>
 
-          <View style={{width: '35%'}}>
+          <TouchableOpacity style={{width: '35%'}}
+          onPress={nul => {this.setState({endPickerVisible : true})
+          this.showTimepicker(true)}}>
           <TextInput style = {styles.input}
-                onFocus={nul => {this.setState({endPickerVisible : true})
-                                this.showTimepicker(true)}}
-                caretHidden={true}
+                editable={false}
                 placeholder={this.state.endDate.getFormattedTime()}
           />  
-          </View> 
+          </TouchableOpacity> 
         </View>
         </View>
         </View>    
