@@ -93,14 +93,15 @@ class Members extends Component {
   }
   searchProfiles(text) {
     const newData = this.arrayholder.filter(function(item) {
-      const itemData = item.firstName ? item.firstName.toUpperCase() : ''.toUpperCase();
+      const name = `${item.firstName} ${item.lastName}`
+      const itemData = name ? name.toUpperCase() : ''.toUpperCase();
       const textData = text.toUpperCase();
       return itemData.indexOf(textData) > -1;
     });
     this.setState({
       dataSource: newData,
       text: text,
-      profiles: newData,
+      users: newData,
     });
   }
 
@@ -108,7 +109,7 @@ class Members extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={{width: '80%', marginTop: 10}}>
+        <View style={{width: '100%', marginTop: 10}}>
                 <SearchBar
                   containerStyle={{backgroundColor: 'default'}}
                   style={styles.searchBarText}
