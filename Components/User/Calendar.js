@@ -41,7 +41,7 @@ export default class Calendar extends Component {
       startPickerVisible: false,
       datePickerMode: 'date',
       editing: false,
-      id: null,
+      item: null,
     }
   }
 
@@ -52,49 +52,51 @@ export default class Calendar extends Component {
     Object.keys(state).forEach(key => {
       this.setState({[key]: state[key]})
     });
-    this.setState({markedDates:null}, function() {this.getDateQuery()})
+    this.setState({markedDates : null}, function() {this.getDateQuery()})
     }
-    
   }
 
-  // componentWillUnmount() {
-  //   this._isMounted = false;
-  // }
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
 
   async getDateQuery() {
     if (this.state.committee) {
       await firebase.firebaseConnection.firestore().collection("Meetings").doc(this.state.committee).collection("Dates").onSnapshot(this.getMarkedDates)
+      // this.getMarkedDates(snapshot)
     }
+
   }
   
   getMarkedDates = (querySnapshot) => {
-    // console.log("size: " + querySnapshot.size)
     const dates = {};
     querySnapshot.forEach((res) => {
       // dates[res.id] = {marked: true, selected: true, selectedColor: 'blue'}
-      dates[res.id] = {marked: true, 
-        customStyles: {
-        container: {
-          backgroundColor: 'blue'
-        },
-        text: {
-          color: 'white',
-        }}}
+      // dates[res.id] = {marked: true, 
+      //   customStyles: {
+      //   container: {
+      //     backgroundColor: 'blue'
+      //   },
+      //   text: {
+      //     color: 'white',
+      //   }}}
+
+      // chose to use default behaviour instead
+      dates[res.id] = {marked: true}
     });
 
     this.setState({
       markedDates: dates
    });
-   this.setState({meetings: []}, function() {this.getMeetingQuery()})
+   this.getMeetingQuery()
   }
 
   getMeetingQuery() {
-    this.setState({meetings : []})
     if (this.state.committee) {
       Object.keys(this.state.markedDates).forEach(async markedDate => {
-        const snapshot = await firebase.firebaseConnection.firestore().collection("Meetings").doc(this.state.committee).collection("Dates").
-        doc(markedDate).collection("Meetings").orderBy('StartDate').get()
-        this.getMeetings(snapshot)
+        await firebase.firebaseConnection.firestore().collection("Meetings").doc(this.state.committee).collection("Dates").
+        doc(markedDate).collection("Meetings").orderBy('StartDate').onSnapshot(this.getMeetings)
+        // this.getMeetings(snapshot)
       })
     }
   }
@@ -107,19 +109,22 @@ export default class Calendar extends Component {
       //the result is also a combination of the two?
       StartDate = new Date (StartDate.seconds * 1000 + Math.round(StartDate.nanoseconds / 1000000))
       EndDate = new Date (EndDate.seconds * 1000 + Math.round(EndDate.nanoseconds / 1000000))
-      // console.log(StartDate.toLocaleDateString())
       if (!meetings[date]) {
         meetings[date] = []
       }
 
-      meetings[date].push({
+      var meeting = {
         id: res.id,
         title: Title,
         agenda: Agenda,
         startDate: StartDate,
         endDate: EndDate,
         date: date,
-      })
+      }
+
+      if (!meetings[date].some(meet => meet.id === meeting.id)) {
+        meetings[date].push(meeting)
+      }
     });
     this.setState({meetings})
   }
@@ -223,12 +228,11 @@ export default class Calendar extends Component {
                 this.createMeeting();
               } else {
                 this.setMeetingModalVisible(false);
-                this.setState({editing : false})
                 this.editMeeting();
               }
             }}
               >
-              <Text style={{...styles.delButtonText, width:'100%', fontSize:25}}>{this.state.editing ? "Submit" : "Create"}</Text>
+              <Text style={{...styles.delButtonText, width:'100%', fontSize:25}}>{this.state.editing ? "Save" : "Create"}</Text>
             </TouchableHighlight>
         </View>
         </View>
@@ -242,32 +246,57 @@ export default class Calendar extends Component {
     db.collection("Meetings").doc(this.state.committee).collection("Dates").doc(day).set(
       {date : null}
     )
-    db.collection("Meetings").doc(this.state.committee).collection("Dates").doc(day).collection("Meetings").add({
+    const meeting = await db.collection("Meetings").doc(this.state.committee).collection("Dates").doc(day).collection("Meetings").add({
       date : day,
       Title: this.state.meetingTitle,
       Agenda: this.state.meetingAgenda,
       StartDate: this.state.startDate,
       EndDate: this.state.endDate,
-    }) 
-
-    // if meeting is added to an existing data, this forces an update to occur
-    if (day in this.state.markedDates) {
-      this.setState({meetings: []}, function() {this.getMeetingQuery()})
-    } 
+    })
+    
+    if (!this.state.editing) {
+      const itemDay = {timestamp : this.state.startDate.valueOf()}
+      this.setState({items : {}}, this.loadItems(itemDay))
+    }
   }
 
   async editMeeting() {
     const day = (`${this.state.startDate.getFullYear()}-${this.state.startDate.toLocaleDateString().replace(/\//g, '-').slice(0, 5)}`)
     const db = firebase.firebaseConnection.firestore();
+    if (day == this.state.item.date) {
+      await db.collection("Meetings").doc(this.state.committee).collection("Dates").doc(day).collection("Meetings").doc(this.state.item.id).update({
+        date : day,
+        Title: this.state.meetingTitle,
+        Agenda: this.state.meetingAgenda,
+        StartDate: this.state.startDate,
+        EndDate: this.state.endDate,
+      }) 
 
-    await db.collection("Meetings").doc(this.state.committee).collection("Dates").doc(day).collection("Meetings").doc(this.state.id).update({
-      date : day,
-      Title: this.state.meetingTitle,
-      Agenda: this.state.meetingAgenda,
-      StartDate: this.state.startDate,
-      EndDate: this.state.endDate,
-    }) 
-    this.setState({meetings: []}, function() {this.getMeetingQuery()})
+      var indx = this.state.meetings[day].map(function(meeting) { return meeting.id}).indexOf(this.state.item.id)
+      this.state.meetings[day][indx] = {
+        id : this.state.item.id,
+        date : day,
+        title: this.state.meetingTitle,
+        agenda: this.state.meetingAgenda,
+        startDate: this.state.startDate,
+        endDate: this.state.endDate,
+      }
+      
+      const newItems = {}
+      Object.keys(this.state.meetings).forEach(key => {newItems[key] = this.state.meetings[key];});
+      this.setState({
+        meetings: newItems
+      })
+
+      const itemDay = {timestamp : this.state.startDate.valueOf()}
+      this.setState({items : {}}, this.loadItems(itemDay))
+
+    } else {
+      this.createMeeting()
+      this.deleteMeeting(this.state.item)
+    }
+
+    this.setState({editing : false})
   }
 
   async deleteMeeting(item) {
@@ -275,38 +304,54 @@ export default class Calendar extends Component {
     const querySnapshot = await db.collection("Meetings").doc(this.state.committee).collection("Dates").doc(item.date).collection("Meetings").get()
     await db.collection("Meetings").doc(this.state.committee).collection("Dates").doc(item.date).collection("Meetings").doc(item.id).delete();    
 
+    // if last item, remove date
     if (querySnapshot.size == 1) {
       await db.collection("Meetings").doc(this.state.committee).collection("Dates").doc(item.date).delete()
-      //only way I could figure out how to hide last item
-      this.state.meetings[item.date] = []
-      
-      const newItems = {};
-      Object.keys(this.state.meetings).forEach(key => {newItems[key] = this.state.meetings[key];});
-      this.setState({
-        meetings: newItems
-      })
-    } else {
-      this.setState({meetings: []}, function() {this.getMeetingQuery()})
+      // this.state.meetings[item.date] = []
     }
+    
+    var indx = this.state.meetings[item.date].map(function(meeting) { return meeting.id}).indexOf(item.id)
+    this.state.meetings[item.date].splice(indx, 1)
+
+    const newMeetings = {}
+    Object.keys(this.state.meetings).forEach(key => {newMeetings[key] = this.state.meetings[key];});
+    this.setState({
+      meetings: newMeetings
+    })
+    
+    const itemDay = {timestamp : this.state.startDate.valueOf()}
+    this.setState({items : {}}, this.loadItems(itemDay))
   }
 
-
+  //loads items every 30 days from selected day
   loadItems(day) {
-    setTimeout(() => {
-      for (let i = -15; i < 85; i++) {
-        const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-        const strTime = this.timeToString(time);
-        if (!this.state.meetings[strTime]) {
-          this.state.meetings[strTime] = [];
+      setTimeout(() => {
+        for (let i = 0; i < 85; i++) {
+          const time = day.timestamp + i * 24 * 60 * 60 * 1000;
+          const strTime = this.timeToString(time);
+          if (!this.state.items[strTime]) {
+            this.state.items[strTime] = [];
+            if (this.state.meetings[strTime]) {
+              for (let i = 0; i < this.state.meetings[strTime].length; i++) {
+                this.state.items[strTime].push({
+                  id : this.state.meetings[strTime][i].id,
+                  date : this.state.meetings[strTime][i].date,
+                  title: this.state.meetings[strTime][i].title,
+                  agenda: this.state.meetings[strTime][i].agenda,
+                  startDate: this.state.meetings[strTime][i].startDate,
+                  endDate: this.state.meetings[strTime][i].endDate,
+                });
+              }
+            }
+          }
         }
-      }
 
-      const newItems = {};
-      Object.keys(this.state.meetings).forEach(key => {newItems[key] = this.state.meetings[key];});
-      this.setState({
-        meetings: newItems
-      });
-    }, 1000);
+        const newItems = {};
+        Object.keys(this.state.items).forEach(key => {newItems[key] = this.state.items[key];});
+        this.setState({
+          items: newItems
+        });
+      }, 1000);
   }
   
   renderItem(item) {
@@ -314,7 +359,7 @@ export default class Calendar extends Component {
       <TouchableOpacity
         style={styles.item} 
         onPress={() => 
-          Alert.alert(item.title, item.startDate.getFormattedTime() + "\n" + item.agenda,
+          Alert.alert(item.title, item.startDate.getFormattedTime() + ' - ' + item.endDate.getFormattedTime() + "\n" + item.agenda,
           [{text: "Delete", onPress: () => this.deleteMeeting(item)},
           {text: "Edit", onPress: () => {this.setMeetingModalVisible(true)
                                         this.setState({editing : true,
@@ -322,7 +367,7 @@ export default class Calendar extends Component {
                                           meetingAgenda: item.agenda,
                                           startDate: item.startDate,
                                           endDate: item.endDate,
-                                          id: item.id
+                                          item: item
                                         })}},
           {text: "OK", onPress: () => console.log("Cancel")}]) }
       >
@@ -359,23 +404,26 @@ export default class Calendar extends Component {
     return (
       <View style={{flex: 1}}>
       <Agenda
-        selected={`${new Date(new Date() - 24 * 60 * 60 * 1000).getFullYear()}-${new Date(new Date() - 24 * 60 * 60 * 1000).toLocaleDateString().replace(/\//g, '-').slice(0, 5)}`}
-        markingType={'custom'}
-        items={this.state.meetings}
-        loadItemsForMonth={this.loadItems.bind(this)}
+        // markingType={'custom'}
+        items={this.state.items}
+        loadItemsForMonth={(day) => this.loadItems(day)}
         renderItem={this.renderItem.bind(this)}
         rowHasChanged={this.rowHasChanged.bind(this)}
         markedDates={this.state.markedDates}
         onDayChange={(day) => {
+          day = new Date(day.timestamp + 5 * 60 * 60 * 1000)
+          day.setHours(this.state.startDate.getHours(), this.state.startDate.getMinutes())
           //i think this is required so the agenda doesn't update the date while a datePicker is loaded
           if (!this.state.endPickerVisible && !this.state.startPickerVisible) {
           //change to date object in the eastern timezone
-          this.setState({startDate : new Date(day.timestamp + 4 * 60 * 60 * 1000),
-                        endDate : new Date(day.timestamp + 4 * 60 * 60 * 1000)})
+          this.setState({startDate : day,
+                      endDate : day})
         }}}
         onDayPress={(day) => {
-          this.setState({startDate : new Date(day.timestamp + 4 * 60 * 60 * 1000),
-                        endDate : new Date(day.timestamp + 4 * 60 * 60 * 1000)})
+          day = new Date(day.timestamp + 5 * 60 * 60 * 1000)
+          day.setHours(this.state.startDate.getHours(), this.state.startDate.getMinutes())
+          this.setState({startDate : day,
+            endDate : day})         
         }}
     />
 
@@ -387,38 +435,25 @@ export default class Calendar extends Component {
             }}
          />
          
-         {this.showMeetingModal()}
-         {this.state.endPickerVisible && (
         <DateTimePickerModal
-          // I LOVE PICKERS YES I DO
-          // value={this.state.endDate}
+          isVisible={this.state.endPickerVisible}
+          date={this.state.endDate}
           mode={this.state.datePickerMode}
           onConfirm={(currentDate) => this.setState({endDate : currentDate,
                             endPickerVisible : false})}
           onCancel={() => this.setState({endPickerVisible : false})}
-          // display="default"
-          // onChange={(event, selectedDate) => {
-          //   const currentDate = selectedDate || this.state.endDate
-          //   this.setState({endDate : currentDate,
-          //                 endPickerVisible : false})
-          // }}
         />
-      )}
-      {this.state.startPickerVisible && (
+        
         <DateTimePickerModal
-          // value={this.state.startDate}
+          isVisible={this.state.startPickerVisible}
+          date={this.state.startDate}
           mode={this.state.datePickerMode}
           onConfirm={(currentDate) => this.setState({startDate : currentDate,
             startPickerVisible : false})}
           onCancel={() => this.setState({startPickerVisible : false})}
-          // display="default"
-          // onChange={(event, selectedDate) => {
-          //   const currentDate = selectedDate || this.state.startDate
-          //   this.setState({startDate : currentDate,
-          //                 startPickerVisible : false})
-          // }}
         />
-      )}
+
+      {this.showMeetingModal()}
       </View>
     );
   }
