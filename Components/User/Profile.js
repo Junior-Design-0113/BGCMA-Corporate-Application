@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, Modal, TextInput, TouchableHighlight} from 'react-native';
+import { StyleSheet, Text, View, Modal, Image, TextInput, TouchableHighlight} from 'react-native';
 import {Button} from 'native-base';
 import ActionSheet from 'react-native-actionsheet';
+import * as ImagePicker from 'expo-image-picker';
 
 const firebase = require("../../server/router");
 const s = require('../../Style/style')
@@ -33,7 +34,8 @@ class Profile extends Component {
 			newNickname: '',
 			newComm: '',
 			newBio: '',
-			modalEditVisible: false,
+      modalEditVisible: false,
+      imageURL: '',
 		}
 	}
 
@@ -44,7 +46,9 @@ class Profile extends Component {
 		});
 
 		//Update the right fields in state to show user's info in render()
-		this.getUserInfo(this.state.email);
+    this.getUserInfo(this.state.email);
+    
+    this.downloadImage(); 
 	}
 
 	//Can modify this function for the chat components to find accounts based on different emails
@@ -207,7 +211,39 @@ class Profile extends Component {
 	// 			userInfo: bio
 	// 		  });
 	// 	}
-	// }
+  // }
+  
+  pickImage = async () => {
+    //this.imageURL = 'https://reactnativecode.com/wp-content/uploads/2017/05/react_thumb_install.png'; 
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+    
+    if (!result.cancelled) {
+        const response = await fetch(result.uri);
+        const blob = await response.blob();
+        var ref = firebase.firebaseConnection.storage().ref("Profiles/" + this.state.email);
+        //this.setState({imageURL: this.downloadImage()});
+        this.downloadImage(); 
+        return ref.put(blob);
+    }
+};
+
+
+downloadImage = async () => {
+  const storage = firebase.firebaseConnection.storage();
+
+  storage.ref("Profiles/" + this.state.email).getDownloadURL()
+  .then((url) => {
+    // Do something with the URL ...
+    this.setState({imageURL: url});
+  })
+}
 
 	setEditModalVisible(val) {
 		this.setState({modalEditVisible: val});
@@ -217,10 +253,12 @@ class Profile extends Component {
 	    return (
 	    	<View style={styles.container}>
 		    	<View style={styles.form}>
+          <Button title="Edit Image" onPress={this.pickImage} />
+              <Image source={ {uri: this.state.imageURL} } style={{ width: 200, height: 200 }} />   
 					<TouchableHighlight style={{...styles.editProfile}} onPress={() => {
 						this.setEditModalVisible(true)
 					}}>
-						<Text style={{...styles.delButtonText, width:'100%', fontSize:25}}>Edit Profile</Text>
+						<Text style={{...styles.delButtonText, width:'100%', fontSize:10}}>Edit Profile</Text>
 					</TouchableHighlight>
 			        <Text style={styles.profileTitle}>{this.state.firstName}</Text>
 			        <Text style={styles.profileTitle}>{this.state.lastName}</Text>
@@ -239,6 +277,7 @@ class Profile extends Component {
 	    );
 	}
 }
+export default Profile
 
 const styles2 = StyleSheet.create({
 	button: {
@@ -322,4 +361,3 @@ const styles2 = StyleSheet.create({
   },
   });
 
-export default Profile
