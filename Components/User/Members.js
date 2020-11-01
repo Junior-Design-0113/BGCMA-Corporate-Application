@@ -59,7 +59,12 @@ class Members extends Component {
 
   filterUsers() {
     if (this.state.selectedCommittee) {
-      const filtered = this.state.users.filter(data => data.Committee == this.state.selectedCommittee);
+      var filtered = null
+      if (this.state.selectedCommittee === 'Executive Committee') {
+        filtered = this.state.users.filter(data => data.Executive);
+      } else {
+        filtered = this.state.users.filter(data => data.Committee == this.state.selectedCommittee);
+      }
       //console.log(filtered);
       this.setState({
         users: filtered
