@@ -52,6 +52,13 @@ module.exports.styles = StyleSheet.create({
         marginRight: 10,
         marginLeft: 10,
       },
+      messageButton: {
+        backgroundColor: '#0081c6',
+        flexBasis: 70,
+        borderRadius: 20,
+        marginLeft: 100,
+
+      },
       pageButton: {
         flexDirection: 'row', 
         padding: 20,
@@ -245,6 +252,16 @@ module.exports.styles = StyleSheet.create({
         marginRight: 10,
         marginLeft: 10,
       },
+      editProfile: {
+        flexDirection: 'row', 
+        padding: 10,
+        width: '40%',
+        backgroundColor: '#FF8200',
+        borderRadius: 35,
+        alignItems: 'center',
+        marginRight: 5,
+        marginLeft: 5,
+      },
       input: {
         margin: 15,
         marginLeft: 2,
@@ -253,4 +270,27 @@ module.exports.styles = StyleSheet.create({
         borderWidth: 1,
         paddingLeft: 10
      },
+      profileTitle: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        fontSize: 35,
+      },
+      profileText: {
+        color: 'black',
+        fontWeight: '700',
+        fontSize: 20,
+        marginRight: 'auto',
+        marginLeft: 'auto'
+      },
+      profileSubtext: {
+        color: 'black',
+        fontWeight: '300',
+        fontSize: 18,
+        marginRight: 'auto',
+        marginLeft: 'auto',
+        paddingBottom: 20
+      }
     });

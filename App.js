@@ -6,7 +6,6 @@ import { Button, StyleSheet, Text, View } from 'react-native';
 import Login from './Components/Authentication/Login'
 import Profile from './Components/User/Profile';
 import Calendar from './Components/User/Calendar';
-import Chat from './Components/User/Chat';
 import Pages from './Components/User/Pages';
 import Home from './Components/User/Home';
 import PendingUsers from './Components/Admin/PendingUsers';
@@ -14,7 +13,7 @@ import Register from './Components/Authentication/Register'
 import CommitteeHome from './Components/CommitteePage/CommitteeHome'
 import MeetingFiles from './Components/CommitteePage/MeetingFiles'
 import Announcements from './Components/CommitteePage/Announcements'
-import Members from './Components/CommitteePage/Members'
+import Members from './Components/User/Members'
 import AnnouncementPage from './Components/CommitteePage/AnnouncementPage'
 
 
@@ -40,13 +39,12 @@ class App extends Component {
           <Stack.Screen name="Home" component={Home}/>
           <Stack.Screen name="Profile" component={Profile}/>
           <Stack.Screen name="Calendar" component={Calendar}/>
-          <Stack.Screen name="Chat" component={Chat}/>
+          <Stack.Screen name="Members" component={Members}/>
           <Stack.Screen name="Pages" component={Pages} options={{title: 'Your Pages'}}/>
           <Stack.Screen name="Pending Users" component={PendingUsers}/>
           <Stack.Screen name="Team Page" component={CommitteeHome} options={{title: ''}}/>
           <Stack.Screen name="Meeting Files" component={MeetingFiles}/>
           <Stack.Screen name="Announcements" component={Announcements}/>
-          <Stack.Screen name="Members" component={Members}/>
           <Stack.Screen name="AnnouncementPage" component={AnnouncementPage}/>
         </Stack.Navigator>
       </NavigationContainer>
