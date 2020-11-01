@@ -214,7 +214,6 @@ class Profile extends Component {
   // }
   
   pickImage = async () => {
-    //this.imageURL = 'https://reactnativecode.com/wp-content/uploads/2017/05/react_thumb_install.png'; 
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -228,7 +227,6 @@ class Profile extends Component {
         const response = await fetch(result.uri);
         const blob = await response.blob();
         var ref = firebase.firebaseConnection.storage().ref("Profiles/" + this.state.email);
-        //this.setState({imageURL: this.downloadImage()});
         this.downloadImage(); 
         return ref.put(blob);
     }
@@ -253,12 +251,15 @@ downloadImage = async () => {
 	    return (
 	    	<View style={styles.container}>
 		    	<View style={styles.form}>
-          <Button title="Edit Image" onPress={this.pickImage} />
-              <Image source={ {uri: this.state.imageURL} } style={{ width: 200, height: 200 }} />   
+            <Image source={ {uri: this.state.imageURL} } style={{ width: 200, height: 200 }} />   
+            <TouchableHighlight style={{...styles.editProfile}} onPress={() => {this.pickImage()}}>
+            <Text style={{...styles.delButtonText, width:'100%', fontSize:12}}>Edit Image</Text>
+            </TouchableHighlight>
+  
 					<TouchableHighlight style={{...styles.editProfile}} onPress={() => {
 						this.setEditModalVisible(true)
 					}}>
-						<Text style={{...styles.delButtonText, width:'100%', fontSize:10}}>Edit Profile</Text>
+						<Text style={{...styles.delButtonText, width:'100%', fontSize:16}}>Edit Profile</Text>
 					</TouchableHighlight>
 			        <Text style={styles.profileTitle}>{this.state.firstName}</Text>
 			        <Text style={styles.profileTitle}>{this.state.lastName}</Text>
