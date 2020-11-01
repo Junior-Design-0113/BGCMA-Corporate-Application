@@ -52,6 +52,13 @@ module.exports.styles = StyleSheet.create({
         marginRight: 10,
         marginLeft: 10,
       },
+      messageButton: {
+        backgroundColor: '#0081c6',
+        flexBasis: 70,
+        borderRadius: 20,
+        marginLeft: 100,
+
+      },
       pageButton: {
         flexDirection: 'row', 
         padding: 20,

@@ -66,7 +66,7 @@ class Home extends Component {
   }
   chat() {
       var navigation = this.props.navigation;
-      navigation.navigate('Chat', {state: this.state})
+      navigation.navigate('Members', {state: this.state})
   }
   pages() {
       var navigation = this.props.navigation;

@@ -14,7 +14,6 @@ class Profile extends Component {
 			committee: null,
 			admin: false,
 			executive: false,
-			selectedCommittee: null,
 		    firstName: '',
 	   		lastName: '',
 	   		//userInfo: '',
