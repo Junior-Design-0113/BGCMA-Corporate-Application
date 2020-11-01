@@ -178,7 +178,7 @@ class Profile extends Component {
 		this.state.firestoreRef = firebase.firebaseConnection.firestore().collection("Users").doc(this.state.email).update({
 			Committee: this.state.newComm
 		  });
-		  this.setState({committee: newComm})
+		  this.setState({committee: this.state.newComm})
 		  this.setState({newComm:''})
 	}
 
@@ -187,7 +187,7 @@ class Profile extends Component {
 		this.state.firestoreRef = firebase.firebaseConnection.firestore().collection("Users").doc(this.state.email).update({
 			Nickname: this.state.newNickname
 		  });
-		this.setState({Nickname: newNickname})
+		this.setState({Nickname: this.state.newNickname})
 		this.setState({newNickname: ''})
 	}
 	
@@ -196,7 +196,7 @@ class Profile extends Component {
 		this.state.firestoreRef = firebase.firebaseConnection.firestore().collection("Users").doc(this.state.email).update({
 			userInfo: this.state.newBio
 		  });
-		  this.setState({userInfo: newBio})
+		  this.setState({userInfo: this.state.newBio})
 		  this.setState({newBio: ''})
 	}
 
