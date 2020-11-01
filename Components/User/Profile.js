@@ -217,10 +217,10 @@ class Profile extends Component {
 	    return (
 	    	<View style={styles.container}>
 		    	<View style={styles.form}>
-					<TouchableHighlight onPress={() => {
+					<TouchableHighlight style={{...styles.editProfile}} onPress={() => {
 						this.setEditModalVisible(true)
 					}}>
-						<Text style = {styles.profileSubtext}>{"Edit Profile"}</Text>
+						<Text style={{...styles.delButtonText, width:'100%', fontSize:25}}>Edit Profile</Text>
 					</TouchableHighlight>
 			        <Text style={styles.profileTitle}>{this.state.firstName}</Text>
 			        <Text style={styles.profileTitle}>{this.state.lastName}</Text>

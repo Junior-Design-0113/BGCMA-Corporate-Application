@@ -252,6 +252,16 @@ module.exports.styles = StyleSheet.create({
         marginRight: 10,
         marginLeft: 10,
       },
+      editProfile: {
+        flexDirection: 'row', 
+        padding: 10,
+        width: '40%',
+        backgroundColor: '#FF8200',
+        borderRadius: 35,
+        alignItems: 'center',
+        marginRight: 5,
+        marginLeft: 5,
+      },
       input: {
         margin: 15,
         marginLeft: 2,
