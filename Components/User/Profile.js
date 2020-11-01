@@ -63,7 +63,7 @@ class Profile extends Component {
 			    	this.setState({firstName:doc.data().firstName});
 					this.setState({lastName:doc.data().lastName});   
 					this.setState({userInfo:doc.data().userInfo})	
-					this.setState({nickname:doc.date().Nickname})
+					this.setState({nickname:doc.data().Nickname})
 			    	//this.setState({userInfo:doc.data().userInfo});  
 			    } else {
 			        // doc.data() will be undefined in this case
@@ -224,7 +224,7 @@ class Profile extends Component {
 					</TouchableHighlight>
 			        <Text style={styles.profileTitle}>{this.state.firstName}</Text>
 			        <Text style={styles.profileTitle}>{this.state.lastName}</Text>
-					<Text style={styles.profileTitle}>{this.state.nickname}</Text>
+					<Text style={styles.profileText}>({this.state.nickname})</Text>
 			        <Text style={styles.profileText}>{}</Text>
 
 			        <Text style={styles.profileText}>{"Committee: "}</Text>
