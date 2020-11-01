@@ -187,7 +187,7 @@ class Profile extends Component {
 		this.state.firestoreRef = firebase.firebaseConnection.firestore().collection("Users").doc(this.state.email).update({
 			Nickname: this.state.newNickname
 		  });
-		this.setState({Nickname: this.state.newNickname})
+		this.setState({nickname: this.state.newNickname})
 		this.setState({newNickname: ''})
 	}
 	
