@@ -217,7 +217,7 @@ class Profile extends Component {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1, 1],
       quality: 1,
     });
 
@@ -227,8 +227,8 @@ class Profile extends Component {
         const response = await fetch(result.uri);
         const blob = await response.blob();
         var ref = firebase.firebaseConnection.storage().ref("Profiles/" + this.state.email);
-        this.downloadImage(); 
-        return ref.put(blob);
+		ref.put(blob);
+		this.downloadImage(); 
     }
 };
 
@@ -239,8 +239,18 @@ downloadImage = async () => {
   storage.ref("Profiles/" + this.state.email).getDownloadURL()
   .then((url) => {
     // Do something with the URL ...
-    this.setState({imageURL: url});
+	this.setState({imageURL: url});
+  }).catch(() => {
+	console.log("error")
   })
+}
+
+displayImage() {
+	if (this.state.imageURL) {
+		return (<Image source={ {uri: this.state.imageURL} } style={{ width: 200, height: 200 }} />) 
+	} else {
+		return (<Image source={ require('../../assets/defaultProfile.png') } style={{ width: 200, height: 200 }} />)
+	}
 }
 
 	setEditModalVisible(val) {
@@ -249,28 +259,35 @@ downloadImage = async () => {
 
     render() {
 	    return (
-	    	<View style={styles.container}>
-		    	<View style={styles.form}>
-            <Image source={ {uri: this.state.imageURL} } style={{ width: 200, height: 200 }} />   
-            <TouchableHighlight style={{...styles.editProfile}} onPress={() => {this.pickImage()}}>
-            <Text style={{...styles.delButtonText, width:'100%', fontSize:12}}>Edit Image</Text>
-            </TouchableHighlight>
+	    	<View style={{...styles.container, justifyContent : 'flex-start', paddingTop: 10 }}>
+				<TouchableHighlight style={{ borderColor: '#0081c6', borderWidth: 5}}> 
+					{this.displayImage()}
+				</TouchableHighlight>
+            
+				{/* <TouchableHighlight style={{...styles.editProfile}} onPress={() => {this.pickImage()}}>
+					<Text style={{...styles.delButtonText, width:'100%', fontSize:12}}>Edit Image</Text>
+				</TouchableHighlight> */}
   
 					<TouchableHighlight style={{...styles.editProfile}} onPress={() => {
 						this.setEditModalVisible(true)
 					}}>
 						<Text style={{...styles.delButtonText, width:'100%', fontSize:16}}>Edit Profile</Text>
 					</TouchableHighlight>
-			        <Text style={styles.profileTitle}>{this.state.firstName}</Text>
-			        <Text style={styles.profileTitle}>{this.state.lastName}</Text>
+			        <Text style={styles.profileTitle}>{`${this.state.firstName} ${this.state.lastName}`}</Text>
+			        {/* <Text style={styles.profileTitle}>{this.state.lastName}</Text> */}
 					<Text style={styles.profileText}>({this.state.nickname})</Text>
 			        <Text style={styles.profileText}>{}</Text>
-
-			        <Text style={styles.profileText}>{"Committee: "}</Text>
+					<View style={{alignSelf: 'flex-start', paddingLeft: 15}}>
+			        	<Text style={styles.profileText}>{"Committee: "}</Text>
+					</View>
 			        <Text style={styles.profileSubtext}>{this.state.committee}</Text>
-			        <Text style={styles.profileText}>{"Info: "}</Text>
-			        <Text style={styles.profileSubtext}>{this.state.userInfo}</Text>		 
-		        </View>
+					
+					<View style={{alignSelf: 'flex-start', paddingLeft: 15}}>
+			        	<Text style={styles.profileText}>{"Info: "}</Text>
+					</View>
+					<View style={{alignSelf: 'flex-start', paddingLeft: 30}}>
+			        	<Text style={styles.profileSubtext}>{this.state.userInfo}</Text>
+					</View>		 
 				{this.showEditModal()}
 		         
 	        </View>
