@@ -68,13 +68,13 @@ class Login extends Component {
             password: null})
           .then(() => {
           firebase.firebaseConnection.auth().createUserWithEmailAndPassword(self.state.user, self.state.password)
-          .then(() => {
-            firebase.firebaseConnection.auth().signInWithEmailAndPassword(self.state.user, self.state.password)
+          // .then(() => {
+          //   firebase.firebaseConnection.auth().signInWithEmailAndPassword(self.state.user, self.state.password)
           .then(() => {
             var navigation = self.props.navigation;
             navigation.navigate('Home', {user: self.state.user})
           })
-          })
+          // })
         })
         } else {
           Alert.alert(error.message)

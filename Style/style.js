@@ -256,11 +256,12 @@ module.exports.styles = StyleSheet.create({
         flexDirection: 'row', 
         padding: 10,
         width: '40%',
-        backgroundColor: '#FF8200',
+        backgroundColor: '#0081c6',
         borderRadius: 35,
         alignItems: 'center',
         marginRight: 5,
         marginLeft: 5,
+        marginTop: 10,
       },
       input: {
         margin: 15,
@@ -276,11 +277,11 @@ module.exports.styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
-        fontSize: 35,
+        fontSize: 25,
+        fontWeight: '700',
       },
       profileText: {
         color: 'black',
-        fontWeight: '700',
         fontSize: 20,
         marginRight: 'auto',
         marginLeft: 'auto'

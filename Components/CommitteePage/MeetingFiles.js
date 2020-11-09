@@ -147,7 +147,7 @@ class MeetingFiles extends Component {
     this.updateScreen();
   }
 
-  saveFile = async (fileUri: string) => {
+  saveFile = async (fileUri) => {
     //Need to get camera permissions first
     const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     if (status === "granted") {
