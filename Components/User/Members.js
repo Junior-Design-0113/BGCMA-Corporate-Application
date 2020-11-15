@@ -18,7 +18,9 @@ class Members extends Component {
 			admin: false,
 			executive: false,
       selectedCommittee: null,
-      users: []
+      users: [],
+      roomId: "",
+      roomFound: false
 
     }
     this.arrayholder = [];
@@ -83,7 +85,7 @@ class Members extends Component {
                 navigation.navigate('Profile', {state: user})}}>
               <Text >{`${user.firstName} ${user.lastName}`}</Text>
             </TouchableOpacity>
-            <Button  style={styles.messageButton} onPress={() => console.log(user)}>
+            <Button  style={styles.messageButton} onPress={() => this.checkCreateRoom(user)}>
               <Text style={styles.downButtonText}>Chat</Text>
             </Button>
           </View>
@@ -96,6 +98,46 @@ class Members extends Component {
         </View>
       )
   }
+
+  checkCreateRoom(user) {
+    const db = firebase.firebaseConnection.firestore();
+    db.collection('Chat').onSnapshot((querySnapshot) => {
+      this.setState({roomFound: false});
+      console.log("\n\n Beginning Search \n For room with " + this.state.email + " and " + user.email);
+
+      //Check against all chat rooms in database when chat button clicked; code inside here executed many times
+      querySnapshot.forEach((doc) => {
+        var r = doc.data();
+        
+        //Check both email combinations
+        if ((r.email1 == this.state.email && r.email2 == user.email) 
+          || (r.email2 == this.state.email && r.email1 == user.email)) {
+          
+          //Tried setting a variable for the unique id of the chat room so we can use it to navigate there later
+          //  but it doesn't seem to work. 
+          //this.setState({roomId: doc.id});
+          this.setState({roomFound: true});
+          console.log('\nFound the right room');
+        }
+        console.log(doc.data());          
+      });
+
+      //If the right room wasn't present then create it. Creates with a random id right now
+      if (this.state.roomFound == false) {
+        db.collection('Chat').doc().set({
+          email1: this.state.email,
+          email2: user.email
+        });
+
+        //Never seems to be called
+        console.log('\nMade a new room');
+
+        //set new roomId
+        //this.setState({roomId: doc.id});
+      }
+    })
+  }
+
   searchProfiles(text) {
     const newData = this.arrayholder.filter(function(item) {
       const name = `${item.firstName} ${item.lastName}`
