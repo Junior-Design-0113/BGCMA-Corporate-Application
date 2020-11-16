@@ -88,11 +88,11 @@ class Members extends Component {
             <Button  style={styles.messageButton} onPress={() => {
               //Get or make a room, should set roomId value into the state
               this.checkCreateRoom(user);  
-              
-              //Doesn't wait until checkCreate method is finished, just goes with the old roomId in state
-              console.log("pre nav: " + this.state.roomId);     
-              var navigation = this.props.navigation;
-              navigation.navigate('ChatPage', {state: this.state}); 
+
+              //Sometimes the check method is called a bunch of times, usually if you manually delete a conversation in firebase
+              // or make a new coversation. I wanted to put navigation to the next page outside the function but I couldn't
+              // get the roomId to pass on either through state or as an extra navigation parameter. So I put the navigation 
+              // call at the end of checkRoom. 
               //this.navigateToChat();
             }}>
               <Text style={styles.downButtonText}>Chat</Text>
@@ -108,13 +108,20 @@ class Members extends Component {
       )
   }
 
-  // async navigateToChat() {
-  //     await console.log("pre nav: " + this.state.roomId);     
-  //     var navigation = this.props.navigation;
-  //     await navigation.navigate('ChatPage', {state: this.state}); 
-  // }
+  //Navigate the screen to an individual chat page
+  navigateToChat() {   
+      var navigation = this.props.navigation;
+      navigation.navigate('ChatPage', {state: this.state}); 
+  }
 
-  //Look through all chat rooms to see if one exists, if not make one, and set the roomId into state so it can be passed on.
+  //The better/"updater" way to set state. Didn't help with updating roomId quickly.
+  updateRoomState = (room) => {
+    this.setState((prevState) => {
+      return {roomId: room} 
+    })
+  };
+
+  //Look through all chat rooms to see if one exists, if not make one. Set the roomId into state so it can be passed on.
   checkCreateRoom(user) {
     const db = firebase.firebaseConnection.firestore();
     db.collection('Chat').onSnapshot((querySnapshot) => {
@@ -124,30 +131,31 @@ class Members extends Component {
       //Check against all chat rooms in database when chat button clicked; code inside here executed many times
       querySnapshot.forEach((doc) => {
         var r = doc.data();
-        //Check both email combinations
+        //Check both email combinations. It's possible to make a chat with yourself/the same two emails.
         if ((r.email1 == this.state.email && r.email2 == user.email) 
           || (r.email2 == this.state.email && r.email1 == user.email)) {
-          this.setState({roomId: doc.id});
           this.setState({roomFound: true});
+          this.updateRoomState(doc.id);
           //console.log('\nFound the right room');
         }
       });
 
       //If the right room wasn't present then create it. Doesn't make a 'messages' collection
       if (this.state.roomFound == false) {
-        const docName = this.state.email + "_" + user.email;
+        const docName = this.state.email + "_" + user.email; //Should be unique
         db.collection('Chat').doc(docName).set({
           email1: this.state.email,
           email2: user.email
         });
-        //console.log('\nMade a new room with id ' + docName);
-
         //set new roomId
-        this.setState({roomId: docName});
+        this.updateRoomState(docName);
+
+        //console.log('\nMade a new room with id ' + docName);
       }
 
       //console.log("\nEnd of search. RoomID " + this.state.roomId + " \n\n")
-      console.log("end of check method: " + this.state.roomId + "\n");
+      //Go to chat page
+      this.navigateToChat(); 
     })
   }
 
@@ -170,25 +178,24 @@ class Members extends Component {
     return (
       <View style={styles.container}>
         <View style={{width: '100%', marginTop: 10}}>
-                <SearchBar
-                  containerStyle={{backgroundColor: 'default'}}
-                  style={styles.searchBarText}
-                  onChangeText={text => this.searchProfiles(text)}
-                  value={this.state.text}
-                  placeholder="Search Profiles"
-                  round
-                  lightTheme
-                  searchIcon={{ size:30 }}
-                />
-          </View>
-          <ScrollView>
-            {this.showUsers()}
+          <SearchBar
+            containerStyle={{backgroundColor: 'default'}}
+            style={styles.searchBarText}
+            onChangeText={text => this.searchProfiles(text)}
+            value={this.state.text}
+            placeholder="Search Profiles"
+            round
+            lightTheme
+            searchIcon={{ size:30 }}
+          />
+        </View>
+        <ScrollView>
+          {this.showUsers()}
         </ScrollView>
       </View>
     );
   }
   
 }
-
 
 export default Members

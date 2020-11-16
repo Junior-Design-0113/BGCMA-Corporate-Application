@@ -18,8 +18,6 @@ class ChatPage extends Component {
 	  users: [],
       selectedCommittee: null,
       roomId: "roomId",
-      //roomFound: false
-
     }
     // const db = fb.firebaseConnection.firestore()
     // this.ref = db.collection('PendingUsers')
@@ -30,7 +28,9 @@ class ChatPage extends Component {
     Object.keys(state).forEach(key => {
         this.setState({[key]: state[key]})
     });
-    //console.log(this.state);
+
+    //const room = this.props.route.params.roomId;
+    //this.setState({roomId: this.props.route.params.roomId})
   }
 
   render() {
@@ -38,7 +38,6 @@ class ChatPage extends Component {
       <View style={styles.container}>
       	<Text style={styles.title}>Chatt</Text>
       	<Text style={styles.title}>{"final id: " + this.state.roomId}</Text>
-      	{console.log("final id: " + this.state.roomId)}
    	  </View>
     );
   }
