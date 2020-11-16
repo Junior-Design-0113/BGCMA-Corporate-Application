@@ -19,7 +19,7 @@ class Members extends Component {
 			executive: false,
       selectedCommittee: null,
       users: [],
-      roomId: "",
+      roomId: "roomId",
       roomFound: false
 
     }
@@ -75,7 +75,6 @@ class Members extends Component {
   }
 
   showUsers() {
-
       const users = this.state.users.map(user => (
         <View key={user.email}>
           <View style={{flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, justifyContent: 'space-between'}}>
@@ -85,7 +84,17 @@ class Members extends Component {
                 navigation.navigate('Profile', {state: user})}}>
               <Text >{`${user.firstName} ${user.lastName}`}</Text>
             </TouchableOpacity>
-            <Button  style={styles.messageButton} onPress={() => this.checkCreateRoom(user)}>
+
+            <Button  style={styles.messageButton} onPress={() => {
+              //Get or make a room, should set roomId value into the state
+              this.checkCreateRoom(user);  
+              
+              //Doesn't wait until checkCreate method is finished, just goes with the old roomId in state
+              console.log("pre nav: " + this.state.roomId);     
+              var navigation = this.props.navigation;
+              navigation.navigate('ChatPage', {state: this.state}); 
+              //this.navigateToChat();
+            }}>
               <Text style={styles.downButtonText}>Chat</Text>
             </Button>
           </View>
@@ -99,42 +108,46 @@ class Members extends Component {
       )
   }
 
+  // async navigateToChat() {
+  //     await console.log("pre nav: " + this.state.roomId);     
+  //     var navigation = this.props.navigation;
+  //     await navigation.navigate('ChatPage', {state: this.state}); 
+  // }
+
+  //Look through all chat rooms to see if one exists, if not make one, and set the roomId into state so it can be passed on.
   checkCreateRoom(user) {
     const db = firebase.firebaseConnection.firestore();
     db.collection('Chat').onSnapshot((querySnapshot) => {
       this.setState({roomFound: false});
-      console.log("\n\n Beginning Search \n For room with " + this.state.email + " and " + user.email);
+      //console.log("\n\n Beginning Search \n For room with " + this.state.email + " and " + user.email);
 
       //Check against all chat rooms in database when chat button clicked; code inside here executed many times
       querySnapshot.forEach((doc) => {
         var r = doc.data();
-        
         //Check both email combinations
         if ((r.email1 == this.state.email && r.email2 == user.email) 
           || (r.email2 == this.state.email && r.email1 == user.email)) {
-          
-          //Tried setting a variable for the unique id of the chat room so we can use it to navigate there later
-          //  but it doesn't seem to work. 
-          //this.setState({roomId: doc.id});
+          this.setState({roomId: doc.id});
           this.setState({roomFound: true});
-          console.log('\nFound the right room');
+          //console.log('\nFound the right room');
         }
-        console.log(doc.data());          
       });
 
-      //If the right room wasn't present then create it. Creates with a random id right now
+      //If the right room wasn't present then create it. Doesn't make a 'messages' collection
       if (this.state.roomFound == false) {
-        db.collection('Chat').doc().set({
+        const docName = this.state.email + "_" + user.email;
+        db.collection('Chat').doc(docName).set({
           email1: this.state.email,
           email2: user.email
         });
-
-        //Never seems to be called
-        console.log('\nMade a new room');
+        //console.log('\nMade a new room with id ' + docName);
 
         //set new roomId
-        //this.setState({roomId: doc.id});
+        this.setState({roomId: docName});
       }
+
+      //console.log("\nEnd of search. RoomID " + this.state.roomId + " \n\n")
+      console.log("end of check method: " + this.state.roomId + "\n");
     })
   }
 
