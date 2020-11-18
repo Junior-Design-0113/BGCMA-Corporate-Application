@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Text, StyleSheet, TextInput, View, Alert, Switch} from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const firebase = require("../../server/router");
 const s = require('../../Style/style')
@@ -45,11 +46,16 @@ class ChatPage extends Component {
     const chatRooms = []
     var num = 0
 
-    listChatRooms.forEach(function(value, key) {
-      if (value === this.state.email) {
+    listChatRooms.forEach(function(value) {
+      if (value.getString("email1") === this.state.email) {
         chatRooms.push({
           key: num++, 
-          name: key, 
+          name: value.getString("email2"), //other user
+        })
+      } else if (value.getString("email2") === this.state.email) {
+        chatRooms.push({
+          key: num++, 
+          name: value.getString("email1"), //other user
         })
       }
     })
@@ -60,12 +66,28 @@ class ChatPage extends Component {
     return this.state.chatRooms; 
   };
 
-   
+  listChats() {
+    const chatView = this.state.chatRooms.map(chatRoom => (
+      <View key={chatRooms.key} style={{flexDirection: 'row', paddingVertical: 10, borderBottomColor: 'gray', borderBottomWidth: 1,  justifyContent: 'space-between'}}>
+        <Text style={styles.listFiles} numberOfLines= {3} ellipsizeMode = 'middle'>{chatRooms.name}</Text>
+        <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}></View>
+      </View>
+    ))
+  
+    return (
+    <View>
+      {chatView}
+    </View>
+    )
+  }
+
+  
   render() {
     return ( 
       <View style={styles.container}>
       	<Text style={styles.title}>Chat</Text>
       	<Text style={styles.title}>{"final id: " + this.state.roomId}</Text>
+        <ScrollView>{this.listChats()}</ScrollView>
    	  </View>
     );
   }
