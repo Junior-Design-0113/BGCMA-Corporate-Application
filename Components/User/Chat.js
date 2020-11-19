@@ -47,6 +47,11 @@ class Chat extends Component {
         const query2 = await dataRef.where('email2', '==', this.state.email);
         this.unsubscribe = query2.onSnapshot(this.getChats);
     }   
+    gotochat(chatid){
+      console.log(chatid)
+      var navigation = this.props.navigation;
+      navigation.navigate('Message', {chatid: this.state.chatid})
+    }
 
     componentWillUnmount(){
         this.unsubscribe();
@@ -116,23 +121,29 @@ class Chat extends Component {
             this.state.chatArr.map((item, i) => {
               if (item.email1 === this.state.email && !(item.email2 === this.state.email)) {
                 return (
-                  <ListItem
-                    key={i}
-                    bottomDivider
-                    title= {item.email2}
-                  />
+                    <ListItem
+                      key={i}
+                      bottomDivider
+                      title= {item.email2}
+                      button
+                      onPress={()=>this.gotochat(item.key)}
+                    />
+                  
                 );
               } else if (item.email2 === this.state.email && !(item.email1 === this.state.email)){
                 return (
-                  <ListItem
-                    key={i}
-                    bottomDivider
-                    title= {item.email1}
-                  //   onPress={() => {
-                  //     this.setModalVisible(true, this.state.firestoreRef.doc(item.title), item.title, item.message);
-                  //   }
-                  //   }
-                  />
+                    <ListItem
+                      key={i}
+                      bottomDivider
+                      title= {item.email1}
+                      button
+                      onPress={()=>this.gotochat(item.key)}
+                    //   onPress={() => {
+                    //     this.setModalVisible(true, this.state.firestoreRef.doc(item.title), item.title, item.message);
+                    //   }
+                    //   }
+                    />
+                  
                 );
                 }
             })
