@@ -48,9 +48,8 @@ class Chat extends Component {
         this.unsubscribe = query2.onSnapshot(this.getChats);
     }   
     gotochat(chatid){
-      console.log(chatid)
       var navigation = this.props.navigation;
-      navigation.navigate('Message', {chatid: this.state.chatid})
+      navigation.navigate('Chat Room', {chatid: chatid})
     }
 
     componentWillUnmount(){

@@ -109,9 +109,9 @@ class Members extends Component {
   }
 
   //Navigate the screen to an individual chat page
-  navigateToChat() {   
+  navigateToChat(id) {   
       var navigation = this.props.navigation;
-      navigation.navigate('ChatPage', {state: this.state}); 
+      navigation.navigate('Chat Room', {chatid: id}); 
   }
 
   //The better/"updater" way to set state. Didn't help with updating roomId quickly.
@@ -142,7 +142,9 @@ class Members extends Component {
 
       //If the right room wasn't present then create it. Doesn't make a 'messages' collection
       if (this.state.roomFound == false) {
-        const docName = this.state.email + "_" + user.email; //Should be unique
+        var docName = this.state.email + "_" + user.email; //Should be unique
+        docName = docName.replaceAll('@','')
+        docName = docName.replaceAll('.','')
         db.collection('Chat').doc(docName).set({
           email1: this.state.email,
           email2: user.email
@@ -155,7 +157,7 @@ class Members extends Component {
 
       //console.log("\nEnd of search. RoomID " + this.state.roomId + " \n\n")
       //Go to chat page
-      this.navigateToChat(); 
+      this.navigateToChat(docName); 
     })
   }
 
