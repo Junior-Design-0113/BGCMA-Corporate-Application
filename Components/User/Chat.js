@@ -26,7 +26,6 @@ class Chat extends Component {
           res: null,
           fileSelected: false,
           chatArr: [],
-          userChatArr: [],
           isLoading: true,
         }
         this.arrayholder = [];
