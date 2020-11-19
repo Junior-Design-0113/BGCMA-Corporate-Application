@@ -15,6 +15,7 @@ import MeetingFiles from './Components/CommitteePage/MeetingFiles'
 import Announcements from './Components/CommitteePage/Announcements'
 import Members from './Components/User/Members'
 import AnnouncementPage from './Components/CommitteePage/AnnouncementPage'
+import Chat from './Components/User/Chat'
 
 
 const firebase = require("./server/router");
@@ -46,6 +47,7 @@ class App extends Component {
           <Stack.Screen name="Meeting Files" component={MeetingFiles}/>
           <Stack.Screen name="Announcements" component={Announcements}/>
           <Stack.Screen name="AnnouncementPage" component={AnnouncementPage}/>
+          <Stack.Screen name="Chat" component={Chat}/>
         </Stack.Navigator>
       </NavigationContainer>
     );
