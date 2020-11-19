@@ -26,6 +26,7 @@ class Chat extends Component {
           res: null,
           fileSelected: false,
           chatArr: [],
+          userChatArr: [],
           isLoading: true,
         }
         this.arrayholder = [];
@@ -74,7 +75,7 @@ class Chat extends Component {
           isLoading: false,
        });
     }
-      
+
     async listChats() {
         const chatsView = this.state.chats.map(chat => (
           <View key={chat.email1} style={{flexDirection: 'row', paddingVertical: 10, borderBottomColor: 'gray', borderBottomWidth: 1,  justifyContent: 'space-between'}}>
@@ -114,18 +115,27 @@ class Chat extends Component {
             { <ScrollView>
           {
             this.state.chatArr.map((item, i) => {
-              return (
-                <ListItem
-                  key={i}
-                  bottomDivider
-                  title= {item.email2}
-
-                //   onPress={() => {
-                //     this.setModalVisible(true, this.state.firestoreRef.doc(item.title), item.title, item.message);
-                //   }
-                //   }
-                />
-              );
+              if (item.email1 === this.state.email && !(item.email2 === this.state.email)) {
+                return (
+                  <ListItem
+                    key={i}
+                    bottomDivider
+                    title= {item.email2}
+                  />
+                );
+              } else if (item.email2 === this.state.email && !(item.email1 === this.state.email)){
+                return (
+                  <ListItem
+                    key={i}
+                    bottomDivider
+                    title= {item.email1}
+                  //   onPress={() => {
+                  //     this.setModalVisible(true, this.state.firestoreRef.doc(item.title), item.title, item.message);
+                  //   }
+                  //   }
+                  />
+                );
+                }
             })
           }
           </ScrollView> }
