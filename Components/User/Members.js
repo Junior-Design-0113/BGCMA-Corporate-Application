@@ -143,8 +143,8 @@ class Members extends Component {
       //If the right room wasn't present then create it. Doesn't make a 'messages' collection
       if (this.state.roomFound == false) {
         var docName = this.state.email + "_" + user.email; //Should be unique
-        docName = docName.replaceAll('@','')
-        docName = docName.replaceAll('.','')
+        docName = docName.split('@').join()
+        docName = docName.split('.').join()
         db.collection('Chat').doc(docName).set({
           email1: this.state.email,
           email2: user.email
