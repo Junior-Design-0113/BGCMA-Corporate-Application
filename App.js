@@ -20,14 +20,9 @@ import ChatPage from './Components/User/ChatPage'
 import ChatRoom from './Components/User/ChatRoom/ChatRoom'
 
 const firebase = require("./server/router");
-
-
 const Stack = createStackNavigator();
 
-
 class App extends Component {
-
-
   componentDidMount() {
     firebase.initializeFirebase()
   }
@@ -55,7 +50,6 @@ class App extends Component {
       </NavigationContainer>
     );
   }
-  
 }
 
 const styles = StyleSheet.create({

@@ -7,16 +7,16 @@ import 'firebase/firestore';
 
 const fb = require("../../server/router")
 
-  const committeeList = [
-    'Budget, Finance, & Audit',
-    'Board Development',
-    'Human Resources',
-    'Impact',
-    'Investment',
-    'Resource Development & Marketing',
-    'Safety Asset Management',
-    ''
-  ];
+const committeeList = [
+  'Budget, Finance, & Audit',
+  'Board Development',
+  'Human Resources',
+  'Impact',
+  'Investment',
+  'Resource Development & Marketing',
+  'Safety Asset Management',
+  ''
+];
 
 class PendingUsers extends Component {
   constructor(props) {
@@ -53,11 +53,10 @@ class PendingUsers extends Component {
         this.populatePendingUsers()
       })
     })
-
   }
   
   approve(pendingUser) {
-      fb.firebaseConnection.firestore().collection('Users').doc(pendingUser.id).set({
+    fb.firebaseConnection.firestore().collection('Users').doc(pendingUser.id).set({
       Admin: pendingUser.Admin,
       Committee: pendingUser.Committee,
       Executive: pendingUser.Executive,
@@ -78,8 +77,8 @@ class PendingUsers extends Component {
 
   delete(pendingUser) {
     fb.firebaseConnection.firestore().collection('PendingUsers').doc(pendingUser.id).delete()
-      console.log("deleted user")
-      Alert.alert("User has succesfully been deleted");
+    console.log("deleted user")
+    Alert.alert("User has succesfully been deleted");
   }
   
   async edit(pendingUser) {
@@ -96,8 +95,6 @@ class PendingUsers extends Component {
       editable: !!(this.state.editable % 2) ? pendingUser.editable : pendingUser.editable + 1
     })
     // console.log(pendingUser.id + " Committee: " +  pendingUser.Committee)
-    // console.log(pendingUser.id + " Admin: " +  pendingUser.Admin)
-    // console.log(pendingUser.id + " lastName: " +  pendingUser.lastName)
 
     await fb.firebaseConnection.firestore().collection('PendingUsers').doc(pendingUser.id).update({
 			Admin: pendingUser.Admin,
@@ -106,8 +103,8 @@ class PendingUsers extends Component {
 			firstName: pendingUser.firstName,
 			lastName: pendingUser.lastName,
 		}).catch((error) => {
-	        console.log(error)
-	        Alert.alert(error.message)
+      console.log(error)
+      Alert.alert(error.message)
 		})
 
     Alert.alert("Your changes have been submitted")
@@ -121,90 +118,89 @@ class PendingUsers extends Component {
     const pendingUsers = this.state.pendingUsers.map(pendingUser => (
       <View key={pendingUser.id}>
         <TextInput style={styles.title} 
-          // editable = {(pendingUser.editable + 1) == this.state.editable}
           editable = {false}
         >{pendingUser.id} </TextInput>
 
         <View style={{flexDirection: 'row'}}>
-        <View>
-          <TextInput style={styles.text} editable = {false} > Name:  </TextInput>
-          <TextInput style={styles.text} editable = {false} ></TextInput>
-          <TextInput style={styles.text} editable = {false} > Committee:  </TextInput>
-          <TextInput style={styles.text} editable = {false} > Admin:  </TextInput>
-          <TextInput style={styles.text} editable = {false} > Executive:  </TextInput>
-        </View>
+          <View>
+            <TextInput style={styles.text} editable = {false} > Name:  </TextInput>
+            <TextInput style={styles.text} editable = {false} ></TextInput>
+            <TextInput style={styles.text} editable = {false} > Committee:  </TextInput>
+            <TextInput style={styles.text} editable = {false} > Admin:  </TextInput>
+            <TextInput style={styles.text} editable = {false} > Executive:  </TextInput>
+          </View>
         
-        <View>
-          <TextInput style={styles.text2} 
-            editable = {(pendingUser.editable + 1) == this.state.editable}
-            autoCorrect={false}
-	          onChangeText={firstName => {pendingUser.firstName = firstName}}
-          >{pendingUser.firstName}</TextInput>
-          
-          <TextInput style={styles.text2} 
-            editable = {(pendingUser.editable + 1) == this.state.editable}
-            onChangeText={lastName => {pendingUser.lastName = lastName}}
-          >{pendingUser.lastName}</TextInput>
-          
-          <TextInput style={styles.text2} 
-            editable = {(pendingUser.editable + 1) == this.state.editable}
-            onFocus={nul => this.showActionSheet()}
-            onKeyPress={nul => this.showActionSheet()}
-            caretHidden={true}
-          >{pendingUser.Committee}</TextInput>
-          
-          <ActionSheet
-            ref={o => (this.ActionSheet = o)}
-            //Title of the Bottom Sheet
-            title={'Select a board'}
-            //Options Array to show in bottom sheet
-            options={committeeList}
-            //Define cancel button index in the option array. Need this so pressing back works
-            cancelButtonIndex={8}
-            onPress={index => {
-              //Clicking on the option will give you the index of the option clicked
-              this.state.currentUser.Committee = committeeList[index];
-              this.forceUpdate()
-            }}
-          />
-          
-          <View style={{flexDirection: 'row'}}>
-            <Switch thumbColor={pendingUser.Admin ? "#84BD00" : "#FF8200"}
-            onValueChange = {(toggle) => {pendingUser.Admin = toggle
-            this.forceUpdate()}}
-            value={pendingUser.Admin} 
-            disabled={!(pendingUser.editable + 1 == this.state.editable)}/>
-          </View>
-         
-          <View style={{flexDirection: 'row'}}>
-            <Switch thumbColor={pendingUser.Executive ? "#84BD00" : "#FF8200"}
-              onValueChange = {(toggle) => {pendingUser.Executive = toggle
+          <View>
+            <TextInput style={styles.text2} 
+              editable = {(pendingUser.editable + 1) == this.state.editable}
+              autoCorrect={false}
+  	          onChangeText={firstName => {pendingUser.firstName = firstName}}
+            >{pendingUser.firstName}</TextInput>
+            
+            <TextInput style={styles.text2} 
+              editable = {(pendingUser.editable + 1) == this.state.editable}
+              onChangeText={lastName => {pendingUser.lastName = lastName}}
+            >{pendingUser.lastName}</TextInput>
+            
+            <TextInput style={styles.text2} 
+              editable = {(pendingUser.editable + 1) == this.state.editable}
+              onFocus={nul => this.showActionSheet()}
+              onKeyPress={nul => this.showActionSheet()}
+              caretHidden={true}
+            >{pendingUser.Committee}</TextInput>
+            
+            <ActionSheet
+              ref={o => (this.ActionSheet = o)}
+              //Title of the Bottom Sheet
+              title={'Select a board'}
+              //Options Array to show in bottom sheet
+              options={committeeList}
+              //Define cancel button index in the option array. Need this so pressing back works
+              cancelButtonIndex={8}
+              onPress={index => {
+                //Clicking on the option will give you the index of the option clicked
+                this.state.currentUser.Committee = committeeList[index];
+                this.forceUpdate()
+              }}
+            />
+            
+            <View style={{flexDirection: 'row'}}>
+              <Switch thumbColor={pendingUser.Admin ? "#84BD00" : "#FF8200"}
+                onValueChange = {(toggle) => {pendingUser.Admin = toggle
                 this.forceUpdate()}}
-              value={pendingUser.Executive} 
-              disabled={!(pendingUser.editable + 1 == this.state.editable)}/>
-          </View>
+                value={pendingUser.Admin} 
+                disabled={!(pendingUser.editable + 1 == this.state.editable)}
+              />
+            </View>
+           
+            <View style={{flexDirection: 'row'}}>
+              <Switch thumbColor={pendingUser.Executive ? "#84BD00" : "#FF8200"}
+                onValueChange = {(toggle) => {pendingUser.Executive = toggle
+                  this.forceUpdate()}}
+                value={pendingUser.Executive} 
+                disabled={!(pendingUser.editable + 1 == this.state.editable)}
+              />
+            </View>
           </View>
         </View>
         
         <View style={styles.buttonHolder}>
-			        <Button  style={styles.button} onPress={() => this.delete(pendingUser)}
-                // disabled={(pendingUser.editable + 1 == this.state.editable)}
-                // if we want to still be able to Delete/Accept users not being edited 
-                disabled={(!!this.state.editable)}>
-			        	<Text style={styles.buttonText}>Delete</Text>
-		        	</Button>
+	        <Button  style={styles.button} onPress={() => this.delete(pendingUser)}
+            // if we want to still be able to Delete/Accept users not being edited 
+            disabled={(!!this.state.editable)}>
+	        	<Text style={styles.buttonText}>Delete</Text>
+        	</Button>
 
-              <Button  style={styles.button2} onPress={() => (this.state.editable % 2) ? this.submit(pendingUser) : this.edit(pendingUser)}>
-			        	<Text style={styles.buttonText}>{((pendingUser.editable + 1) == this.state.editable) ? "Save" : "Edit"}</Text>
-		        	</Button>
+          <Button  style={styles.button2} onPress={() => (this.state.editable % 2) ? this.submit(pendingUser) : this.edit(pendingUser)}>
+	        	<Text style={styles.buttonText}>{((pendingUser.editable + 1) == this.state.editable) ? "Save" : "Edit"}</Text>
+        	</Button>
 
-              <Button  style={styles.button3} onPress={() => this.approve(pendingUser)}
-                // disabled={(pendingUser.editable + 1 == this.state.editable)}
-                // if we want to still be able to Delete/Accept users not being edited 
-                disabled={(!!this.state.editable)}>
-                <Text style={styles.buttonText}>Approve</Text>
-              </Button>
-	    		</View>
+          <Button  style={styles.button3} onPress={() => this.approve(pendingUser)}
+            // if we want to still be able to Delete/Accept users not being edited 
+            disabled={(!!this.state.editable)}>
+            <Text style={styles.buttonText}>Approve</Text>
+          </Button>
+    		</View>
       </View>
     ));
 

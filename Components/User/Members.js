@@ -9,7 +9,6 @@ const s = require('../../Style/style')
 const styles = s.styles
 
 class Members extends Component {
-
   constructor(props) {
 		super(props);
 		this.state = {
@@ -21,41 +20,38 @@ class Members extends Component {
       users: [],
       roomId: "roomId",
       roomFound: false
-
     }
     this.arrayholder = [];
     const db = firebase.firebaseConnection.firestore()
-
   }
 
   componentDidMount() {
     var state = this.props.route.params.state
     Object.keys(state).forEach(key => {
-        this.setState({[key]: state[key]})
+      this.setState({[key]: state[key]})
     });
-
     this.getUsers()
   }
 
   getUsers() {
     const db = firebase.firebaseConnection.firestore();
     db.collection('Users').onSnapshot((querySnapshot) => {
-        const users = [];
-        querySnapshot.forEach((doc) => {
-          var user = doc.data()
-          users.push( {
-            email: doc.id,
-            Committee: user.Committee,
-            Executive: user.Executive,
-            firstName: user.firstName,
-            lastName: user.lastName,
-          })
+      const users = [];
+      querySnapshot.forEach((doc) => {
+        var user = doc.data()
+        users.push( {
+          email: doc.id,
+          Committee: user.Committee,
+          Executive: user.Executive,
+          firstName: user.firstName,
+          lastName: user.lastName,
         })
-        this.arrayholder = users;
-        this.setState({users: users}, function() {
-          this.filterUsers();
-          this.showUsers()
-        })
+      })
+      this.arrayholder = users;
+      this.setState({users: users}, function() {
+        this.filterUsers();
+        this.showUsers()
+      })
     })
   }
 
@@ -67,7 +63,6 @@ class Members extends Component {
       } else {
         filtered = this.state.users.filter(data => data.Committee == this.state.selectedCommittee);
       }
-      //console.log(filtered);
       this.setState({
         users: filtered
       })
@@ -75,37 +70,42 @@ class Members extends Component {
   }
 
   showUsers() {
-      const users = this.state.users.map(user => (
-        <View key={user.email}>
-          <View style={{flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, justifyContent: 'space-between'}}>
-            <TouchableOpacity
-              onPress={() => {
-                var navigation = this.props.navigation;
-                navigation.navigate('Profile', {state: user})}}>
-              <Text >{`${user.firstName} ${user.lastName}`}</Text>
-            </TouchableOpacity>
+    const users = this.state.users.map(user => (
+      <View key={user.email}>
+        <View style={{flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, 
+          justifyContent: 'space-between'}}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              var navigation = this.props.navigation;
+              navigation.navigate('Profile', {state: user})}}
+          >
+            <Text >{`${user.firstName} ${user.lastName}`}</Text>
+          </TouchableOpacity>
 
-            <Button  style={styles.messageButton} onPress={() => {
-              //Get or make a room, should set roomId value into the state
-              this.checkCreateRoom(user);  
+          <Button  style={styles.messageButton} onPress={() => {
+            //Get or make a room, should set roomId value into the state
+            this.checkCreateRoom(user);  
 
-              //Sometimes the check method is called a bunch of times, usually if you manually delete a conversation in firebase
-              // or make a new coversation. I wanted to put navigation to the next page outside the function but I couldn't
-              // get the roomId to pass on either through state or as an extra navigation parameter. So I put the navigation 
-              // call at the end of checkRoom. 
-              //this.navigateToChat();
-            }}>
-              <Text style={styles.downButtonText}>Chat</Text>
-            </Button>
-          </View>
+            //Sometimes the check method is called a bunch of times, usually if you manually delete 
+            // a conversation in firebase or make a new coversation. I wanted to put navigation to the 
+            // next page outside the function but I couldn't get the roomId to pass on either through 
+            // state or as an extra navigation parameter. So I put the navigation call at the end of 
+            // checkRoom. 
+            //this.navigateToChat();
+            }}
+          >
+            <Text style={styles.downButtonText}>Chat</Text>
+          </Button>
         </View>
-      ))
-      
-      return(
-        <View>
-          {users}
-        </View>
-      )
+      </View>
+    ))
+    
+    return(
+      <View>
+        {users}
+      </View>
+    )
   }
 
   //Navigate the screen to an individual chat page
@@ -121,7 +121,7 @@ class Members extends Component {
     })
   };
 
-  //Look through all chat rooms to see if one exists, if not make one. Set the roomId into state so it can be passed on.
+  //Look through all chat rooms to see if one exists, if not make one. Pass on roomId
   checkCreateRoom(user) {
     const db = firebase.firebaseConnection.firestore();
     db.collection('Chat').onSnapshot((querySnapshot) => {
@@ -175,7 +175,6 @@ class Members extends Component {
     });
   }
 
-
   render() {
     return (
       <View style={styles.container}>
@@ -197,7 +196,6 @@ class Members extends Component {
       </View>
     );
   }
-  
 }
 
 export default Members

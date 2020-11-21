@@ -10,12 +10,12 @@ class ChatPage extends Component {
 
   constructor(props) {
     super(props);
-	this.state = {
-	  email: null,
-	  committee: null,
-	  admin: false,
-	  executive: false,
-	  users: [],
+  	this.state = {
+  	  email: null,
+  	  committee: null,
+  	  admin: false,
+  	  executive: false,
+  	  users: [],
       selectedCommittee: null,
       roomId: "roomId",
     }

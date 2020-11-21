@@ -4,15 +4,14 @@ import { StyleSheet, Text, View } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import Fire from './Fire';
 
-
 class ChatRoom extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-          targetUser: null,
-        //   chatID: null,
-        }
-      }
+  constructor(props) {
+    super(props);
+    this.state = {
+      targetUser: null, 
+      //chatID: null, 
+    }
+  }
 
   componentDidMount() {
     var id = this.props.route.params.chatid
@@ -24,10 +23,12 @@ class ChatRoom extends Component {
       }))
     );
   }
+
   // 2.
   componentWillUnmount() {
     Fire.shared.off();
   }
+
   get user() {
     // Return our name and our UID for GiftedChat to parse
     return {
@@ -35,9 +36,11 @@ class ChatRoom extends Component {
       _id: Fire.shared.uid,
     };
   }
+
   static navigationOptions = ({ navigation }) => ({
     title: (navigation.state.params || {}).name || 'Chat!',
   });
+
   state = {
     messages: [],
   };
@@ -52,4 +55,5 @@ class ChatRoom extends Component {
     );
   }
 }
+
 export default ChatRoom;

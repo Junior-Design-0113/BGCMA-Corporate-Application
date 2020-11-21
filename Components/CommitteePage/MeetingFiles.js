@@ -14,22 +14,22 @@ const styles = s.styles
 
 class MeetingFiles extends Component {
   constructor(props) {
-      super(props);
-      this.state = {
-        email: null,
-        committee: null,
-        admin: false,
-        executive: false,
-        selectedCommittee: null,
-        files: [],
-        url: null,
-        modalVisible: false,
-        fileName: '',
-        res: null,
-        fileSelected: false,
-      }
-      this.arrayholder = [];
+    super(props);
+    this.state = {
+      email: null,
+      committee: null,
+      admin: false,
+      executive: false,
+      selectedCommittee: null,
+      files: [],
+      url: null,
+      modalVisible: false,
+      fileName: '',
+      res: null,
+      fileSelected: false,
     }
+    this.arrayholder = [];
+  }
   
   async componentDidMount() {
     var state = this.props.route.params.state
@@ -65,19 +65,20 @@ class MeetingFiles extends Component {
   uploadFile = async(res) => {
     var storageRef = fb.firebaseConnection.storage().ref()
     
-    //If greater than 1MB (size is in bytes), cancel
     if(res == null) {
-      Alert.alert("Please Select A File")
+      Alert.alert("Please select a file")
       return
     }
+    //If greater than 10MB (size is in bytes), cancel. Can adjust the size here
     if (res.size > 10000000) {
-      Alert.alert("File Is Too Large To Upload")
+      Alert.alert("File is too large to upload")
       return
     }
     if (this.state.fileName == '') {
-      Alert.alert("Please Input A File Name")
+      Alert.alert("Please input a file name")
       return
     }
+
     const dotIndex = (res.name).lastIndexOf(".")
     const fileType = res.name.slice(dotIndex)
     var fileName = this.state.fileName.replace(/\s/g , "-");
@@ -113,27 +114,29 @@ class MeetingFiles extends Component {
 
   listFiles() {
     const filesView = this.state.files.map(file => (
-      <View key={file.key} style={{flexDirection: 'row', paddingVertical: 10, borderBottomColor: 'gray', borderBottomWidth: 1,  justifyContent: 'space-between'}}>
+      <View key={file.key} style={{flexDirection: 'row', paddingVertical: 10, borderBottomColor: 'gray', 
+        borderBottomWidth: 1,  justifyContent: 'space-between'}}
+      >
         <Text style={styles.listFiles} numberOfLines= {3} ellipsizeMode = 'middle'>{file.name}</Text>
         <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-        <Button style={styles.downloadButton} onPress={() => this.downloadFile(file)}>
-          <Text style={styles.downButtonText}>Download</Text>
-        </Button>
-        <Button style={styles.deleteButton} onPress={() => 
-          Alert.alert("Delete File?", file.name,
-          [{text: "Cancel", onPress: () => console.log("Cancel")},
-          {text: "Delete", onPress: () => this.deleteFile(file)}]) 
-        }>
-          <Text style={styles.delButtonText}>X</Text>
-        </Button>
+          <Button style={styles.downloadButton} onPress={() => this.downloadFile(file)}>
+            <Text style={styles.downButtonText}>Download</Text>
+          </Button>
+          <Button style={styles.deleteButton} onPress={() => 
+            Alert.alert("Delete File?", file.name,
+            [{text: "Cancel", onPress: () => console.log("Cancel")},
+            {text: "Delete", onPress: () => this.deleteFile(file)}]) 
+          }>
+            <Text style={styles.delButtonText}>X</Text>
+          </Button>
         </View>
       </View>
     ))
   
     return (
-    <View>
-      {filesView}
-    </View>
+      <View>
+        {filesView}
+      </View>
     )
   }
 
@@ -164,10 +167,8 @@ class MeetingFiles extends Component {
     var viewRef = storageRef.child(this.state.selectedCommittee + '/' + file.name);
     var url = viewRef.getDownloadURL().then((url) => {
       //Gets the url for the file in firebase storage
-      //console.log(url);
-
-      //Download the file from that url onto phone. Can specify file path here, will be 
-      //  placed in a BGMCA folder
+      //Download the file from that url onto phone. Can specify file path here, will be placed 
+      //  in a BGMCA folder
       FileSystem.downloadAsync(
         url,
         FileSystem.documentDirectory + file.name
@@ -175,7 +176,6 @@ class MeetingFiles extends Component {
       .then(({ uri }) => {
         //Call local method to save the downloaded file to a proper folder
         this.saveFile(uri);
-        //console.log('Finished downloading ', uri);
       })
       .catch(error => {
         console.error(error);
@@ -186,7 +186,6 @@ class MeetingFiles extends Component {
 
   updateScreen() {
     this.getFiles(); 
-    // console.log('screen update');
   }
 
   searchFiles(text) {
@@ -202,105 +201,94 @@ class MeetingFiles extends Component {
     });
   }
 
-  
-  // ListViewItemSeparator = () => {
-  //   return (
-  //     <View
-  //       style={{
-  //         height: 0.5,
-  //         width: '100%',
-  //         backgroundColor: 'gray',
-  //       }}
-  //     />
-  //   );
-  // };
-
   setModalVisible(val) {
     this.setState({modalVisible: val});
   }
 
   showModal() {
     const {modalVisible, res} = this.state
-    return (<Modal
-      animationType="slide"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={() => {
-        this.setModalVisible(!modalVisible);
-      }}
-    >
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <TextInput style = {styles.modalInput}
-            autoCorrect={false}
-            onChangeText={fileName => this.setState({fileName})}
-            placeholder={'File Name'}
-            value={this.state.fileName}
-          />  
-          <TouchableHighlight
-            style={{ ...styles.openButton, backgroundColor: this.state.fileSelected ? '#0081c6': "#a1a1a1", marginTop: 10}}
-            onPress={() => {
-              this.pickFile();
-            }}
-          >
-            <Text style={{...styles.text, color: this.state.fileSelected ? 'white': "#4a4a4a"}}>
-              {this.state.fileSelected ? 'File Selected': 'Select a File'}
-            </Text>
-          </TouchableHighlight>
-          <View style={styles.buttonHolder}>
-            <Button  style={{...styles.uploadCancelButton, backgroundColor: "#84BD00"}} onPress={() => {this.uploadFile(res)}}>
-              <Text style={styles.text}>Upload</Text>
-            </Button>
-            <Button  style={{...styles.uploadCancelButton, backgroundColor: "#FF8200"}} onPress={() => {this.setModalVisible(!modalVisible)}}>
-              <Text style={styles.text}>Cancel</Text>
-            </Button>
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          this.setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <TextInput style = {styles.modalInput}
+              autoCorrect={false}
+              onChangeText={fileName => this.setState({fileName})}
+              placeholder={'File Name'}
+              value={this.state.fileName}
+            />  
+
+            <TouchableHighlight
+              style={{ ...styles.openButton, backgroundColor: this.state.fileSelected ? '#0081c6': "#a1a1a1", marginTop: 10}}
+              onPress={() => {
+                this.pickFile();
+              }}
+            >
+              <Text style={{...styles.text, color: this.state.fileSelected ? 'white': "#4a4a4a"}}>
+                {this.state.fileSelected ? 'File Selected': 'Select a File'}
+              </Text>
+            </TouchableHighlight>
+
+            <View style={styles.buttonHolder}>
+              <Button  style={{...styles.uploadCancelButton, backgroundColor: "#84BD00"}} onPress={() => {this.uploadFile(res)}}>
+                <Text style={styles.text}>Upload</Text>
+              </Button>
+              <Button  style={{...styles.uploadCancelButton, backgroundColor: "#FF8200"}} onPress={() => {this.setModalVisible(!modalVisible)}}>
+                <Text style={styles.text}>Cancel</Text>
+              </Button>
+            </View>
           </View>
         </View>
-      </View>
-    </Modal>)
+      </Modal>
+    )
   }
   
   render() {
-      return (
-        <View style={styles.container}>
-          <View style={{...styles.form, width: '100%', marginTop: 0}}>
-            <View style={{flexDirection: 'row'}}>
-              <View style={{width: '80%'}}>
-                <SearchBar
-                  containerStyle={{backgroundColor: 'default'}}
-                  style={styles.searchBarText}
-                  onChangeText={text => this.searchFiles(text)}
-                  value={this.state.text}
-                  placeholder="Search Files"
-                  round
-                  lightTheme
-                  searchIcon={{ size:30 }}
-                />
-              </View>
-
-              {this.showModal()}
-              
-              <TouchableHighlight
-                style={styles.uploadButton}
-                onPress={() => {
-                  this.setModalVisible(true);
-                }}>
-                <Text style={styles.delButtonText}>+</Text>
-              </TouchableHighlight>
+    return (
+      <View style={styles.container}>
+        <View style={{...styles.form, width: '100%', marginTop: 0}}>
+          <View style={{flexDirection: 'row'}}>
+            <View style={{width: '80%'}}>
+              <SearchBar
+                containerStyle={{backgroundColor: 'default'}}
+                style={styles.searchBarText}
+                onChangeText={text => this.searchFiles(text)}
+                value={this.state.text}
+                placeholder="Search Files"
+                round
+                lightTheme
+                searchIcon={{ size:30 }}
+              />
             </View>
 
-            <ScrollView>{this.listFiles()}</ScrollView>
-          
+            {this.showModal()}
+            
+            <TouchableHighlight
+              style={styles.uploadButton}
+              onPress={() => {
+                this.setModalVisible(true);
+              }}
+            >
+              <Text style={styles.delButtonText}>+</Text>
+            </TouchableHighlight>
           </View>
 
-          {/* <Image 
-          style={{maxHeight: '30%', marginTop: 10}} 
-          source={this.state.url} /> */}
+          <ScrollView>{this.listFiles()}</ScrollView>      
         </View>
-      )
+
+        {/* <Image 
+        style={{maxHeight: '30%', marginTop: 10}} 
+        source={this.state.url} /> */}
+      </View>
+    )
   }
 }
-
-
 
 export default MeetingFiles

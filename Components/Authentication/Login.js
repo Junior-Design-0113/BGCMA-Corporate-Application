@@ -1,4 +1,3 @@
-
 import React, {Component} from 'react';
 import { StyleSheet, Text, View, Alert, Image, Dimensions } from 'react-native';
 import {Button} from 'native-base';
@@ -8,7 +7,6 @@ import * as Crypto from 'expo-crypto';
 const firebase = require("../../server/router");
 
 class Login extends Component {
-  
   state={
     user:"",
     password:""
@@ -17,7 +15,8 @@ class Login extends Component {
   onPressRegister() {
     var navigation = this.props.navigation;
     navigation.navigate('Register')
-    }
+  }
+
   onPressLogin() {
     if(!this.state.user || !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.state.user)) {
 			Alert.alert("Please enter a valid email address");
@@ -41,21 +40,13 @@ class Login extends Component {
         if (found.exists) {
           Alert.alert('This account has not yet been approved')
         } else {
-          this.checkUsers(error)
+          this.checkUser(error)
         }
       })
     })
   }
-
-  // login() {
-  //   firebase.firebaseConnection.auth().signInWithEmailAndPassword(this.state.user, this.state.password)
-  //   .then(() => {
-  //     var navigation = this.props.navigation;
-  //     navigation.navigate('Home', {user: this.state.user})
-  //   })
-  // }
   
-  async checkUsers(error) {
+  async checkUser(error) {
     const db = firebase.firebaseConnection.firestore()
     const user = db.collection('Users').doc(this.state.user);
     const self = this
@@ -67,15 +58,13 @@ class Login extends Component {
           await firebase.firebaseConnection.firestore().collection('Users').doc(self.state.user).update({
             password: null})
           .then(() => {
-          firebase.firebaseConnection.auth().createUserWithEmailAndPassword(self.state.user, self.state.password)
-          // .then(() => {
-          //   firebase.firebaseConnection.auth().signInWithEmailAndPassword(self.state.user, self.state.password)
-          .then(() => {
-            var navigation = self.props.navigation;
-            navigation.navigate('Home', {user: self.state.user})
+            firebase.firebaseConnection.auth()
+            .createUserWithEmailAndPassword(self.state.user, self.state.password)
+            .then(() => {
+              var navigation = self.props.navigation;
+              navigation.navigate('Home', {user: self.state.user})
+            })
           })
-          // })
-        })
         } else {
           Alert.alert(error.message)
         }
@@ -83,7 +72,7 @@ class Login extends Component {
           Alert.alert(error.message)
       }
     })
-}
+  }
 
   render() {
     return ( 
@@ -91,31 +80,37 @@ class Login extends Component {
         <Image 
           style={{maxHeight: Dimensions.get('window').height * .25, marginTop: 10}} 
           source={require('./../../assets/BGCMA.png')} 
-          resizeMode = 'contain'/>
+          resizeMode = 'contain'
+        />
 
         <View style={styles.form}>
           <Text style={styles.title}>Portal</Text>
           
           <TextInput
-          keyboardType = "email-address"
-          placeholder =  "Email"
-          style={styles.input}
-          onChangeText={(text) => this.setState({user:text})}
-          value = {this.state.text} />
+            keyboardType = "email-address"
+            placeholder =  "Email"
+            style={styles.input}
+            onChangeText={(text) => this.setState({user:text})}
+            value = {this.state.text} 
+          />
           <TextInput
-          secureTextEntry
-          style={styles.input}
-          placeholder = "Password"
-          onChangeText={(text) => this.setState({password:text})}
-          value = {this.state.text} />
+            secureTextEntry
+            style={styles.input}
+            placeholder = "Password"
+            onChangeText={(text) => this.setState({password:text})}
+            value = {this.state.text} 
+          />
           
-          <Button  style={styles.button} onPress={() => this.onPressLogin()}><Text style={styles.text}>Log In</Text></Button>
-          <Button  style={styles.button2} onPress={() => this.onPressRegister()}><Text style={styles.text}>Register</Text></Button>
+          <Button  style={styles.button} onPress={() => this.onPressLogin()}>
+            <Text style={styles.text}>Log In</Text>
+          </Button>
+          <Button  style={styles.button2} onPress={() => this.onPressRegister()}>
+            <Text style={styles.text}>Register</Text>
+          </Button>
         </View>
       </View>
     );
   }
-
 }
 
 const styles = StyleSheet.create({
@@ -134,7 +129,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 15,
-    // paddingBottom: 45,
   },
   title: {
     marginLeft: 'auto',
@@ -173,15 +167,6 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
     marginLeft: 'auto'
   },
-  // text2: {
-  //   color: 'black',
-  //   fontWeight: '700',
-  //   fontSize: 35,
-  //   marginRight: 'auto',
-  //   marginLeft: 'auto',
-  //   marginTop: 20,
-  //   marginBottom: 50,
-  // },
   input: {
     margin: 15,
     marginLeft: 2,
@@ -192,9 +177,6 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     alignItems: 'center',
  },
-//  imageHolder: {
-//   margin: 33%,
-// },
 });
 
 export default Login

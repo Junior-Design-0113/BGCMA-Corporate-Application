@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import { ActivityIndicator, StyleSheet, Text, View, Alert, Image, FlatList, Modal, ScrollView, TouchableHighlight, TextInput, RefreshControl} from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View, Alert, Image, FlatList, Modal, ScrollView, 
+  TouchableHighlight, TextInput, RefreshControl} from 'react-native';
 import { ListItem } from 'react-native-elements'
 import {Button} from 'native-base';
 import ActionSheet from 'react-native-actionsheet';
@@ -7,61 +8,41 @@ import ActionSheet from 'react-native-actionsheet';
 const firebase = require("../../server/router");
 const s = require('../../Style/style')
 const styles = s.styles
-//const db = firebase.firebaseConnection.firestore();
-
-// const committeeList = [
-//   'Budget, Finance, & Audit',
-//   'Board Development',
-//   'Human Resources',
-//   'Impact',
-//   'Investment',
-//   'Resource Development & Marketing',
-//   'Safety Asset Management',
-//   //''
-// ];
 
 class Announcements extends Component {
   constructor(props) {
-      super(props);
-      //itemsRef = null;
-      this.array = [
-        {
-          title: 'ONE'
-        },
-        {
-          title: 'TWO'
-        },
-        
-      ];
-      this.state = {
-        refreshing: false,
-        currentAnn: null,
-        currAnnTitle: "",
-        currAnnMessage: "",
-        modalVisible: false,
-        arrayHolder: [],
-        email: null,
-        committee: null,
-        admin: false,
-        executive: false,
-        selectedCommittee: null,
-        isLoading: true,
-        annArr: [],
-        firestoreRef: null
-      }
-      //this.firestoreRef = null;
-      //this.firestoreRef = firebase.firebaseConnection.firestore().collection("Announcements").doc(this.state.selectedCommittee).collection(this.state.selectedCommittee + " A")
+    super(props);
+    this.array = [
+      {
+        title: 'ONE'
+      },
+      {
+        title: 'TWO'
+      },
+    ];
+    this.state = {
+      refreshing: false,
+      currentAnn: null,
+      currAnnTitle: "",
+      currAnnMessage: "",
+      modalVisible: false,
+      arrayHolder: [],
+      email: null,
+      committee: null,
+      admin: false,
+      executive: false,
+      selectedCommittee: null,
+      isLoading: true,
+      annArr: [],
+      firestoreRef: null
     }
+  }
 
   updateGroup = (group) => {
-      /*if (group == '') {
-        this.ActionSheet.hide();
-      } else {*/
-        this.setState({ selectedCommittee:group })
-        this.state.firestoreRef = firebase.firebaseConnection.firestore().collection("Announcements").doc(this.state.selectedCommittee).collection(this.state.selectedCommittee + " A")
-        this.state.firestoreRef.onSnapshot(this.getCollection)
-        //console.log(this.state.annArr)
-        //this.setState({ state: this.state });
+    this.setState({ selectedCommittee:group })
+    this.state.firestoreRef = firebase.firebaseConnection.firestore().collection("Announcements")
+      .doc(this.state.selectedCommittee).collection(this.state.selectedCommittee + " A")
+    this.state.firestoreRef.onSnapshot(this.getCollection)
   }
 
   componentDidMount() {
@@ -69,20 +50,18 @@ class Announcements extends Component {
     Object.keys(state).forEach(key => {
       this.setState({[key]: state[key]})
     });
-    //this.state.firestoreRef = firebase.firebaseConnection.firestore().collection("Announcements").doc(this.state.selectedCommittee).collection(this.state.selectedCommittee + " A")
-    //this.setState({selectedCommittee: this.state.committee});
-    /*if (this.state.selectedCommittee) {
-      this.unsubscribe = firebase.firebaseConnection.firestore().collection("Announcements").doc(this.state.selectedCommittee).collection(this.state.selectedCommittee + " A").onSnapshot(this.getCollection);
-    }*/
     this.setState({check:"check"},function() {this.load()})
   }
 
   load() {
-    console.log(this.state)
+    //console.log(this.state)
     if (this.state.selectedCommittee) {
-      this.unsubscribe = firebase.firebaseConnection.firestore().collection("Announcements").doc(this.state.selectedCommittee).collection(this.state.selectedCommittee + " A").onSnapshot(this.getCollection);
+      this.unsubscribe = firebase.firebaseConnection.firestore().collection("Announcements")
+        .doc(this.state.selectedCommittee).collection(this.state.selectedCommittee + " A")
+        .onSnapshot(this.getCollection);
     }
   }
+
   componentWillUnmount(){
     this.unsubscribe();
   }
@@ -101,8 +80,8 @@ class Announcements extends Component {
         message,
       });
     });
+
     annArr.sort((a, b) => (a.newDate < b.newDate) ? 1 : -1)
-    // console.log(annArr)
     this.setState({
       annArr,
       isLoading: false,
@@ -127,16 +106,14 @@ class Announcements extends Component {
   }
 
   setModalVisible = (visible, currAnn, title, mess) => {
-    console.log(title)
-    console.log(mess)
+    //console.log(title)
+    //console.log(mess)
     this.setState({ modalVisible: visible });
     this.setState({currentAnn: currAnn});
-    // this.setState({currentAnnTitle: title});
-    // this.setState({currentAnnMessage: mess});
     this.state.currAnnMessage = mess;
     this.state.currAnnTitle = title;
-    console.log(this.state.currAnnTitle)
-    console.log(this.state.currAnnMessage)
+    //console.log(this.state.currAnnTitle)
+    //console.log(this.state.currAnnMessage)
   }
 
   FlatListItemSeparator = () => {
@@ -155,16 +132,12 @@ class Announcements extends Component {
     this.setState({
       isLoading: false
     })
-    //console.log(this.state.annArr)
   }
 
   GetItem(item) {
- 
     Alert.alert(item);
- 
   }
   
-
   render() {
     const { modalVisible } = this.state;
     if(this.state.isLoading){
@@ -180,75 +153,56 @@ class Announcements extends Component {
           <View style={styles.form}>
             {this.getTeam()}
             <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              Alert.alert("Modal has been closed.");
-            }}
-          >
-            <View style={styles2.centeredView}>
-              <View style={styles2.modalView}>
-                <Text style={styles2.modalText}> {this.state.currAnnTitle} </Text>
-                <Text style={styles2.modalText}> {this.state.currAnnMessage} </Text>
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+              }}
+            >
+              <View style={styles2.centeredView}>
+                <View style={styles2.modalView}>
+                  <Text style={styles2.modalText}> {this.state.currAnnTitle} </Text>
+                  <Text style={styles2.modalText}> {this.state.currAnnMessage} </Text>
 
-                <TouchableHighlight
-                  //style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
-                  onPress={() => {
-                    this.setModalVisible(!modalVisible);
-                  }}
-                >
-                  <Text style={styles2.openButton}>Hide Announcement</Text>
-                </TouchableHighlight>
+                  <TouchableHighlight
+                    //style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                    onPress={() => {this.setModalVisible(!modalVisible);}}
+                  >
+                    <Text style={styles2.openButton}>Hide Announcement</Text>
+                  </TouchableHighlight>
                 </View>
               </View>
             </Modal>
-            {/* <TextInput style = {styles2.input}
-	                autoCorrect={false}
-	                onFocus={group => this.showActionSheet()}
-	                onKeyPress={group => this.showActionSheet()}
-	                placeholder={'Pick a board to post to'}
-	                value={"Select a Committee"}
-	            />
-          <ActionSheet
-					ref={o => (this.ActionSheet = o)}
-					//Title of the Bottom Sheet
-					title={'Pick a board to post to'}
-					//Options Array to show in bottom sheet
-					options={committeeList}
-					//Define cancel button index in the option array. Need this so pressing back works
-					cancelButtonIndex={8}
-					onPress={index => {
-						//Clicking on the option will give you the index of the option clicked
-						this.updateGroup(committeeList[index]);
-					}}
-				/> */}
-          {<Button style = {styles2.button} onPress={() => this.addAnnouncement()} /*onpress="{this._addItem.bind(this)}"*/><Text style={styles.text}>Add Announcement</Text></Button> }
-          { <ScrollView>
-          {
-            this.state.annArr.map((item, i) => {
-              return (
-                <ListItem
-                  key={i}
-                  chevron
-                  bottomDivider
-                  title= {item.title}
-                  subtitle={item.date}
-                  message = {item.message}
-                  onPress={() => {
-                    this.setModalVisible(true, this.state.firestoreRef.doc(item.title), item.title, item.message);
-                  }
-                }/>
-              );
-            })
-          }
-          </ScrollView> }
+
+            { <Button style = {styles2.button} onPress={() => this.addAnnouncement()} 
+            /*onpress="{this._addItem.bind(this)}"*/>
+              <Text style={styles.text}>Add Announcement</Text>
+            </Button> }
+
+            { <ScrollView> 
+              { this.state.annArr.map((item, i) => {
+                return (
+                  <ListItem
+                    key={i}
+                    chevron
+                    bottomDivider
+                    title= {item.title}
+                    subtitle={item.date}
+                    message = {item.message}
+                    onPress={() => {
+                      this.setModalVisible(true, this.state.firestoreRef
+                        .doc(item.title), item.title, item.message);
+                    }}
+                  />
+                );
+              })} 
+            </ScrollView> }
           </View>
         </View>
       )
+    }
   }
-}
-
 }
 
 const styles2 = StyleSheet.create({
