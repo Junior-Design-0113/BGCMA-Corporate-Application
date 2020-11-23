@@ -272,26 +272,28 @@ module.exports.styles = StyleSheet.create({
         paddingLeft: 10
      },
       profileTitle: {
-        marginLeft: 'auto',
-        marginRight: 'auto',
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
         fontSize: 25,
         fontWeight: '700',
+        paddingHorizontal: 10, 
+        marginTop: 2,
+        marginRight: 2
       },
       profileText: {
         color: 'black',
         fontSize: 20,
-        marginRight: 'auto',
-        marginLeft: 'auto'
+        paddingHorizontal: 10, 
+        marginTop: 2,
       },
       profileSubtext: {
         color: 'black',
         fontWeight: '300',
         fontSize: 18,
-        marginRight: 'auto',
-        marginLeft: 'auto',
-        paddingBottom: 20
+        paddingHorizontal: 10, 
+        marginTop: 2,
+        marginRight: 2,
+        marginBottom: 20
       }
     });

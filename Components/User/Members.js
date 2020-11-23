@@ -43,13 +43,16 @@ class Members extends Component {
         const users = [];
         querySnapshot.forEach((doc) => {
           var user = doc.data()
-          users.push( {
-            email: doc.id,
-            Committee: user.Committee,
-            Executive: user.Executive,
-            firstName: user.firstName,
-            lastName: user.lastName,
-          })
+          // doesn't display your profile
+          if (doc.id != this.state.email) {
+            users.push( {
+              email: doc.id,
+              Committee: user.Committee,
+              Executive: user.Executive,
+              firstName: user.firstName,
+              lastName: user.lastName,
+            })
+        }
         })
         this.arrayholder = users;
         this.setState({users: users}, function() {

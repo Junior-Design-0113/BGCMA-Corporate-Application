@@ -31,11 +31,14 @@ class Profile extends Component {
 	   		lastName: '',
 			userInfo: '',
 			nickname: '',
+			newFirst: '',
+			newLast: '',
 			newNickname: '',
-			newComm: '',
 			newBio: '',
       modalEditVisible: false,
-      imageURL: '',
+	  imageURL: '',
+	  border: 0,
+	  editable: false,
 		}
 	}
 
@@ -64,10 +67,14 @@ class Profile extends Component {
 		    user.get().then((doc) => {
 			    if (doc.exists) {
 			    	//Access the data of this element of the collection with doc.data().x
-			    	this.setState({firstName:doc.data().firstName});
-					this.setState({lastName:doc.data().lastName});   
-					this.setState({userInfo:doc.data().userInfo})	
-					this.setState({nickname:doc.data().Nickname})
+					this.setState({firstName:doc.data().firstName,
+						newFirst:doc.data().firstName});
+					this.setState({lastName:doc.data().lastName,
+						newLast:doc.data().lastName});   
+					this.setState({userInfo:doc.data().userInfo || '',
+						newBio:doc.data().userInfo || ''})	
+					this.setState({nickname:doc.data().Nickname, 
+						newNickname:doc.data().Nickname})
 			    	//this.setState({userInfo:doc.data().userInfo});  
 			    } else {
 			        // doc.data() will be undefined in this case
@@ -233,26 +240,63 @@ class Profile extends Component {
 };
 
 
-downloadImage = async () => {
-  const storage = firebase.firebaseConnection.storage();
+	downloadImage = async () => {
+	const storage = firebase.firebaseConnection.storage();
 
-  storage.ref("Profiles/" + this.state.email).getDownloadURL()
-  .then((url) => {
-    // Do something with the URL ...
-	this.setState({imageURL: url});
-  }).catch(() => {
-	console.log("error")
-  })
-}
-
-displayImage() {
-	if (this.state.imageURL) {
-		return (<Image source={ {uri: this.state.imageURL} } style={{ width: 200, height: 200 }} />) 
-	} else {
-		return (<Image source={ require('../../assets/defaultProfile.png') } style={{ width: 200, height: 200 }} />)
+	storage.ref("Profiles/" + this.state.email).getDownloadURL()
+	.then((url) => {
+		// Do something with the URL ...
+		this.setState({imageURL: url});
+	}).catch(() => {
+		console.log("error")
+	})
 	}
-}
 
+	displayImage() {
+		if (this.state.imageURL) {
+			return (<Image source={ {uri: this.state.imageURL} } style={{ width: 200, height: 200 }} />) 
+		} else {
+			return (<Image source={ require('../../assets/defaultProfile.png') } style={{ width: 200, height: 200 }} />)
+		}
+	}
+
+	edit() {
+		var user = firebase.firebaseConnection.auth().currentUser.email;
+		if (this.state.email == user) {
+			this.setState({editable : !(this.state.editable),
+			border : !!(this.state.border) ? 0 : 1,})
+		}
+	}
+
+	cancel() {
+		this.setState({
+			newFirst: this.state.firstName,
+			newLast: this.state.lastName,
+			newNickname: this.state.nickname,
+			newBio: this.state.userInfo,
+			editable : !(this.state.editable),
+			border : !!(this.state.border) ? 0 : 1,
+		})
+	}
+
+	save() {
+		this.setState({
+			firstName: this.state.newFirst,
+			lastName: this.state.newLast,
+			nickname: this.state.newNickname,
+			userInfo: this.state.newBio,
+			editable : !(this.state.editable),
+			border : !!(this.state.border) ? 0 : 1,
+		})
+		
+		this.state.firestoreRef = firebase.firebaseConnection.firestore().collection("Users").doc(this.state.email).update({
+			firstName: this.state.newFirst,
+			lastName: this.state.newLast,
+			Nickname: this.state.newNickname,
+			userInfo: this.state.newBio
+		})
+	}
+	
 	setEditModalVisible(val) {
 		this.setState({modalEditVisible: val});
 	  }
@@ -260,36 +304,67 @@ displayImage() {
     render() {
 	    return (
 	    	<View style={{...styles.container, justifyContent : 'flex-start', paddingTop: 10 }}>
-				<TouchableHighlight style={{ borderColor: '#0081c6', borderWidth: 5}}> 
+				<TouchableHighlight style={{ borderColor: '#0081c6', borderWidth: 5}} onPress={() => {
+					if (this.state.editable) {this.pickImage()}}}> 
 					{this.displayImage()}
 				</TouchableHighlight>
-            
-				{/* <TouchableHighlight style={{...styles.editProfile}} onPress={() => {this.pickImage()}}>
-					<Text style={{...styles.delButtonText, width:'100%', fontSize:12}}>Edit Image</Text>
-				</TouchableHighlight> */}
   
-					<TouchableHighlight style={{...styles.editProfile}} onPress={() => {
-						this.setEditModalVisible(true)
+					{!this.state.editable && <TouchableHighlight style={{...styles.editProfile}} onPress={() => {
+						this.edit()
 					}}>
-						<Text style={{...styles.delButtonText, width:'100%', fontSize:16}}>Edit Profile</Text>
+						
+						<Text style={{...styles.delButtonText, width:'100%', fontSize:16}}>{(this.state.editable) ? "Save" : "Edit Profile"}</Text>
 					</TouchableHighlight>
-			        <Text style={styles.profileTitle}>{`${this.state.firstName} ${this.state.lastName}`}</Text>
-			        {/* <Text style={styles.profileTitle}>{this.state.lastName}</Text> */}
-					<Text style={styles.profileText}>({this.state.nickname})</Text>
-			        <Text style={styles.profileText}>{}</Text>
+					}
+					
+					{this.state.editable && <View style={{flexDirection : 'row'}}>
+					<TouchableHighlight style={{...styles.editProfile, backgroundColor: '#84BD00' }} onPress={() => {
+						this.save()
+					}}>
+						
+						<Text style={{...styles.delButtonText, width:'100%', fontSize:16}}>{"Save"}</Text>
+					</TouchableHighlight>
+					
+					<TouchableHighlight style={{...styles.editProfile, backgroundColor: '#FF8200' }} onPress={() => {
+						this.cancel()
+					}}>
+						
+						<Text style={{...styles.delButtonText, width:'100%', fontSize:16}}>{"Cancel"}</Text>
+					</TouchableHighlight>
+					</View>
+					}
+					
+					<View style={{flexDirection : 'row'}}>
+						<TextInput style={{...styles.profileTitle, marginRight: 2, borderWidth: this.state.border}} 
+						onChangeText={newFirst => this.setState({newFirst})}
+						editable = {this.state.editable}>
+							{this.state.newFirst}</TextInput>
+						<TextInput style={{...styles.profileTitle, borderWidth: this.state.border}}
+						onChangeText={newLast => this.setState({newLast})}
+						editable = {this.state.editable}>
+							{this.state.newLast}</TextInput>
+					</View>
+					<TextInput style={{...styles.profileText, fontStyle: 'italic', borderWidth: this.state.border}}
+					onChangeText={newNickname => this.setState({newNickname})}
+					editable = {this.state.editable}
+					value = {this.state.newNickname}></TextInput>
+			        <Text></Text>
 					<View style={{alignSelf: 'flex-start', paddingLeft: 15}}>
 			        	<Text style={styles.profileText}>{"Committee: "}</Text>
 					</View>
-			        <Text style={styles.profileSubtext}>{this.state.committee}</Text>
+					<TextInput style={{...styles.profileSubtext}}
+					editable = {false}>
+						{this.state.committee}</TextInput>
 					
 					<View style={{alignSelf: 'flex-start', paddingLeft: 15}}>
-			        	<Text style={styles.profileText}>{"Info: "}</Text>
+			        	<TextInput style={styles.profileText}>{"Info: "}</TextInput>
 					</View>
 					<View style={{alignSelf: 'flex-start', paddingLeft: 30}}>
-			        	<Text style={styles.profileSubtext}>{this.state.userInfo}</Text>
-					</View>		 
-				{this.showEditModal()}
-		         
+						<TextInput style={{...styles.profileSubtext, borderWidth: this.state.border}}
+						onChangeText={newBio => this.setState({newBio})}
+						editable = {this.state.editable}>
+							{this.state.newBio}</TextInput>
+					</View>		  
 	        </View>
 	        
 	    );

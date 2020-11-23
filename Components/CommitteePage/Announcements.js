@@ -113,13 +113,13 @@ class Announcements extends Component {
 		this.ActionSheet.show();
 	};
 
-  getTeam() {
-    if(this.state.selectedCommittee) {
-      return(
-        <Text style = {styles2.text}>Announcements for: {this.state.selectedCommittee}</Text>
-      )
-    }
-  }
+  // getTeam() {
+  //   if(this.state.selectedCommittee) {
+  //     return(
+  //       <Text style = {styles2.text}>Announcements for: {this.state.selectedCommittee}</Text>
+  //     )
+  //   }
+  // }
 
   addAnnouncement() {
     var navigation = this.props.navigation;
@@ -164,7 +164,10 @@ class Announcements extends Component {
  
   }
   
-
+  getAnnouncement() {
+    firebase.firebaseConnection.firestore().collection("Announcements").doc(this.state.selectedCommittee).collection(this.state.selectedCommittee + " A").doc(item.title), item.title, item.message
+  }
+  
   render() {
     const { modalVisible } = this.state;
     if(this.state.isLoading){
@@ -178,7 +181,7 @@ class Announcements extends Component {
       return (
         <View style={styles.container}>
           <View style={styles.form}>
-            {this.getTeam()}
+            {/* {this.getTeam()} */}
             <Modal
             animationType="slide"
             transparent={true}
@@ -233,10 +236,10 @@ class Announcements extends Component {
                   chevron
                   bottomDivider
                   title= {item.title}
-                  subtitle={item.date}
-                  message = {item.message}
+                  subtitle={new Date(item.date).toLocaleDateString()}
+                  // message = {item.message}
                   onPress={() => {
-                    this.setModalVisible(true, firebase.firebaseConnection.firestore().collection("Announcements").doc(this.state.selectedCommittee).collection(this.state.selectedCommittee + " A").doc(item.title), item.title, item.message);
+                    Alert.alert(`${item.title}`, `Date: ${new Date(item.date).toLocaleDateString()}\n${item.message}`)
                   }
                 }/>
               );
