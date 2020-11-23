@@ -17,6 +17,7 @@ import Members from './Components/User/Members'
 import AnnouncementPage from './Components/CommitteePage/AnnouncementPage'
 import Chat from './Components/User/Chat'
 import ChatPage from './Components/User/ChatPage'
+import ChatRoom from './Components/User/ChatRoom/ChatRoom'
 
 const firebase = require("./server/router");
 
@@ -49,6 +50,7 @@ class App extends Component {
           <Stack.Screen name="AnnouncementPage" component={AnnouncementPage}/>
           <Stack.Screen name="Chat" component={Chat}/>
           <Stack.Screen name="ChatPage" component={ChatPage}/>
+          <Stack.Screen name="Chat Room" component={ChatRoom}/>
         </Stack.Navigator>
       </NavigationContainer>
     );

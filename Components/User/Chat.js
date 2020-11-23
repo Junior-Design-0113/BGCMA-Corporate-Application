@@ -48,9 +48,8 @@ class Chat extends Component {
         this.unsubscribe = query2.onSnapshot(this.getChats);
     }   
     gotochat(chatid){
-      console.log(chatid)
       var navigation = this.props.navigation;
-      navigation.navigate('Message', {chatid: this.state.chatid})
+      navigation.navigate('Chat Room', {chatid: chatid})
     }
 
     componentWillUnmount(){
@@ -95,25 +94,25 @@ class Chat extends Component {
             <View style={{...styles.form, width: '100%', marginTop: 0}}>
             <View style={{flexDirection: 'row'}}>
                 <View style={{width: '80%'}}>
-                <SearchBar
+                {/* <SearchBar
                     containerStyle={{backgroundColor: 'default'}}
                     style={styles.searchBarText}
-                    //onChangeText={text => this.searchFiles(text)}
-                    // value={this.state.text}
+                    onChangeText={text => this.searchFiles(text)}
+                    value={this.state.text}
                     placeholder="Search Chats"
                     round
                     lightTheme
                     searchIcon={{ size:30 }}
-                />
+                /> */}
                 </View>
                 
                 <TouchableHighlight
-                style={styles.uploadButton}
+                style={{...styles.uploadButton, height: 50}}
                 onPress={() => {
                     this.onPressAdd();
                     //this.listChats();
                 }}>
-                <Text style={styles.delButtonText}>+</Text>
+                <Text style={{...styles.delButtonText, fontSize: 30}}>+</Text>
                 </TouchableHighlight>
             </View>
             { <ScrollView>
