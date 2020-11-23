@@ -236,7 +236,7 @@ class Announcements extends Component {
                   subtitle={item.date}
                   message = {item.message}
                   onPress={() => {
-                    this.setModalVisible(true, this.state.firestoreRef.doc(item.title), item.title, item.message);
+                    this.setModalVisible(true, firebase.firebaseConnection.firestore().collection("Announcements").doc(this.state.selectedCommittee).collection(this.state.selectedCommittee + " A").doc(item.title), item.title, item.message);
                   }
                 }/>
               );
